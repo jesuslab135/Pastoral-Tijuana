@@ -80,7 +80,8 @@ func UpdateEvent(ctx context.Context, pool *pgxpool.Pool, e Event) error {
 	if err != nil {
 		return err
 	}
-	defer tx.Rollback(ctx)
+	// Rollback after a successful Commit is a no-op, so this is safe to ignore.
+	defer func() { _ = tx.Rollback(ctx) }()
 
 	before, err := scanEvent(tx.QueryRow(ctx,
 		`SELECT `+eventCols+` FROM events WHERE id = $1 FOR UPDATE`, e.ID))
@@ -110,7 +111,8 @@ func PublishEvent(ctx context.Context, pool *pgxpool.Pool, id uuid.UUID) error {
 	if err != nil {
 		return err
 	}
-	defer tx.Rollback(ctx)
+	// Rollback after a successful Commit is a no-op, so this is safe to ignore.
+	defer func() { _ = tx.Rollback(ctx) }()
 
 	tag, err := tx.Exec(ctx,
 		`UPDATE events SET published_at = now(), cancelled_at = NULL
@@ -143,7 +145,8 @@ func UnpublishEvent(ctx context.Context, pool *pgxpool.Pool, id uuid.UUID) error
 	if err != nil {
 		return err
 	}
-	defer tx.Rollback(ctx)
+	// Rollback after a successful Commit is a no-op, so this is safe to ignore.
+	defer func() { _ = tx.Rollback(ctx) }()
 
 	e, err := scanEvent(tx.QueryRow(ctx,
 		`SELECT `+eventCols+` FROM events WHERE id = $1 FOR UPDATE`, id))
@@ -172,7 +175,8 @@ func DeleteEvent(ctx context.Context, pool *pgxpool.Pool, id uuid.UUID, notify b
 	if err != nil {
 		return err
 	}
-	defer tx.Rollback(ctx)
+	// Rollback after a successful Commit is a no-op, so this is safe to ignore.
+	defer func() { _ = tx.Rollback(ctx) }()
 
 	e, err := scanEvent(tx.QueryRow(ctx,
 		`SELECT `+eventCols+` FROM events WHERE id = $1 FOR UPDATE`, id))

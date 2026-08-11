@@ -139,7 +139,3 @@ func meHandler() http.HandlerFunc {
 		writeJSON(w, http.StatusOK, map[string]any{"user": userJSON(currentUser(r))})
 	}
 }
-
-func notImplementedYet(w http.ResponseWriter, _ *http.Request) {
-	writeError(w, http.StatusNotImplemented, "no_implementado", "Aún no disponible.")
-}

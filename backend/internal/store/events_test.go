@@ -21,8 +21,8 @@ func TestListPublishedEvents(t *testing.T) {
 
 	published := store.Event{
 		ID: uuid.New(), Title: "Hora santa", GroupID: gid, Rank: "parroquial",
-		StartsAt: time.Date(2026, 8, 4, 19, 0, 0, 0, time.UTC),
-		EndsAt:   time.Date(2026, 8, 4, 20, 0, 0, 0, time.UTC),
+		StartsAt:    time.Date(2026, 8, 4, 19, 0, 0, 0, time.UTC),
+		EndsAt:      time.Date(2026, 8, 4, 20, 0, 0, 0, time.UTC),
 		PublishedAt: &now,
 	}
 	draft := store.Event{
@@ -63,8 +63,8 @@ func TestColorOverrideWins(t *testing.T) {
 	e := store.Event{
 		ID: uuid.New(), Title: "Misa patronal", GroupID: uuid.MustParse(liturgiaID),
 		Rank: "solemnidad", ColorOverride: &rojo,
-		StartsAt: time.Date(2026, 8, 29, 12, 0, 0, 0, time.UTC),
-		EndsAt:   time.Date(2026, 8, 29, 13, 45, 0, 0, time.UTC),
+		StartsAt:    time.Date(2026, 8, 29, 12, 0, 0, 0, time.UTC),
+		EndsAt:      time.Date(2026, 8, 29, 13, 45, 0, 0, time.UTC),
 		PublishedAt: &now,
 	}
 	if err := store.CreateEvent(ctx, pool, e); err != nil {

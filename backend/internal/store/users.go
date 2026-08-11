@@ -82,7 +82,8 @@ func SetUserActive(ctx context.Context, pool *pgxpool.Pool, id uuid.UUID, active
 	if err != nil {
 		return err
 	}
-	defer tx.Rollback(ctx)
+	// Rollback after a successful Commit is a no-op, so this is safe to ignore.
+	defer func() { _ = tx.Rollback(ctx) }()
 
 	if _, err := tx.Exec(ctx,
 		`UPDATE users SET is_active = $2 WHERE id = $1`, id, active); err != nil {
