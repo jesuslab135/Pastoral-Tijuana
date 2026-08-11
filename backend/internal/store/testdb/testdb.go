@@ -27,6 +27,12 @@ const advisoryLockKey = 987654321
 var (
 	lockOnce sync.Once
 	lockErr  error
+	// lockConn holds the session that owns the advisory lock. It must stay
+	// reachable for the whole process: a session-level lock lives and dies
+	// with its connection, and net's socket finalizer closes an unreachable
+	// connection on the next GC, which silently released the lock and let
+	// test binaries migrate a fresh database concurrently.
+	lockConn *pgx.Conn
 )
 
 // acquireProcessLock takes a PostgreSQL session-level advisory lock on a
@@ -49,9 +55,13 @@ func acquireProcessLock(t *testing.T, url string) {
 			lockErr = err
 			return
 		}
+		lockConn = conn
 	})
 	if lockErr != nil {
 		t.Fatalf("acquire test db advisory lock: %v", lockErr)
+	}
+	if lockConn == nil {
+		t.Fatal("test db advisory lock connection was not retained")
 	}
 }
 
