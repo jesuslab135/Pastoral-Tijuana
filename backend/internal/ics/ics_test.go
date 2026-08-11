@@ -35,7 +35,7 @@ func fixedEvents() []Event {
 
 func TestBuildGolden(t *testing.T) {
 	got := Build("Calendario Pastoral · Cristo de Los Álamos",
-		"app.jesuslab135.com", fixedEvents())
+		"pastoral.jesuslab135.com", fixedEvents())
 
 	golden := filepath.Join("testdata", "calendar.golden")
 	if os.Getenv("UPDATE_GOLDEN") == "1" {
@@ -53,10 +53,10 @@ func TestBuildGolden(t *testing.T) {
 }
 
 func TestBuildProperties(t *testing.T) {
-	got := Build("Cal", "app.jesuslab135.com", fixedEvents())
+	got := Build("Cal", "pastoral.jesuslab135.com", fixedEvents())
 	for _, want := range []string{
 		"BEGIN:VCALENDAR", "END:VCALENDAR",
-		"UID:11111111-1111-4111-8111-111111111111@app.jesuslab135.com",
+		"UID:11111111-1111-4111-8111-111111111111@pastoral.jesuslab135.com",
 		"DTSTART:20260815T180000Z",
 		"STATUS:CANCELLED",
 		"SEQUENCE:", "METHOD:PUBLISH",
@@ -111,7 +111,7 @@ func TestFoldLongMultibyteLines(t *testing.T) {
 			EndsAt:      time.Date(2026, 8, 15, 19, 30, 0, 0, time.UTC),
 			UpdatedAt:   time.Date(2026, 8, 1, 12, 0, 0, 0, time.UTC),
 		}}
-		got := Build("Cal", "app.jesuslab135.com", events)
+		got := Build("Cal", "pastoral.jesuslab135.com", events)
 
 		// Assertion 4: the whole output must be valid UTF-8 -- this is what
 		// actually catches a rune split by fold().
