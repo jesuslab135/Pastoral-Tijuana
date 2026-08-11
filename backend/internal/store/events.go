@@ -20,16 +20,17 @@ type Event struct {
 	ColorOverride *string
 	PublishedAt   *time.Time
 	CancelledAt   *time.Time
+	CreatedBy     *uuid.UUID // nil for events created before auth existed
 }
 
 func CreateEvent(ctx context.Context, pool *pgxpool.Pool, e Event) error {
 	_, err := pool.Exec(ctx,
 		`INSERT INTO events
 		   (id, title, description, place, starts_at, ends_at,
-		    group_id, rank, color_override, published_at, cancelled_at)
-		 VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`,
+		    group_id, rank, color_override, published_at, cancelled_at, created_by)
+		 VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`,
 		e.ID, e.Title, e.Description, e.Place, e.StartsAt, e.EndsAt,
-		e.GroupID, e.Rank, e.ColorOverride, e.PublishedAt, e.CancelledAt)
+		e.GroupID, e.Rank, e.ColorOverride, e.PublishedAt, e.CancelledAt, e.CreatedBy)
 	return err
 }
 

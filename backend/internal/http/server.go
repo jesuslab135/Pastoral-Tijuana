@@ -6,6 +6,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/redis/go-redis/v9"
 
@@ -13,6 +14,7 @@ import (
 	"github.com/jesuslab135/pastoral-tijuana/backend/internal/config"
 	"github.com/jesuslab135/pastoral-tijuana/backend/internal/mail"
 	"github.com/jesuslab135/pastoral-tijuana/backend/internal/ratelimit"
+	"github.com/jesuslab135/pastoral-tijuana/backend/internal/store"
 )
 
 const (
@@ -56,7 +58,22 @@ func NewRouter(pool *pgxpool.Pool, rdb *redis.Client, mailer mail.Mailer, cfg co
 
 	r.Route("/api/v1/admin", func(admin chi.Router) {
 		admin.Use(requireSession(pool))
-		admin.Get("/events", notImplementedYet)
+
+		admin.Route("/events", func(ev chi.Router) {
+			ev.Get("/", listAdminEventsHandler(pool, cfg.ParishTZ))
+			ev.Post("/", createEventHandler(pool))
+			ev.Get("/{id}", getEventHandler(pool))
+			ev.Put("/{id}", updateEventHandler(pool))
+			ev.Delete("/{id}", deleteEventHandler(pool))
+			ev.Post("/{id}/publish", eventStateHandler(pool,
+				func(r *http.Request, id uuid.UUID) error {
+					return store.PublishEvent(r.Context(), pool, id)
+				}))
+			ev.Post("/{id}/unpublish", eventStateHandler(pool,
+				func(r *http.Request, id uuid.UUID) error {
+					return store.UnpublishEvent(r.Context(), pool, id)
+				}))
+		})
 	})
 
 	return r
