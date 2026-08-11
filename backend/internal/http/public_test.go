@@ -83,6 +83,32 @@ func TestGetEventsBadRange(t *testing.T) {
 	}
 }
 
+func TestGetSeasonsBadYear(t *testing.T) {
+	pool := testdb.New(t)
+	r := NewRouter(pool, config.Load())
+	// "0000" parses in Go but has no counterpart in Postgres, so it must be
+	// rejected as client error rather than reaching make_date and 500ing.
+	for _, url := range []string{
+		"/api/v1/seasons?year=0000",
+		"/api/v1/seasons?year=chido",
+		"/api/v1/seasons?year=26",
+	} {
+		rec := httptest.NewRecorder()
+		r.ServeHTTP(rec, httptest.NewRequest("GET", url, nil))
+		if rec.Code != 400 {
+			t.Errorf("%s: expected 400, got %d: %s", url, rec.Code, rec.Body.String())
+		}
+		var e struct {
+			Error struct {
+				Code string `json:"code"`
+			} `json:"error"`
+		}
+		if err := json.Unmarshal(rec.Body.Bytes(), &e); err != nil || e.Error.Code != "bad_request" {
+			t.Errorf("%s: expected bad_request error shape, got %s", url, rec.Body.String())
+		}
+	}
+}
+
 func TestGetSeasonsAndGroups(t *testing.T) {
 	pool := testdb.New(t)
 	r := NewRouter(pool, config.Load())

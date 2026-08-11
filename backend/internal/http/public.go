@@ -10,7 +10,11 @@ import (
 	"github.com/jesuslab135/pastoral-tijuana/backend/internal/store"
 )
 
-const maxRangeDays = 400
+const (
+	maxRangeDays = 400
+	minYear      = 1
+	maxYear      = 9999
+)
 
 func cachePublic(w http.ResponseWriter) {
 	w.Header().Set("Cache-Control", "public, max-age=300")
@@ -35,9 +39,12 @@ type eventJSON struct {
 }
 
 func eventsHandler(pool *pgxpool.Pool, tz string) http.HandlerFunc {
+	// Resolved once: time.LoadLocation reads the tzdata files on every call
+	// and has no cache. main embeds time/tzdata and fails fast on a bad zone,
+	// so the error branch below only guards a router built outside main.
+	loc, locErr := time.LoadLocation(tz)
 	return func(w http.ResponseWriter, r *http.Request) {
-		loc, err := time.LoadLocation(tz)
-		if err != nil {
+		if locErr != nil {
 			writeError(w, http.StatusInternalServerError, "internal",
 				"Zona horaria mal configurada.")
 			return
@@ -86,9 +93,11 @@ func seasonsHandler(pool *pgxpool.Pool) http.HandlerFunc {
 		year := time.Now().Year()
 		if q := r.URL.Query().Get("year"); q != "" {
 			t, err := time.Parse("2006", q)
-			if err != nil {
+			// Go parses "0000", but Postgres has no year zero and make_date
+			// would turn that into a 500 instead of a 400.
+			if err != nil || t.Year() < minYear || t.Year() > maxYear {
 				writeError(w, http.StatusBadRequest, "bad_request",
-					"El parámetro year debe ser un año de cuatro dígitos.")
+					"El parámetro year debe ser un año de cuatro dígitos entre 0001 y 9999.")
 				return
 			}
 			year = t.Year()

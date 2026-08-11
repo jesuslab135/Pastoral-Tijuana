@@ -3,25 +3,31 @@ package httpapi
 import (
 	"fmt"
 	"net/http"
-	"net/url"
 	"strings"
 	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 
+	"github.com/jesuslab135/pastoral-tijuana/backend/internal/config"
 	"github.com/jesuslab135/pastoral-tijuana/backend/internal/ics"
 	"github.com/jesuslab135/pastoral-tijuana/backend/internal/store"
 )
 
 const calName = "Calendario Pastoral · Cristo de Los Álamos"
 
-func icsHandler(pool *pgxpool.Pool, publicBaseURL string) http.HandlerFunc {
-	host := "app.jesuslab135.com"
-	if u, err := url.Parse(publicBaseURL); err == nil && u.Host != "" {
-		host = u.Hostname()
-	}
+func icsHandler(pool *pgxpool.Pool, cfg config.Config) http.HandlerFunc {
+	// A wrong host silently minted into every UID makes phones treat the
+	// whole calendar as new events once it is corrected, so a base URL that
+	// yields no host is refused rather than swapped for a default. main fails
+	// fast on the same check.
+	host, hostErr := cfg.PublicHost()
 	return func(w http.ResponseWriter, r *http.Request) {
+		if hostErr != nil {
+			writeError(w, http.StatusInternalServerError, "internal",
+				"No se pudo generar el calendario.")
+			return
+		}
 		var groupSlug *string
 		if raw := chi.URLParam(r, "slug"); raw != "" {
 			slug := strings.TrimSuffix(raw, ".ics")
