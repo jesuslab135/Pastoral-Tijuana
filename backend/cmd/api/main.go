@@ -17,6 +17,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/jackc/pgx/v5/stdlib"
 
+	"github.com/jesuslab135/pastoral-tijuana/backend/internal/clientip"
 	"github.com/jesuslab135/pastoral-tijuana/backend/internal/config"
 	httpapi "github.com/jesuslab135/pastoral-tijuana/backend/internal/http"
 	"github.com/jesuslab135/pastoral-tijuana/backend/internal/store"
@@ -37,6 +38,9 @@ func main() {
 	}
 	if _, err := cfg.PublicHost(); err != nil {
 		log.Fatalf("config: %v", err)
+	}
+	if _, err := clientip.NewResolver(cfg.TrustedProxy); err != nil {
+		log.Fatalf("TRUSTED_PROXY: %v", err)
 	}
 
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
