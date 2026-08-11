@@ -211,6 +211,17 @@ Errors everywhere: `{"error":{"code":"...","message":"<Spanish, user-facing>"}}`
 - **Edit debounce:** an `updated` fanout waits 10 minutes; further broadcast-worthy edits inside the window collapse into one message (relay skips outbox rows superseded by a newer row for the same event+kind).
 - **Cancellation targeting:** `cancelled` goes only to channels that previously received `published`/`updated` for that event (from `broadcasts`), not to current channel config.
 
+### Plan 3 execution decisions (recorded 2026-08-11, user-approved)
+
+1. **Separate worker binary** `cmd/worker`: relay loop + asynq server, matching the prod compose services (`api`, `worker`). The API only writes outbox rows; the worker owns all sending. Migrations stay with the API; the worker fails fast on the same config validation.
+2. **`dedupe_key = eventID:channelID:kind:outboxID`.** The outbox row id is already a monotonic round number, so it replaces the spec's "rev = count of prior broadcast rounds", which would be racy to compute at fanout time. Retried fanout of one row → same key → `ON CONFLICT DO NOTHING`; a new round → new key → sends.
+3. **Quiet hours configurable:** `QUIET_START` (default `22`) and `QUIET_END` (default `7`), hours in parish TZ. Deliveries falling in the window get `ProcessAt` = next `QUIET_END` plus their stagger; rescheduled, never dropped.
+4. **Debounce implementation:** `updated` fanout tasks are enqueued with the 10-minute delay, and the relay marks an `updated` outbox row processed-without-enqueue when a newer `updated` row already exists for the same event.
+5. **Dev email:** the difusión email path reuses the `SMTP_*` config; with `SMTP_HOST` unset it logs instead of sending (same pattern as auth's `LogMailer`), so the whole pipeline runs locally with no external services. The WhatsApp stub always logs and the panel shows `SIMULADO`.
+6. **`/healthz` adds the Redis ping:** `200` with `"redis":false` when only Redis is down (the public calendar does not depend on it); `503` only when Postgres is down.
+7. **Deferred items from Plan 2 land here:** migration `00005` seeds 2 WhatsApp stub channels + 1 email channel with placeholder targets (real targets set via the admin), and the admin gains `GET /api/v1/admin/broadcasts?state&event_id` + `POST /api/v1/admin/broadcasts/{id}/retry`.
+8. **Delivery data flow:** the deliver task carries `{broadcast_id, outbox_id}`; the handler renders from the outbox snapshot (never the live event row), sends via the channel's `Sender`, and settles the broadcast. Cancellation fanout resolves recipients from `broadcasts` history (channels with a `sent` `published`/`updated` for that event), not current channel config.
+
 ## 8. Auth
 
 - Login: argon2id password verify → random 256-bit token → store `sha256(token)` in `sessions` (30-day expiry) → cookie `pc_session` (`HttpOnly, Secure, SameSite=Lax`).
