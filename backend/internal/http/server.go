@@ -24,5 +24,8 @@ func NewRouter(pool *pgxpool.Pool, cfg config.Config) http.Handler {
 		api.Get("/groups", groupsHandler(pool))
 	})
 
+	r.Get("/calendario.ics", icsHandler(pool, cfg.PublicBaseURL))
+	r.Get("/calendario/{slug}", icsHandler(pool, cfg.PublicBaseURL))
+
 	return r
 }
