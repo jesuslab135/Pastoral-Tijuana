@@ -12,7 +12,7 @@ A liturgical calendar platform for the parish **Cristo de Los Álamos**:
 2. **Admin panel** (`/admin`) — the párroco and secretaría log in to create/edit/publish events, manage channels and team, and monitor difusión.
 3. **Difusión engine** — publishing an event automatically fans out notifications to channels (WhatsApp groups, email) via a transactional outbox → queue pipeline. Nothing is sent by hand.
 
-**Production target:** `app.jesuslab135.com` on the user's IONOS VPS, Docker Compose, deployed by GitHub Actions.
+**Production target:** `pastoral.jesuslab135.com` on the user's IONOS VPS, Docker Compose, deployed by GitHub Actions. (`app.jesuslab135.com` is an unrelated server on this domain and must not be used.)
 
 ## 2. Goals and non-goals
 
@@ -53,7 +53,7 @@ A liturgical calendar platform for the parish **Cristo de Los Álamos**:
 ## 4. Architecture
 
 ```
-                 app.jesuslab135.com  (DNS A record — verify real VPS IP, see §12)
+              pastoral.jesuslab135.com  (new Namecheap A record → VPS, see §12)
                         │
                   ┌─────▼─────┐
                   │   Caddy   │  TLS (Let's Encrypt), serves static Astro build,
@@ -266,9 +266,11 @@ frontend/src/
 
 1. Build & push to GHCR: `ghcr.io/<owner>/pastoral-backend` (multi-stage Go build, one image with both binaries) and `ghcr.io/<owner>/pastoral-web` (Caddy + baked `frontend/dist`), tagged `latest` + commit SHA.
 2. SSH (appleboy/ssh-action) to VPS: `cd /opt/pastoral && docker compose pull && docker compose run --rm migrate && docker compose up -d`.
-3. Health check `https://app.jesuslab135.com/healthz`; on failure, redeploy previous SHA tag and mark the run failed.
+3. Health check `https://pastoral.jesuslab135.com/healthz`; on failure, redeploy previous SHA tag and mark the run failed.
 
 **GitHub secrets:** `VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY` (deploy key), and nothing else — runtime config (`DB password, session secret, SMTP host/user/pass, TZ, parish name`) lives only in `/opt/pastoral/.env` on the VPS. `deploy/.env.example` documents every variable.
+
+**`PUBLIC_BASE_URL=https://pastoral.jesuslab135.com`** belongs in that `.env` and must include the scheme: the API refuses to start without a parseable host (a scheme-less value yields none), and every `.ics` UID is minted from it. Treat the value as permanent once parishioners subscribe — changing the host afterwards changes every UID, so phones keep the old entries and show each event twice.
 
 **`docker-compose.prod.yml` services:** `web` (Caddy, ports 80/443), `api`, `worker`, `postgres` (volume `data/postgres`), `redis` (volume, AOF), `migrate` (one-shot goose, profile-gated). No automated backups (user decision); a manual `docker compose exec postgres pg_dump ...` one-liner is documented in the README for on-demand snapshots.
 
@@ -281,13 +283,13 @@ frontend/src/
 
 ## 12. VPS runbook (post-implementation, step-by-step in the plan)
 
-1. **Verify VPS IP** — user-provided `198.71.54.171` vs DNS A record `app → 74.208.73.82`. Confirm in IONOS panel; fix the Namecheap A record if needed; TTL automatic.
+1. **Add the DNS record** — create a new Namecheap A record `pastoral → <VPS IP>` (confirm the IP in the IONOS panel; TTL automatic). Do **not** touch the existing `app` record: `app.jesuslab135.com → 74.208.73.82` is a different server and stays as it is. Wait for propagation before step 7, since Caddy needs the name resolving to issue its certificate.
 2. **Harden access** — log in once with password, install deploy user + SSH public key, disable password auth, **rotate the password shared in chat**, enable ufw (22/80/443) + fail2ban.
 3. **Install Docker** Engine + compose plugin (official apt repo).
 4. **Create** `/opt/pastoral/{data/postgres,data/redis,data/caddy}`; copy `docker-compose.prod.yml`, `Caddyfile`, filled `.env`.
 5. **GitHub**: add `VPS_HOST/VPS_USER/VPS_SSH_KEY` secrets; push `main` → first deploy builds, migrates, seeds (seasons 2026–27, groups, initial párroco user — password printed once by a `setup` command, then changed on first login).
 6. **SMTP**: create/use an IONOS mailbox (or other SMTP); creds → `.env`; send test magic link.
-7. **Verify**: `https://app.jesuslab135.com` loads, `/healthz` ok, `.ics` subscribes on a phone (webcal), publish a test event → email arrives, WA row shows SIMULADO.
+7. **Verify**: `https://pastoral.jesuslab135.com` loads, `/healthz` ok, `.ics` subscribes on a phone (webcal), publish a test event → email arrives, WA row shows SIMULADO.
 
 ## 13. Risks & mitigations
 
