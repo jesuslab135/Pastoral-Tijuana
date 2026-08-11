@@ -19,9 +19,10 @@ type PublicEventICS struct {
 	Cancelled   bool
 }
 
-// ListEventsForICS returns published events for the feed window, including
-// events cancelled within the last 90 days (STATUS:CANCELLED lets phones
-// remove them). groupSlug nil means all groups.
+// ListEventsForICS returns published events of public groups for the feed
+// window, including events cancelled within the last 90 days
+// (STATUS:CANCELLED lets phones remove them). groupSlug nil means all
+// public groups.
 func ListEventsForICS(ctx context.Context, pool *pgxpool.Pool, groupSlug *string, now time.Time) ([]PublicEventICS, error) {
 	rows, err := pool.Query(ctx,
 		`SELECT e.id, e.title, coalesce(e.place,''), coalesce(e.description,''),
@@ -30,6 +31,7 @@ func ListEventsForICS(ctx context.Context, pool *pgxpool.Pool, groupSlug *string
 		 FROM events e
 		 JOIN parish_groups g ON g.id = e.group_id
 		 WHERE e.published_at IS NOT NULL
+		   AND g.is_public
 		   AND ($1::text IS NULL OR g.slug = $1)
 		   AND (e.cancelled_at IS NULL OR e.cancelled_at > $2::timestamptz - interval '90 days')
 		   AND e.starts_at >= $2::timestamptz - interval '90 days'
