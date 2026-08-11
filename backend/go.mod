@@ -3,6 +3,7 @@ module github.com/jesuslab135/pastoral-tijuana/backend
 go 1.23.0
 
 require (
+	github.com/go-chi/chi/v5 v5.3.1
 	github.com/google/uuid v1.6.0
 	github.com/jackc/pgx/v5 v5.7.6
 	github.com/pressly/goose/v3 v3.26.0
