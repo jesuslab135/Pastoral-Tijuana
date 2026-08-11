@@ -74,6 +74,23 @@ func NewRouter(pool *pgxpool.Pool, rdb *redis.Client, mailer mail.Mailer, cfg co
 					return store.UnpublishEvent(r.Context(), pool, id)
 				}))
 		})
+
+		admin.Route("/channels", func(ch chi.Router) {
+			ch.Get("/", listChannelsHandler(pool))
+			ch.Post("/", createChannelHandler(pool))
+			ch.Put("/{id}", updateChannelHandler(pool))
+			ch.Delete("/{id}", deleteChannelHandler(pool))
+		})
+
+		// Managing the team is the párroco's alone.
+		admin.Route("/users", func(us chi.Router) {
+			us.Use(requireParroco)
+			us.Get("/", listUsersHandler(pool))
+			us.Post("/", createUserHandler(pool))
+			us.Put("/{id}", updateUserHandler(pool))
+			us.Post("/{id}/activate", setUserActiveHandler(pool, true))
+			us.Post("/{id}/deactivate", setUserActiveHandler(pool, false))
+		})
 	})
 
 	return r
