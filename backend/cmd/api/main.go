@@ -16,10 +16,12 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/jackc/pgx/v5/stdlib"
+	"github.com/redis/go-redis/v9"
 
 	"github.com/jesuslab135/pastoral-tijuana/backend/internal/clientip"
 	"github.com/jesuslab135/pastoral-tijuana/backend/internal/config"
 	httpapi "github.com/jesuslab135/pastoral-tijuana/backend/internal/http"
+	"github.com/jesuslab135/pastoral-tijuana/backend/internal/mail"
 	"github.com/jesuslab135/pastoral-tijuana/backend/internal/store"
 )
 
@@ -61,9 +63,12 @@ func main() {
 	}
 	defer pool.Close()
 
+	rdb := redis.NewClient(&redis.Options{Addr: cfg.RedisAddr})
+	defer rdb.Close()
+
 	srv := &http.Server{
 		Addr:              ":" + cfg.Port,
-		Handler:           httpapi.NewRouter(pool, cfg),
+		Handler:           httpapi.NewRouter(pool, rdb, mail.New(cfg), cfg),
 		ReadHeaderTimeout: readHeaderTimeout,
 		WriteTimeout:      writeTimeout,
 		IdleTimeout:       idleTimeout,

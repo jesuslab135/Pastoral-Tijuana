@@ -12,7 +12,6 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/jesuslab135/pastoral-tijuana/backend/internal/auth"
-	"github.com/jesuslab135/pastoral-tijuana/backend/internal/config"
 	"github.com/jesuslab135/pastoral-tijuana/backend/internal/store"
 	"github.com/jesuslab135/pastoral-tijuana/backend/internal/store/testdb"
 )
@@ -72,7 +71,7 @@ func loginAs(t *testing.T, r http.Handler, pool *pgxpool.Pool, email, role strin
 func TestLoginLogoutMe(t *testing.T) {
 	pool := testdb.New(t)
 	seedUser(t, pool, "p@x.mx", "secreta123", "parroco")
-	r := NewRouter(pool, config.Load())
+	r := newRouter(t, pool)
 
 	rec := doLogin(t, r, "p@x.mx", "secreta123")
 	if rec.Code != 200 {
@@ -120,7 +119,7 @@ func TestLoginLogoutMe(t *testing.T) {
 func TestLoginRejectsBadCredentialsUniformly(t *testing.T) {
 	pool := testdb.New(t)
 	seedUser(t, pool, "p@x.mx", "secreta123", "parroco")
-	r := NewRouter(pool, config.Load())
+	r := newRouter(t, pool)
 
 	a := doLogin(t, r, "p@x.mx", "equivocada")
 	b := doLogin(t, r, "no-existe@x.mx", "loquesea")
@@ -139,7 +138,7 @@ func TestInactiveUserCannotLogIn(t *testing.T) {
 	if err := store.SetUserActive(context.Background(), pool, id, false); err != nil {
 		t.Fatal(err)
 	}
-	r := NewRouter(pool, config.Load())
+	r := newRouter(t, pool)
 	if rec := doLogin(t, r, "ex@x.mx", "secreta123"); rec.Code != 401 {
 		t.Errorf("deactivated user: expected 401, got %d", rec.Code)
 	}
@@ -147,7 +146,7 @@ func TestInactiveUserCannotLogIn(t *testing.T) {
 
 func TestLoginRateLimited(t *testing.T) {
 	pool := testdb.New(t)
-	r := NewRouter(pool, config.Load())
+	r := newRouter(t, pool)
 	var last int
 	for i := 0; i < 6; i++ {
 		last = doLogin(t, r, "x@x.mx", "nope").Code
@@ -159,7 +158,7 @@ func TestLoginRateLimited(t *testing.T) {
 
 func TestAdminRequiresSession(t *testing.T) {
 	pool := testdb.New(t)
-	r := NewRouter(pool, config.Load())
+	r := newRouter(t, pool)
 	rec := httptest.NewRecorder()
 	r.ServeHTTP(rec, httptest.NewRequest("GET", "/api/v1/admin/events", nil))
 	if rec.Code != 401 {

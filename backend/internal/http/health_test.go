@@ -5,13 +5,12 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/jesuslab135/pastoral-tijuana/backend/internal/config"
 	"github.com/jesuslab135/pastoral-tijuana/backend/internal/store/testdb"
 )
 
 func TestHealthz(t *testing.T) {
 	pool := testdb.New(t)
-	r := NewRouter(pool, config.Load())
+	r := newRouter(t, pool)
 	req := httptest.NewRequest("GET", "/healthz", nil)
 	rec := httptest.NewRecorder()
 	r.ServeHTTP(rec, req)

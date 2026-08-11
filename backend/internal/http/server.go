@@ -7,9 +7,11 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/redis/go-redis/v9"
 
 	"github.com/jesuslab135/pastoral-tijuana/backend/internal/clientip"
 	"github.com/jesuslab135/pastoral-tijuana/backend/internal/config"
+	"github.com/jesuslab135/pastoral-tijuana/backend/internal/mail"
 	"github.com/jesuslab135/pastoral-tijuana/backend/internal/ratelimit"
 )
 
@@ -18,7 +20,7 @@ const (
 	loginRateWindow = time.Minute
 )
 
-func NewRouter(pool *pgxpool.Pool, cfg config.Config) http.Handler {
+func NewRouter(pool *pgxpool.Pool, rdb *redis.Client, mailer mail.Mailer, cfg config.Config) http.Handler {
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID)
 	r.Use(middleware.Logger)
@@ -48,6 +50,8 @@ func NewRouter(pool *pgxpool.Pool, cfg config.Config) http.Handler {
 		a.Post("/login", loginHandler(pool, ips, loginLimiter))
 		a.Post("/logout", logoutHandler(pool))
 		a.With(requireSession(pool)).Get("/me", meHandler())
+		a.Post("/magic-link", magicLinkRequestHandler(pool, mailer, cfg, ips, loginLimiter))
+		a.Get("/magic-link/verify", magicLinkVerifyHandler(pool, rdb, cfg))
 	})
 
 	r.Route("/api/v1/admin", func(admin chi.Router) {
