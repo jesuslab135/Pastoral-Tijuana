@@ -1,22 +1,41 @@
-# CODING AGENTS: READ THIS FIRST
+# Calendario Pastoral — Cristo de Los Álamos
 
-This is a **handoff bundle** from Claude Design (claude.ai/design).
+Liturgical calendar platform: public read-only calendar, admin panel, and a
+difusión engine that pushes published events to WhatsApp groups and email.
 
-A user mocked up designs in HTML/CSS/JS using an AI design tool, then exported this bundle so a coding agent can implement the designs for real.
+**Stack:** Go 1.23 · PostgreSQL 16 · Redis 7 (asynq) · Astro + islands · Docker
 
-## What you should do — IMPORTANT
+## Development
 
-**Read `calendario-pastoral-cat-lico/project/Calendario Pastoral - Sitio.dc.html` in full.** The user had this file open when they triggered the handoff, so it's almost certainly the primary design they want built. Read it top to bottom — don't skim. Then **follow its imports**: open every file it pulls in (shared components, CSS, scripts) so you understand how the pieces fit together before you start implementing.
+```bash
+# 1. Start Postgres (5433) and Redis (6379)
+docker compose -f docker-compose.dev.yml up -d
 
-**If anything is ambiguous, ask the user to confirm before you start implementing.** It's much cheaper to clarify scope up front than to build the wrong thing.
+# 2. Run the API (auto-migrates on boot)
+cd backend && go run ./cmd/api
+# → http://localhost:8080/healthz
+# → http://localhost:8080/api/v1/events?from=2026-08-01&to=2026-09-01
+# → http://localhost:8080/calendario.ics
 
-## About the design files
+# 3. Tests (uses the pastoral_test database)
+cd backend && go test ./...
+```
 
-The design medium is **HTML/CSS/JS** — these are prototypes, not production code. Your job is to **recreate them pixel-perfectly** in whatever technology makes sense for the target codebase (React, Vue, native, whatever fits). Match the visual output; don't copy the prototype's internal structure unless it happens to fit.
+Tests share one live `pastoral_test` database across packages, so every test
+that touches Postgres must obtain its pool from `internal/store/testdb.New`,
+which serializes test binaries with a session advisory lock.
 
-**Don't render these files in a browser or take screenshots unless the user asks you to.** Everything you need — dimensions, colors, layout rules — is spelled out in the source. Read the HTML and CSS directly; a screenshot won't tell you anything they don't.
+## Manual database snapshot (no automated backups by design)
 
-## Bundle contents
+```bash
+docker compose -f docker-compose.dev.yml exec postgres \
+  pg_dump -U pastoral pastoral > snapshot-$(date +%Y%m%d).sql
+```
 
-- `calendario-pastoral-cat-lico/README.md` — this file
-- `calendario-pastoral-cat-lico/project/` — the `Calendario Pastoral católico` project files (HTML prototypes, assets, components)
+## Repository layout
+
+- `backend/` — Go API + worker (cmd/api, internal/…)
+- `frontend/` — Astro site (Plan 4+)
+- `deploy/` — compose files, Caddy config
+- `project/` — original design handoff bundle (reference only)
+- `docs/superpowers/` — spec and implementation plans
