@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main, 'feat/**']
+  workflow_dispatch:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: pastoral
+          POSTGRES_PASSWORD: pastoral
+          POSTGRES_DB: pastoral_test
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd "pg_isready -U pastoral"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.23"
+          cache-dependency-path: backend/go.sum
+      - name: Vet
+        run: go vet ./...
+      - name: Lint
+        uses: golangci/golangci-lint-action@v6
+        with:
+          working-directory: backend
+          version: v1.62.2
+      - name: Test
+        run: go test ./... -count=1
+        env:
+          TEST_DATABASE_URL: postgres://pastoral:pastoral@localhost:5433/pastoral_test?sslmode=disable

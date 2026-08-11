@@ -1,0 +1,24 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Go
+backend/bin/
+backend/*.exe
+backend/api
+*.test
+*.out
+
+# Node (frontend, later plans)
+node_modules/
+frontend/dist/
+
+# Env — never commit real secrets
+.env
+.env.*
+!.env.example
+
+# Superpowers scratch space
+.superpowers/
