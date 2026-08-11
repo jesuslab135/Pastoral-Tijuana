@@ -219,6 +219,16 @@ Errors everywhere: `{"error":{"code":"...","message":"<Spanish, user-facing>"}}`
 - Deactivating a user (`is_active=false`) revokes all their sessions in the same transaction.
 - Rate limits: login + magic-link 5/min/IP (in-memory token bucket is fine on one instance).
 
+### Plan 2 execution decisions (recorded 2026-08-11, user-approved)
+
+1. **Magic link ships complete in Plan 2** with a minimal `internal/mail.Mailer` interface (`Send(ctx, to, subject, textBody) error`): `SMTPMailer` (net/smtp + STARTTLS, config from `SMTP_HOST/PORT/USER/PASS/FROM`) and `LogMailer` (dev default when SMTP env is absent; logs the message so the link is copy-pasteable). Plan 3's difusión `SMTPSender` reuses the same env config but remains a separate deliverable.
+2. **Client IP resolution** (obligation from Plan 1's removal of chi `RealIP`): new `TRUSTED_PROXY` env (CIDR, empty by default). When the direct peer is inside it, the rate limiter reads the client IP from the last hop of `X-Forwarded-For`; otherwise it uses the socket remote address. Empty in dev = socket address, correct without Caddy.
+3. **Redis enters in Plan 2** for magic-link single-use jtis (go-redis directly; asynq stays in Plan 3). Redis being down degrades only magic-link verification (fails closed, Spanish error); password login never touches Redis. CI gains a `redis:7` service in the same commit that adds Redis-dependent tests.
+4. **Initial párroco** via one-time `cmd/setup`: creates the user from `SETUP_EMAIL`, prints a random password once, refuses to run if any user exists.
+5. **Cookie `Secure`** is on except when the request host is localhost, so dev over plain HTTP works.
+6. **Unpublish writes a `cancelled` outbox row** in the same transaction (publish writes `published`). Cancellation targeting from `broadcasts` history (Plan 3) makes this self-correcting: if nothing was ever delivered, fanout finds no prior recipients and sends nothing.
+7. **Initial channels seed** (2 WA stubs + 1 email from §5) moves to Plan 3, where the difusión pipeline first consumes channels; Plan 2 delivers the CRUD only. Broadcast endpoints (`GET /admin/broadcasts`, retry) are also Plan 3, since `broadcasts` rows are only written by the fanout.
+
 ## 9. Frontend (Astro project)
 
 ```
