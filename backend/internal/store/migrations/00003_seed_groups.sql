@@ -8,4 +8,12 @@ INSERT INTO parish_groups (id, name, slug, is_public, sort) VALUES
   ('a1000000-0000-4000-8000-000000000006', 'Formación',        'formacion',  true, 6);
 
 -- +goose Down
-DELETE FROM parish_groups;
+-- Scoped to the fixed seed UUIDs: groups the parish added by hand must
+-- survive a rollback of this seed.
+DELETE FROM parish_groups WHERE id IN (
+  'a1000000-0000-4000-8000-000000000001',
+  'a1000000-0000-4000-8000-000000000002',
+  'a1000000-0000-4000-8000-000000000003',
+  'a1000000-0000-4000-8000-000000000004',
+  'a1000000-0000-4000-8000-000000000005',
+  'a1000000-0000-4000-8000-000000000006');
