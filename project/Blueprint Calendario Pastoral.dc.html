@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--m:1}
+*{box-sizing:border-box}
+body{margin:0;background:#f6f1e6;color:#221d15;-webkit-font-smoothing:antialiased;text-wrap:pretty}
+a{color:#8a5a1f;text-decoration:none}
+a:hover{color:#221d15}
+::selection{background:#e9d8ad}
+@keyframes dcRise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes dcSheen{0%{background-position:-150% 0}100%{background-position:250% 0}}
+@keyframes dcFlow{to{background-position:36px 0}}
+@keyframes dcPulse{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:.95;transform:scale(1.4)}}
+@keyframes dcFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes dcSpin{to{transform:rotate(360deg)}}
+@keyframes dcSlide{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:none}}
+@keyframes dcGrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+[data-reveal]{animation:dcRise calc(.75s * var(--m)) cubic-bezier(.16,.84,.24,1) both}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.001s!important;transition-duration:.001s!important}}
+</style>
+</helmet>
+
+<div style="position:fixed;top:0;left:0;right:0;height:3px;z-index:60;background:rgba(34,29,21,.07)">
+<div ref="{{ bar }}" style="height:100%;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,#5c3b7a,#c06f8d,#b1872f,#2f6b4f)"></div>
+</div>
+
+<nav style="position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:rgba(246,241,230,.86);border-bottom:1px solid rgba(34,29,21,.12)">
+<div style="max-width:1220px;margin:0 auto;padding:13px 32px;display:flex;align-items:center;gap:26px">
+<div style="display:flex;align-items:center;gap:10px;flex:none">
+<div style="width:22px;height:22px;border-radius:50%;border:2px solid #b1872f;position:relative">
+<div style="position:absolute;inset:4px;border-radius:50%;background:#5c3b7a;animation:dcPulse calc(3.4s * var(--m)) ease-in-out infinite"></div>
+</div>
+<span style="font:600 12.5px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;text-transform:uppercase">Calendario Pastoral</span>
+</div>
+<div style="display:flex;gap:2px;flex-wrap:wrap;margin-left:auto;font:500 12px/1 'IBM Plex Sans',system-ui,sans-serif">
+<a href="#s-supuestos" style="padding:7px 11px;border-radius:6px;color:#5d5548;transition:all calc(.2s * var(--m))" style-hover="background:rgba(34,29,21,.06);color:#221d15">Supuestos</a>
+<a href="#s-datos" style="padding:7px 11px;border-radius:6px;color:#5d5548;transition:all calc(.2s * var(--m))" style-hover="background:rgba(34,29,21,.06);color:#221d15">Datos</a>
+<a href="#s-difusion" style="padding:7px 11px;border-radius:6px;color:#5d5548;transition:all calc(.2s * var(--m))" style-hover="background:rgba(34,29,21,.06);color:#221d15">Difusión</a>
+<a href="#s-grid" style="padding:7px 11px;border-radius:6px;color:#5d5548;transition:all calc(.2s * var(--m))" style-hover="background:rgba(34,29,21,.06);color:#221d15">Cuadrícula</a>
+<a href="#s-jerarquia" style="padding:7px 11px;border-radius:6px;color:#5d5548;transition:all calc(.2s * var(--m))" style-hover="background:rgba(34,29,21,.06);color:#221d15">Jerarquía</a>
+<a href="#s-admin" style="padding:7px 11px;border-radius:6px;color:#5d5548;transition:all calc(.2s * var(--m))" style-hover="background:rgba(34,29,21,.06);color:#221d15">Panel</a>
+<a href="#s-libs" style="padding:7px 11px;border-radius:6px;color:#5d5548;transition:all calc(.2s * var(--m))" style-hover="background:rgba(34,29,21,.06);color:#221d15">Librerías</a>
+</div>
+</div>
+</nav>
+
+<header style="position:relative;overflow:hidden;border-bottom:1px solid rgba(34,29,21,.12);background:linear-gradient(180deg,#fbf7ee 0%,#f6f1e6 62%,#f1ebdc 100%)">
+<div style="position:absolute;top:-180px;right:-120px;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(177,135,47,.16),transparent 68%);animation:dcFloat calc(11s * var(--m)) ease-in-out infinite"></div>
+<div style="position:absolute;bottom:-160px;left:-100px;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(92,59,122,.13),transparent 68%);animation:dcFloat calc(14s * var(--m)) ease-in-out infinite reverse"></div>
+<div style="position:relative;max-width:1220px;margin:0 auto;padding:76px 32px 60px">
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:26px">
+<span style="font:600 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.2em;text-transform:uppercase;color:#8a5a1f;padding:6px 10px;border:1px solid rgba(177,135,47,.4);border-radius:20px;background:rgba(255,253,247,.7)">Blueprint arquitectónico</span>
+<span style="font:400 11px/1 'IBM Plex Mono',monospace;letter-spacing:.08em;color:#6b6255">v1 · panorámica para decidir</span>
+</div>
+<h1 style="margin:0;font:400 clamp(46px,7vw,92px)/0.98 Marcellus,Georgia,serif;letter-spacing:-.02em;max-width:15ch">Un calendario que se lee como se reza</h1>
+<p style="margin:24px 0 0;max-width:60ch;font:400 20px/1.62 'EB Garamond',Georgia,serif;color:#4a4337">Plataforma de <strong style="font-weight:600">solo lectura</strong> para la comunidad, panel de publicación para el párroco y un motor de difusión que empuja cada evento a los grupos de WhatsApp y al boletín. Sin cuentas, sin RSVP, sin fricción.</p>
+
+<div style="margin:44px 0 0;border-radius:12px;overflow:hidden;border:1px solid rgba(34,29,21,.14);box-shadow:0 12px 34px rgba(34,29,21,.09)">
+<div style="display:flex;height:74px;position:relative">
+<div style="flex:4;background:#5c3b7a;display:flex;align-items:flex-end;padding:9px 12px"><span style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:rgba(255,255,255,.82);text-transform:uppercase">Adviento</span></div>
+<div style="flex:1;background:#c06f8d;display:flex;align-items:flex-end;padding:9px 8px"><span style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:rgba(255,255,255,.9)">Rosa</span></div>
+<div style="flex:3;background:#f3ead4;border-left:1px solid rgba(34,29,21,.1);display:flex;align-items:flex-end;padding:9px 12px"><span style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#8a5a1f;text-transform:uppercase">Navidad</span></div>
+<div style="flex:7;background:#2f6b4f;display:flex;align-items:flex-end;padding:9px 12px"><span style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:rgba(255,255,255,.82);text-transform:uppercase">Tiempo Ordinario</span></div>
+<div style="flex:5;background:#5c3b7a;display:flex;align-items:flex-end;padding:9px 12px"><span style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:rgba(255,255,255,.82);text-transform:uppercase">Cuaresma</span></div>
+<div style="flex:2;background:#a02f27;display:flex;align-items:flex-end;padding:9px 10px"><span style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:rgba(255,255,255,.88)">Rojo</span></div>
+<div style="flex:8;background:#f3ead4;border-left:1px solid rgba(34,29,21,.1);display:flex;align-items:flex-end;padding:9px 12px"><span style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#8a5a1f;text-transform:uppercase">Pascua</span></div>
+<div style="flex:12;background:#2f6b4f;display:flex;align-items:flex-end;padding:9px 12px"><span style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:rgba(255,255,255,.82);text-transform:uppercase">Tiempo Ordinario</span></div>
+<div style="position:absolute;inset:0;pointer-events:none;background:linear-gradient(100deg,transparent 38%,rgba(255,255,255,.42) 50%,transparent 62%);background-size:220% 100%;animation:dcSheen calc(7s * var(--m)) linear infinite"></div>
+</div>
+<div style="padding:11px 14px;background:#fffdf7;font:400 11.5px/1.5 'IBM Plex Mono',monospace;color:#6b6255;border-top:1px solid rgba(34,29,21,.1)">Un solo eje de color para todo el año. Cinco tiempos, cinco tokens — nada más entra a la paleta.</div>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(192px,1fr));gap:14px;margin:40px 0 0">
+<div style="background:#fffdf7;border:1px solid rgba(34,29,21,.14);border-radius:10px;padding:20px 20px 18px"><div data-count="5" style="font:400 40px/1 Marcellus,Georgia,serif;color:#5c3b7a">5</div><div style="margin-top:7px;font:500 11px/1.4 'IBM Plex Sans',system-ui,sans-serif;color:#6b6255">tiempos litúrgicos<br>en toda la paleta</div></div>
+<div style="background:#fffdf7;border:1px solid rgba(34,29,21,.14);border-radius:10px;padding:20px 20px 18px"><div data-count="4" style="font:400 40px/1 Marcellus,Georgia,serif;color:#b1872f">4</div><div style="margin-top:7px;font:500 11px/1.4 'IBM Plex Sans',system-ui,sans-serif;color:#6b6255">rangos de jerarquía<br>Solemnidad → junta</div></div>
+<div style="background:#fffdf7;border:1px solid rgba(34,29,21,.14);border-radius:10px;padding:20px 20px 18px"><div data-count="0" style="font:400 40px/1 Marcellus,Georgia,serif;color:#a02f27">0</div><div style="margin-top:7px;font:500 11px/1.4 'IBM Plex Sans',system-ui,sans-serif;color:#6b6255">tablas de usuarios<br>o de asistencia</div></div>
+<div style="background:#fffdf7;border:1px solid rgba(34,29,21,.14);border-radius:10px;padding:20px 20px 18px"><div data-count="6" style="font:400 40px/1 Marcellus,Georgia,serif;color:#2f6b4f">6</div><div style="margin-top:7px;font:500 11px/1.4 'IBM Plex Sans',system-ui,sans-serif;color:#6b6255">tablas en total<br>en PostgreSQL</div></div>
+</div>
+
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin:26px 0 0">
+<span style="font:500 11px/1 'IBM Plex Mono',monospace;padding:8px 12px;border-radius:6px;background:#fffdf7;border:1px solid rgba(34,29,21,.14);color:#4a4337">Astro / Next.js</span>
+<span style="font:500 11px/1 'IBM Plex Mono',monospace;padding:8px 12px;border-radius:6px;background:#fffdf7;border:1px solid rgba(34,29,21,.14);color:#4a4337">Go 1.23</span>
+<span style="font:500 11px/1 'IBM Plex Mono',monospace;padding:8px 12px;border-radius:6px;background:#fffdf7;border:1px solid rgba(34,29,21,.14);color:#4a4337">PostgreSQL 16</span>
+<span style="font:500 11px/1 'IBM Plex Mono',monospace;padding:8px 12px;border-radius:6px;background:#fffdf7;border:1px solid rgba(34,29,21,.14);color:#4a4337">asynq + Redis</span>
+<span style="font:500 11px/1 'IBM Plex Mono',monospace;padding:8px 12px;border-radius:6px;background:#fffdf7;border:1px solid rgba(34,29,21,.14);color:#4a4337">WhatsApp (proveedor no oficial)</span>
+</div>
+</div>
+</header>
+
+<section id="s-supuestos" style="border-bottom:1px solid rgba(34,29,21,.12);scroll-margin-top:64px">
+<div style="max-width:1220px;margin:0 auto;padding:72px 32px">
+<div data-reveal="1" style="display:flex;align-items:baseline;gap:14px;margin:0 0 10px">
+<span style="font:600 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.2em;color:#6b6255">01</span>
+<h2 style="margin:0;font:400 clamp(30px,3.6vw,46px)/1.06 Marcellus,Georgia,serif;letter-spacing:-.01em">Supuestos antes de dibujar nada</h2>
+</div>
+<p data-reveal="1" style="margin:0 0 40px;max-width:62ch;font:400 18px/1.62 'EB Garamond',Georgia,serif;color:#4a4337">Cada supuesto abajo es una decisión que tomé por ti. Si alguno está mal, dímelo y el resto del documento cambia con él.</p>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(272px,1fr));gap:18px">
+<div data-reveal="1" style="animation-delay:.02s;background:#fffdf7;border:1px solid rgba(34,29,21,.13);border-radius:11px;padding:22px;border-top:3px solid #5c3b7a;transition:transform calc(.3s * var(--m)) cubic-bezier(.16,.84,.24,1),box-shadow calc(.3s * var(--m))" style-hover="transform:translateY(-4px);box-shadow:0 14px 30px rgba(34,29,21,.11)">
+<div style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:#5c3b7a;margin-bottom:12px">Supuesto 01</div>
+<h3 style="margin:0 0 9px;font:600 16px/1.32 'IBM Plex Sans',system-ui,sans-serif">El color pertenece al tiempo, no al evento</h3>
+<p style="margin:0;font:400 15px/1.6 'EB Garamond',Georgia,serif;color:#5d5548">El violeta de Adviento lo pinta el día, no la junta de catequistas que cae en él. Así una parroquia puede publicar cien eventos y el año litúrgico sigue leyéndose de un vistazo.</p>
+</div>
+<div data-reveal="1" style="animation-delay:.08s;background:#fffdf7;border:1px solid rgba(34,29,21,.13);border-radius:11px;padding:22px;border-top:3px solid #b1872f;transition:transform calc(.3s * var(--m)) cubic-bezier(.16,.84,.24,1),box-shadow calc(.3s * var(--m))" style-hover="transform:translateY(-4px);box-shadow:0 14px 30px rgba(34,29,21,.11)">
+<div style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:#8a5a1f;margin-bottom:12px">Supuesto 02</div>
+<h3 style="margin:0 0 9px;font:600 16px/1.32 'IBM Plex Sans',system-ui,sans-serif">El rango se dice con peso, no con más color</h3>
+<p style="margin:0;font:400 15px/1.6 'EB Garamond',Georgia,serif;color:#5d5548">Una Solemnidad y una junta pueden compartir tono. Lo que las separa es relleno, grosor y tamaño. Añadir un color por rango rompería la lectura litúrgica.</p>
+</div>
+<div data-reveal="1" style="animation-delay:.14s;background:#fffdf7;border:1px solid rgba(34,29,21,.13);border-radius:11px;padding:22px;border-top:3px solid #2f6b4f;transition:transform calc(.3s * var(--m)) cubic-bezier(.16,.84,.24,1),box-shadow calc(.3s * var(--m))" style-hover="transform:translateY(-4px);box-shadow:0 14px 30px rgba(34,29,21,.11)">
+<div style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:#2f6b4f;margin-bottom:12px">Supuesto 03</div>
+<h3 style="margin:0 0 9px;font:600 16px/1.32 'IBM Plex Sans',system-ui,sans-serif">La celda del mes es un resumen, no un contenedor</h3>
+<p style="margin:0;font:400 15px/1.6 'EB Garamond',Georgia,serif;color:#5d5548">Máximo dos eventos por día más un «+n». El detalle vive en el panel del día. Es la única forma de que diciembre no se convierta en una pared de texto.</p>
+</div>
+<div data-reveal="1" style="animation-delay:.2s;background:#fffdf7;border:1px solid rgba(34,29,21,.13);border-radius:11px;padding:22px;border-top:3px solid #a02f27;transition:transform calc(.3s * var(--m)) cubic-bezier(.16,.84,.24,1),box-shadow calc(.3s * var(--m))" style-hover="transform:translateY(-4px);box-shadow:0 14px 30px rgba(34,29,21,.11)">
+<div style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:#a02f27;margin-bottom:12px">Supuesto 04</div>
+<h3 style="margin:0 0 9px;font:600 16px/1.32 'IBM Plex Sans',system-ui,sans-serif">La difusión es un efecto, no un botón</h3>
+<p style="margin:0;font:400 15px/1.6 'EB Garamond',Georgia,serif;color:#5d5548">El párroco guarda el evento; el sistema decide a qué canales va según el grupo parroquial y el rango. Nadie «manda un WhatsApp» a mano.</p>
+</div>
+</div>
+
+<div data-reveal="1" style="margin:34px 0 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px">
+<div style="background:linear-gradient(135deg,#2a241a,#1b1712);border-radius:11px;padding:26px;color:#f4efe3">
+<div style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.18em;text-transform:uppercase;color:#c9a961;margin-bottom:16px">Restricciones que respeté</div>
+<div style="display:flex;flex-direction:column;gap:11px">
+<div style="display:flex;gap:11px;align-items:flex-start"><span style="flex:none;width:16px;height:16px;border-radius:50%;border:1.5px solid #6f6555;margin-top:2px;position:relative"><span style="position:absolute;inset:3px;border-radius:50%;background:#8a5a1f"></span></span><span style="font:400 15px/1.5 'EB Garamond',Georgia,serif;color:#d8d1c1">Cero registro público. Nadie inicia sesión para ver el calendario.</span></div>
+<div style="display:flex;gap:11px;align-items:flex-start"><span style="flex:none;width:16px;height:16px;border-radius:50%;border:1.5px solid #6f6555;margin-top:2px;position:relative"><span style="position:absolute;inset:3px;border-radius:50%;background:#8a5a1f"></span></span><span style="font:400 15px/1.5 'EB Garamond',Georgia,serif;color:#d8d1c1">Cero RSVP, cupos, listas de asistentes o check-in.</span></div>
+<div style="display:flex;gap:11px;align-items:flex-start"><span style="flex:none;width:16px;height:16px;border-radius:50%;border:1.5px solid #6f6555;margin-top:2px;position:relative"><span style="position:absolute;inset:3px;border-radius:50%;background:#8a5a1f"></span></span><span style="font:400 15px/1.5 'EB Garamond',Georgia,serif;color:#d8d1c1">Autenticación solo para el equipo pastoral, en <code style="font:500 13px/1 'IBM Plex Mono',monospace;color:#c9a961">/admin</code>.</span></div>
+<div style="display:flex;gap:11px;align-items:flex-start"><span style="flex:none;width:16px;height:16px;border-radius:50%;border:1.5px solid #6f6555;margin-top:2px;position:relative"><span style="position:absolute;inset:3px;border-radius:50%;background:#8a5a1f"></span></span><span style="font:400 15px/1.5 'EB Garamond',Georgia,serif;color:#d8d1c1">Todo lo público es cacheable: HTML estático o ISR, sin sesión.</span></div>
+</div>
+</div>
+<div style="background:#fdf6e8;border:1px solid rgba(177,135,47,.34);border-radius:11px;padding:26px">
+<div style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.18em;text-transform:uppercase;color:#8a5a1f;margin-bottom:16px">Lo que decidí por ti</div>
+<div style="display:flex;flex-direction:column;gap:14px">
+<div><div style="font:600 13px/1.3 'IBM Plex Sans',system-ui,sans-serif;margin-bottom:3px">Astro, no Next.js</div><p style="margin:0;font:400 14.5px/1.55 'EB Garamond',Georgia,serif;color:#5d5548">Un calendario de solo lectura es contenido, no aplicación. Astro entrega HTML casi sin JS y solo hidrata la cuadrícula. El panel de admin puede ser una isla React dentro del mismo proyecto.</p></div>
+<div><div style="font:600 13px/1.3 'IBM Plex Sans',system-ui,sans-serif;margin-bottom:3px">Solo tiempos y colores</div><p style="margin:0;font:400 14.5px/1.55 'EB Garamond',Georgia,serif;color:#5d5548">Sin santoral en la base. Los tiempos se precargan como rangos de fecha; las fiestas patronales son eventos normales con su color asignado a mano.</p></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section id="s-datos" style="border-bottom:1px solid rgba(34,29,21,.12);background:#f1ebdc;scroll-margin-top:64px">
+<div style="max-width:1220px;margin:0 auto;padding:72px 32px">
+<div data-reveal="1" style="display:flex;align-items:baseline;gap:14px;margin:0 0 10px">
+<span style="font:600 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.2em;color:#6b6255">02</span>
+<h2 style="margin:0;font:400 clamp(30px,3.6vw,46px)/1.06 Marcellus,Georgia,serif;letter-spacing:-.01em">Seis tablas y ni una más</h2>
+</div>
+<p data-reveal="1" style="margin:0 0 40px;max-width:62ch;font:400 18px/1.62 'EB Garamond',Georgia,serif;color:#4a4337">Es un sistema de publicación. El esquema está optimizado para una sola consulta dominante: <em>dame el mes con sus eventos y su color</em>.</p>
+
+<div data-reveal="1" style="margin-bottom:16px;background:#fffdf7;border:1px solid rgba(34,29,21,.14);border-radius:10px;overflow:hidden">
+<div style="padding:13px 16px;background:#2a241a;display:flex;align-items:center;justify-content:space-between"><span style="font:600 12px/1 'IBM Plex Mono',monospace;color:#f4efe3;letter-spacing:.04em">events</span><span style="font:500 9px/1 'IBM Plex Mono',monospace;color:#c9a961;letter-spacing:.12em">EL CORAZÓN DEL ESQUEMA</span></div>
+<div style="padding:8px 4px;display:grid;grid-template-columns:repeat(auto-fit,minmax(218px,1fr));gap:0 12px">
+<div style="display:flex;gap:9px;padding:7px 16px;align-items:baseline"><span style="flex:none;font:600 8px/1.6 'IBM Plex Mono',monospace;color:#b1872f;letter-spacing:.06em;width:22px">PK</span><span style="font:500 12px/1.4 'IBM Plex Mono',monospace;flex:1">id</span><span style="font:400 10.5px/1.4 'IBM Plex Mono',monospace;color:#6b6255">uuid</span></div>
+<div style="display:flex;gap:9px;padding:7px 16px;align-items:baseline"><span style="flex:none;width:22px"></span><span style="font:500 12px/1.4 'IBM Plex Mono',monospace;flex:1">title</span><span style="font:400 10.5px/1.4 'IBM Plex Mono',monospace;color:#6b6255">text</span></div>
+<div style="display:flex;gap:9px;padding:7px 16px;align-items:baseline"><span style="flex:none;width:22px"></span><span style="font:500 12px/1.4 'IBM Plex Mono',monospace;flex:1">slug</span><span style="font:400 10.5px/1.4 'IBM Plex Mono',monospace;color:#6b6255">text</span></div>
+<div style="display:flex;gap:9px;padding:7px 16px;align-items:baseline"><span style="flex:none;width:22px"></span><span style="font:500 12px/1.4 'IBM Plex Mono',monospace;flex:1">starts_at</span><span style="font:400 10.5px/1.4 'IBM Plex Mono',monospace;color:#6b6255">timestamptz</span></div>
+<div style="display:flex;gap:9px;padding:7px 16px;align-items:baseline"><span style="flex:none;width:22px"></span><span style="font:500 12px/1.4 'IBM Plex Mono',monospace;flex:1">ends_at</span><span style="font:400 10.5px/1.4 'IBM Plex Mono',monospace;color:#6b6255">timestamptz</span></div>
+<div style="display:flex;gap:9px;padding:7px 16px;align-items:baseline"><span style="flex:none;font:600 8px/1.6 'IBM Plex Mono',monospace;color:#5c3b7a;letter-spacing:.06em;width:22px">FK</span><span style="font:500 12px/1.4 'IBM Plex Mono',monospace;flex:1">group_id</span><span style="font:400 10.5px/1.4 'IBM Plex Mono',monospace;color:#6b6255">uuid</span></div>
+<div style="display:flex;gap:9px;padding:7px 16px;align-items:baseline"><span style="flex:none;width:22px"></span><span style="font:500 12px/1.4 'IBM Plex Mono',monospace;flex:1">rank</span><span style="font:400 10.5px/1.4 'IBM Plex Mono',monospace;color:#6b6255">enum</span></div>
+<div style="display:flex;gap:9px;padding:7px 16px;align-items:baseline"><span style="flex:none;width:22px"></span><span style="font:500 12px/1.4 'IBM Plex Mono',monospace;flex:1">color_override</span><span style="font:400 10.5px/1.4 'IBM Plex Mono',monospace;color:#6b6255">enum?</span></div>
+<div style="display:flex;gap:9px;padding:7px 16px;align-items:baseline"><span style="flex:none;width:22px"></span><span style="font:500 12px/1.4 'IBM Plex Mono',monospace;flex:1">published_at</span><span style="font:400 10.5px/1.4 'IBM Plex Mono',monospace;color:#6b6255">timestamptz?</span></div>
+</div>
+<div style="padding:11px 16px;background:#faf5e9;border-top:1px solid rgba(34,29,21,.1);font:400 11px/1.45 'IBM Plex Mono',monospace;color:#6b6255">Índice: <span style="color:#8a5a1f">(starts_at) WHERE published_at IS NOT NULL</span> — un índice parcial: los borradores no ocupan espacio.</div>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(208px,1fr));gap:16px;align-items:start">
+<div data-reveal="1" style="animation-delay:.07s;background:#fffdf7;border:1px solid rgba(34,29,21,.14);border-radius:10px;overflow:hidden;transition:transform calc(.3s * var(--m)) cubic-bezier(.16,.84,.24,1),box-shadow calc(.3s * var(--m))" style-hover="transform:translateY(-4px);box-shadow:0 14px 30px rgba(34,29,21,.11)">
+<div style="padding:13px 16px;background:#5c3b7a"><span style="font:600 12px/1 'IBM Plex Mono',monospace;color:#fff;letter-spacing:.04em">liturgical_seasons</span></div>
+<div style="padding:6px 0">
+<div style="display:flex;gap:9px;padding:7px 16px;align-items:baseline"><span style="flex:none;font:600 8px/1.6 'IBM Plex Mono',monospace;color:#b1872f;width:22px">PK</span><span style="font:500 12px/1.4 'IBM Plex Mono',monospace;flex:1">id</span><span style="font:400 10.5px/1.4 'IBM Plex Mono',monospace;color:#6b6255">smallint</span></div>
+<div style="display:flex;gap:9px;padding:7px 16px;align-items:baseline"><span style="flex:none;width:22px"></span><span style="font:500 12px/1.4 'IBM Plex Mono',monospace;flex:1">name</span><span style="font:400 10.5px/1.4 'IBM Plex Mono',monospace;color:#6b6255">text</span></div>
+<div style="display:flex;gap:9px;padding:7px 16px;align-items:baseline"><span style="flex:none;width:22px"></span><span style="font:500 12px/1.4 'IBM Plex Mono',monospace;flex:1">color</span><span style="font:400 10.5px/1.4 'IBM Plex Mono',monospace;color:#6b6255">enum</span></div>
+<div style="display:flex;gap:9px;padding:7px 16px;align-items:baseline"><span style="flex:none;width:22px"></span><span style="font:500 12px/1.4 'IBM Plex Mono',monospace;flex:1">range</span><span style="font:400 10.5px/1.4 'IBM Plex Mono',monospace;color:#6b6255">daterange</span></div>
+</div>
+<div style="padding:11px 16px;background:#f5efff;border-top:1px solid rgba(34,29,21,.1);font:400 11px/1.45 'IBM Plex Mono',monospace;color:#5c3b7a">GIST sobre <span style="font-weight:600">range</span> → el color de cualquier fecha en un solo <span style="font-weight:600">@&gt;</span>.</div>
+</div>
+
+<div data-reveal="1" style="animation-delay:.14s;background:#fffdf7;border:1px solid rgba(34,29,21,.14);border-radius:10px;overflow:hidden;transition:transform calc(.3s * var(--m)) cubic-bezier(.16,.84,.24,1),box-shadow calc(.3s * var(--m))" style-hover="transform:translateY(-4px);box-shadow:0 14px 30px rgba(34,29,21,.11)">
+<div style="padding:13px 16px;background:#2f6b4f"><span style="font:600 12px/1 'IBM Plex Mono',monospace;color:#fff;letter-spacing:.04em">parish_groups</span></div>
+<div style="padding:6px 0">
+<div style="display:flex;gap:9px;padding:7px 16px;align-items:baseline"><span style="flex:none;font:600 8px/1.6 'IBM Plex Mono',monospace;color:#b1872f;width:22px">PK</span><span style="font:500 12px/1.4 'IBM Plex Mono',monospace;flex:1">id</span><span style="font:400 10.5px/1.4 'IBM Plex Mono',monospace;color:#6b6255">uuid</span></div>
+<div style="display:flex;gap:9px;padding:7px 16px;align-items:baseline"><span style="flex:none;width:22px"></span><span style="font:500 12px/1.4 'IBM Plex Mono',monospace;flex:1">name</span><span style="font:400 10.5px/1.4 'IBM Plex Mono',monospace;color:#6b6255">text</span></div>
+<div style="display:flex;gap:9px;padding:7px 16px;align-items:baseline"><span style="flex:none;width:22px"></span><span style="font:500 12px/1.4 'IBM Plex Mono',monospace;flex:1">slug</span><span style="font:400 10.5px/1.4 'IBM Plex Mono',monospace;color:#6b6255">text</span></div>
+<div style="display:flex;gap:9px;padding:7px 16px;align-items:baseline"><span style="flex:none;width:22px"></span><span style="font:500 12px/1.4 'IBM Plex Mono',monospace;flex:1">is_public</span><span style="font:400 10.5px/1.4 'IBM Plex Mono',monospace;color:#6b6255">bool</span></div>
+</div>
+<div style="padding:11px 16px;background:#ecf5f0;border-top:1px solid rgba(34,29,21,.1);font:400 11px/1.45 'IBM Plex Mono',monospace;color:#2f6b4f">Catequesis, juvenil, coro, liturgia. También filtra la vista pública.</div>
+</div>
+
+<div data-reveal="1" style="animation-delay:.21s;background:#fffdf7;border:1px solid rgba(34,29,21,.14);border-radius:10px;overflow:hidden;transition:transform calc(.3s * var(--m)) cubic-bezier(.16,.84,.24,1),box-shadow calc(.3s * var(--m))" style-hover="transform:translateY(-4px);box-shadow:0 14px 30px rgba(34,29,21,.11)">
+<div style="padding:13px 16px;background:#a02f27"><span style="font:600 12px/1 'IBM Plex Mono',monospace;color:#fff;letter-spacing:.04em">channels</span></div>
+<div style="padding:6px 0">
+<div style="display:flex;gap:9px;padding:7px 16px;align-items:baseline"><span style="flex:none;font:600 8px/1.6 'IBM Plex Mono',monospace;color:#b1872f;width:22px">PK</span><span style="font:500 12px/1.4 'IBM Plex Mono',monospace;flex:1">id</span><span style="font:400 10.5px/1.4 'IBM Plex Mono',monospace;color:#6b6255">uuid</span></div>
+<div style="display:flex;gap:9px;padding:7px 16px;align-items:baseline"><span style="flex:none;width:22px"></span><span style="font:500 12px/1.4 'IBM Plex Mono',monospace;flex:1">kind</span><span style="font:400 10.5px/1.4 'IBM Plex Mono',monospace;color:#6b6255">enum</span></div>
+<div style="display:flex;gap:9px;padding:7px 16px;align-items:baseline"><span style="flex:none;width:22px"></span><span style="font:500 12px/1.4 'IBM Plex Mono',monospace;flex:1">target</span><span style="font:400 10.5px/1.4 'IBM Plex Mono',monospace;color:#6b6255">text</span></div>
+<div style="display:flex;gap:9px;padding:7px 16px;align-items:baseline"><span style="flex:none;font:600 8px/1.6 'IBM Plex Mono',monospace;color:#5c3b7a;width:22px">FK</span><span style="font:500 12px/1.4 'IBM Plex Mono',monospace;flex:1">group_id</span><span style="font:400 10.5px/1.4 'IBM Plex Mono',monospace;color:#6b6255">uuid?</span></div>
+</div>
+<div style="padding:11px 16px;background:#fbeeec;border-top:1px solid rgba(34,29,21,.1);font:400 11px/1.45 'IBM Plex Mono',monospace;color:#a02f27">Un grupo de WhatsApp, no una persona. <span style="font-weight:600">target</span> = jid del grupo.</div>
+</div>
+
+<div data-reveal="1" style="animation-delay:.28s;background:#fffdf7;border:1px solid rgba(34,29,21,.14);border-radius:10px;overflow:hidden;transition:transform calc(.3s * var(--m)) cubic-bezier(.16,.84,.24,1),box-shadow calc(.3s * var(--m))" style-hover="transform:translateY(-4px);box-shadow:0 14px 30px rgba(34,29,21,.11)">
+<div style="padding:13px 16px;background:#8a5a1f"><span style="font:600 12px/1 'IBM Plex Mono',monospace;color:#fff;letter-spacing:.04em">broadcasts</span></div>
+<div style="padding:6px 0">
+<div style="display:flex;gap:9px;padding:7px 16px;align-items:baseline"><span style="flex:none;font:600 8px/1.6 'IBM Plex Mono',monospace;color:#b1872f;width:22px">PK</span><span style="font:500 12px/1.4 'IBM Plex Mono',monospace;flex:1">id</span><span style="font:400 10.5px/1.4 'IBM Plex Mono',monospace;color:#6b6255">uuid</span></div>
+<div style="display:flex;gap:9px;padding:7px 16px;align-items:baseline"><span style="flex:none;font:600 8px/1.6 'IBM Plex Mono',monospace;color:#5c3b7a;width:22px">FK</span><span style="font:500 12px/1.4 'IBM Plex Mono',monospace;flex:1">event_id</span><span style="font:400 10.5px/1.4 'IBM Plex Mono',monospace;color:#6b6255">uuid</span></div>
+<div style="display:flex;gap:9px;padding:7px 16px;align-items:baseline"><span style="flex:none;font:600 8px/1.6 'IBM Plex Mono',monospace;color:#5c3b7a;width:22px">FK</span><span style="font:500 12px/1.4 'IBM Plex Mono',monospace;flex:1">channel_id</span><span style="font:400 10.5px/1.4 'IBM Plex Mono',monospace;color:#6b6255">uuid</span></div>
+<div style="display:flex;gap:9px;padding:7px 16px;align-items:baseline"><span style="flex:none;width:22px"></span><span style="font:500 12px/1.4 'IBM Plex Mono',monospace;flex:1">state</span><span style="font:400 10.5px/1.4 'IBM Plex Mono',monospace;color:#6b6255">enum</span></div>
+<div style="display:flex;gap:9px;padding:7px 16px;align-items:baseline"><span style="flex:none;width:22px"></span><span style="font:500 12px/1.4 'IBM Plex Mono',monospace;flex:1">dedupe_key</span><span style="font:400 10.5px/1.4 'IBM Plex Mono',monospace;color:#6b6255">text</span></div>
+</div>
+<div style="padding:11px 16px;background:#fdf6e8;border-top:1px solid rgba(34,29,21,.1);font:400 11px/1.45 'IBM Plex Mono',monospace;color:#8a5a1f">UNIQUE en <span style="font-weight:600">dedupe_key</span> → un reintento nunca manda dos veces.</div>
+</div>
+
+<div data-reveal="1" style="animation-delay:.35s;background:#fffdf7;border:1px solid rgba(34,29,21,.14);border-radius:10px;overflow:hidden;transition:transform calc(.3s * var(--m)) cubic-bezier(.16,.84,.24,1),box-shadow calc(.3s * var(--m))" style-hover="transform:translateY(-4px);box-shadow:0 14px 30px rgba(34,29,21,.11)">
+<div style="padding:13px 16px;background:#6b6255"><span style="font:600 12px/1 'IBM Plex Mono',monospace;color:#fff;letter-spacing:.04em">staff</span></div>
+<div style="padding:6px 0">
+<div style="display:flex;gap:9px;padding:7px 16px;align-items:baseline"><span style="flex:none;font:600 8px/1.6 'IBM Plex Mono',monospace;color:#b1872f;width:22px">PK</span><span style="font:500 12px/1.4 'IBM Plex Mono',monospace;flex:1">id</span><span style="font:400 10.5px/1.4 'IBM Plex Mono',monospace;color:#6b6255">uuid</span></div>
+<div style="display:flex;gap:9px;padding:7px 16px;align-items:baseline"><span style="flex:none;width:22px"></span><span style="font:500 12px/1.4 'IBM Plex Mono',monospace;flex:1">email</span><span style="font:400 10.5px/1.4 'IBM Plex Mono',monospace;color:#6b6255">citext</span></div>
+<div style="display:flex;gap:9px;padding:7px 16px;align-items:baseline"><span style="flex:none;width:22px"></span><span style="font:500 12px/1.4 'IBM Plex Mono',monospace;flex:1">role</span><span style="font:400 10.5px/1.4 'IBM Plex Mono',monospace;color:#6b6255">enum</span></div>
+</div>
+<div style="padding:11px 16px;background:#f4f2ee;border-top:1px solid rgba(34,29,21,.1);font:400 11px/1.45 'IBM Plex Mono',monospace;color:#a89f8c">Párroco y secretaría. Tres o cuatro filas, para siempre.</div>
+</div>
+</div>
+
+<div data-reveal="1" style="margin:30px 0 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px">
+<div style="border:1.5px dashed rgba(160,47,39,.42);border-radius:11px;padding:24px;background:rgba(160,47,39,.04)">
+<div style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.18em;text-transform:uppercase;color:#a02f27;margin-bottom:14px">Lo que deliberadamente no existe</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px">
+<span style="font:500 12px/1 'IBM Plex Mono',monospace;padding:7px 11px;border-radius:5px;background:#fff;border:1px solid rgba(160,47,39,.24);color:#6b6255;text-decoration:line-through">users</span>
+<span style="font:500 12px/1 'IBM Plex Mono',monospace;padding:7px 11px;border-radius:5px;background:#fff;border:1px solid rgba(160,47,39,.24);color:#6b6255;text-decoration:line-through">rsvps</span>
+<span style="font:500 12px/1 'IBM Plex Mono',monospace;padding:7px 11px;border-radius:5px;background:#fff;border:1px solid rgba(160,47,39,.24);color:#6b6255;text-decoration:line-through">attendances</span>
+<span style="font:500 12px/1 'IBM Plex Mono',monospace;padding:7px 11px;border-radius:5px;background:#fff;border:1px solid rgba(160,47,39,.24);color:#6b6255;text-decoration:line-through">sessions</span>
+<span style="font:500 12px/1 'IBM Plex Mono',monospace;padding:7px 11px;border-radius:5px;background:#fff;border:1px solid rgba(160,47,39,.24);color:#6b6255;text-decoration:line-through">subscriptions</span>
+<span style="font:500 12px/1 'IBM Plex Mono',monospace;padding:7px 11px;border-radius:5px;background:#fff;border:1px solid rgba(160,47,39,.24);color:#6b6255;text-decoration:line-through">notifications</span>
+</div>
+<p style="margin:16px 0 0;font:400 14.5px/1.55 'EB Garamond',Georgia,serif;color:#5d5548">Sin ellas no hay LOPD que cuidar, ni sesiones que invalidar caché, ni migraciones que temer. El sistema difunde a <em>canales</em>, y un canal es una cadena de texto.</p>
+</div>
+<div style="background:#2a241a;border-radius:11px;padding:24px;color:#f4efe3">
+<div style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.18em;text-transform:uppercase;color:#c9a961;margin-bottom:14px">La consulta dominante</div>
+<pre style="margin:0;font:400 12px/1.75 'IBM Plex Mono',monospace;color:#d8d1c1;white-space:pre-wrap"><span style="color:#c9a961">SELECT</span> e.*, s.color <span style="color:#c9a961">AS</span> season_color
+<span style="color:#c9a961">FROM</span>   events e
+<span style="color:#c9a961">JOIN</span>   liturgical_seasons s
+       <span style="color:#c9a961">ON</span> s.range <span style="color:#8fbf9f">@&gt;</span> e.starts_at::date
+<span style="color:#c9a961">WHERE</span>  e.published_at <span style="color:#c9a961">IS NOT NULL</span>
+  <span style="color:#c9a961">AND</span>  e.starts_at <span style="color:#8fbf9f">&gt;=</span> $1
+  <span style="color:#c9a961">AND</span>  e.starts_at <span style="color:#8fbf9f">&lt;</span>  $2
+<span style="color:#c9a961">ORDER BY</span> e.starts_at;</pre>
+<p style="margin:16px 0 0;font:400 14.5px/1.55 'EB Garamond',Georgia,serif;color:#a89f8c">Una consulta por mes, un índice, sin N+1. El resultado se cachea como JSON y se sirve estático: la parroquia entera lee lo mismo.</p>
+</div>
+</div>
+</div>
+</section>
+
+<section id="s-difusion" style="border-bottom:1px solid rgba(34,29,21,.12);background:#2a241a;color:#f4efe3;position:relative;overflow:hidden;scroll-margin-top:64px">
+<div style="position:absolute;top:-140px;left:38%;width:460px;height:460px;border-radius:50%;background:radial-gradient(circle,rgba(201,169,97,.16),transparent 66%);animation:dcFloat calc(13s * var(--m)) ease-in-out infinite"></div>
+<div style="position:relative;max-width:1220px;margin:0 auto;padding:72px 32px">
+<div data-reveal="1" style="display:flex;align-items:baseline;gap:14px;margin:0 0 10px">
+<span style="font:600 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.2em;color:#6f6555">03</span>
+<h2 style="margin:0;font:400 clamp(30px,3.6vw,46px)/1.06 Marcellus,Georgia,serif;letter-spacing:-.01em;color:#fbf7ee">El motor de difusión</h2>
+</div>
+<p data-reveal="1" style="margin:0 0 44px;max-width:62ch;font:400 18px/1.62 'EB Garamond',Georgia,serif;color:#a89f8c">Guardar el evento y difundirlo son dos hechos distintos. Se unen por una <strong style="color:#c9a961;font-weight:600">outbox</strong> en la misma transacción, y de ahí en adelante todo es cola, ritmo y reintento.</p>
+
+<div data-reveal="1" style="display:flex;flex-wrap:wrap;gap:12px;align-items:stretch">
+<div style="flex:1 1 186px;padding:22px 20px;border:1px solid rgba(201,169,97,.24);border-radius:11px;background:rgba(255,253,247,.04)">
+<div style="width:30px;height:30px;border-radius:8px;background:#5c3b7a;display:flex;align-items:center;justify-content:center;font:600 12px/1 'IBM Plex Mono',monospace;color:#fff;margin-bottom:14px">1</div>
+<div style="font:600 13.5px/1.3 'IBM Plex Sans',system-ui,sans-serif;color:#fbf7ee;margin-bottom:7px">Publicar</div>
+<p style="margin:0;font:400 13.5px/1.55 'EB Garamond',Georgia,serif;color:#a89f8c">El párroco guarda. Un solo <code style="font:500 11.5px/1 'IBM Plex Mono',monospace;color:#c9a961">COMMIT</code> escribe el evento y su fila de outbox.</p>
+</div>
+<div style="flex:1 1 186px;padding:22px 20px;border:1px solid rgba(201,169,97,.24);border-radius:11px;background:rgba(255,253,247,.04)">
+<div style="width:30px;height:30px;border-radius:8px;background:#8a5a1f;display:flex;align-items:center;justify-content:center;font:600 12px/1 'IBM Plex Mono',monospace;color:#fff;margin-bottom:14px">2</div>
+<div style="font:600 13.5px/1.3 'IBM Plex Sans',system-ui,sans-serif;color:#fbf7ee;margin-bottom:7px">Encolar</div>
+<p style="margin:0;font:400 13.5px/1.55 'EB Garamond',Georgia,serif;color:#a89f8c">Un relay lee la outbox y crea <em>una</em> tarea <code style="font:500 11.5px/1 'IBM Plex Mono',monospace;color:#c9a961">fanout</code> en asynq. Nada más.</p>
+</div>
+<div style="flex:1 1 186px;padding:22px 20px;border:1px solid rgba(201,169,97,.24);border-radius:11px;background:rgba(255,253,247,.04)">
+<div style="width:30px;height:30px;border-radius:8px;background:#b1872f;display:flex;align-items:center;justify-content:center;font:600 12px/1 'IBM Plex Mono',monospace;color:#fff;margin-bottom:14px">3</div>
+<div style="font:600 13.5px/1.3 'IBM Plex Sans',system-ui,sans-serif;color:#fbf7ee;margin-bottom:7px">Abanicar</div>
+<p style="margin:0;font:400 13.5px/1.55 'EB Garamond',Georgia,serif;color:#a89f8c">El fanout resuelve los canales del grupo y encola una tarea <em>por canal</em>, cada una con su retraso.</p>
+</div>
+<div style="flex:1 1 186px;padding:22px 20px;border:1px solid rgba(201,169,97,.24);border-radius:11px;background:rgba(255,253,247,.04)">
+<div style="width:30px;height:30px;border-radius:8px;background:#2f6b4f;display:flex;align-items:center;justify-content:center;font:600 12px/1 'IBM Plex Mono',monospace;color:#fff;margin-bottom:14px">4</div>
+<div style="font:600 13.5px/1.3 'IBM Plex Sans',system-ui,sans-serif;color:#fbf7ee;margin-bottom:7px">Entregar</div>
+<p style="margin:0;font:400 13.5px/1.55 'EB Garamond',Georgia,serif;color:#a89f8c">Un worker por canal, con <em>rate limit</em> propio. WhatsApp lento, correo rápido.</p>
+</div>
+<div style="flex:1 1 186px;padding:22px 20px;border:1px solid rgba(201,169,97,.24);border-radius:11px;background:rgba(255,253,247,.04)">
+<div style="width:30px;height:30px;border-radius:8px;background:#a02f27;display:flex;align-items:center;justify-content:center;font:600 12px/1 'IBM Plex Mono',monospace;color:#fff;margin-bottom:14px">5</div>
+<div style="font:600 13.5px/1.3 'IBM Plex Sans',system-ui,sans-serif;color:#fbf7ee;margin-bottom:7px">Asentar</div>
+<p style="margin:0;font:400 13.5px/1.55 'EB Garamond',Georgia,serif;color:#a89f8c">Éxito o fallo se escriben en <code style="font:500 11.5px/1 'IBM Plex Mono',monospace;color:#c9a961">broadcasts</code>. El párroco lo ve en el panel.</p>
+</div>
+</div>
+
+<div data-reveal="1" style="height:26px;margin:0 0 0;background-image:repeating-linear-gradient(90deg,rgba(201,169,97,.55) 0 10px,transparent 10px 18px);background-size:18px 1px;background-repeat:repeat-x;background-position:0 50%;animation:dcFlow calc(1.1s * var(--m)) linear infinite"></div>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:18px;margin-top:8px">
+<div data-reveal="1" style="background:rgba(255,253,247,.05);border:1px solid rgba(201,169,97,.2);border-radius:11px;padding:24px">
+<div style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.18em;text-transform:uppercase;color:#c9a961;margin-bottom:14px">Por qué colas y no goroutines</div>
+<p style="margin:0 0 12px;font:400 15px/1.6 'EB Garamond',Georgia,serif;color:#cfc7b5">Una goroutine muere con el proceso. Un reinicio a media difusión dejaría media parroquia avisada y la otra mitad no, sin forma de saber cuál.</p>
+<p style="margin:0;font:400 15px/1.6 'EB Garamond',Georgia,serif;color:#cfc7b5">asynq guarda el estado en Redis: reintentos con espera exponencial, cola muerta para lo que nunca pasó, y un panel donde ver qué falló. Es lo aburrido, y por eso es lo correcto.</p>
+</div>
+<div data-reveal="1" style="animation-delay:.08s;background:rgba(255,253,247,.05);border:1px solid rgba(201,169,97,.2);border-radius:11px;padding:24px">
+<div style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.18em;text-transform:uppercase;color:#c9a961;margin-bottom:14px">Cómo no saturar la red</div>
+<div style="display:flex;flex-direction:column;gap:13px">
+<div><div style="font:600 12.5px/1.3 'IBM Plex Sans',system-ui,sans-serif;color:#fbf7ee;margin-bottom:3px">Una cola por canal</div><p style="margin:0;font:400 14px/1.5 'EB Garamond',Georgia,serif;color:#a89f8c">Colas <code style="font:500 11px/1 'IBM Plex Mono',monospace;color:#c9a961">wa</code> con 1 worker, <code style="font:500 11px/1 'IBM Plex Mono',monospace;color:#c9a961">mail</code> con 8. Un canal lento no bloquea al otro.</p></div>
+<div><div style="font:600 12.5px/1.3 'IBM Plex Sans',system-ui,sans-serif;color:#fbf7ee;margin-bottom:3px">Retraso escalonado</div><p style="margin:0;font:400 14px/1.5 'EB Garamond',Georgia,serif;color:#a89f8c">Cada grupo entra con <code style="font:500 11px/1 'IBM Plex Mono',monospace;color:#c9a961">ProcessIn(n·8s ± jitter)</code>. Nunca una ráfaga simultánea.</p></div>
+<div><div style="font:600 12.5px/1.3 'IBM Plex Sans',system-ui,sans-serif;color:#fbf7ee;margin-bottom:3px">Ventana de reposo</div><p style="margin:0;font:400 14px/1.5 'EB Garamond',Georgia,serif;color:#a89f8c">Nada sale entre las 22:00 y las 7:00. Se reprograma, no se descarta.</p></div>
+<div><div style="font:600 12.5px/1.3 'IBM Plex Sans',system-ui,sans-serif;color:#fbf7ee;margin-bottom:3px">Agrupar ediciones</div><p style="margin:0;font:400 14px/1.5 'EB Garamond',Georgia,serif;color:#a89f8c">Cinco correcciones en dos minutos = un solo aviso. Ventana de 10 min antes de disparar.</p></div>
+</div>
+</div>
+<div data-reveal="1" style="animation-delay:.16s;background:rgba(160,47,39,.14);border:1px solid rgba(160,47,39,.5);border-radius:11px;padding:24px">
+<div style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.18em;text-transform:uppercase;color:#e08b83;margin-bottom:14px">Riesgo que debes conocer</div>
+<p style="margin:0 0 12px;font:400 15px/1.6 'EB Garamond',Georgia,serif;color:#e8ddd6">Elegiste grupos de WhatsApp por proveedor no oficial. Es la opción que <em>funciona</em> para una parroquia — la API oficial no puede escribir en grupos — pero el número puede ser bloqueado sin aviso ni apelación.</p>
+<p style="margin:0;font:400 15px/1.6 'EB Garamond',Georgia,serif;color:#e8ddd6">Mitigación arquitectónica: define <code style="font:500 11.5px/1 'IBM Plex Mono',monospace;color:#f0b3ab">type Sender interface</code> con un método <code style="font:500 11.5px/1 'IBM Plex Mono',monospace;color:#f0b3ab">Send(ctx, msg)</code> y trata el proveedor como un detalle reemplazable. Usa un número dedicado, calienta el volumen poco a poco, y mantén siempre el feed <code style="font:500 11.5px/1 'IBM Plex Mono',monospace;color:#f0b3ab">.ics</code> y la web como fuente de verdad.</p>
+</div>
+</div>
+</div>
+</section>
+
+<section id="s-grid" style="border-bottom:1px solid rgba(34,29,21,.12);scroll-margin-top:64px">
+<div style="max-width:1220px;margin:0 auto;padding:72px 32px">
+<div data-reveal="1" style="display:flex;align-items:baseline;gap:14px;margin:0 0 10px">
+<span style="font:600 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.2em;color:#6b6255">04</span>
+<h2 style="margin:0;font:400 clamp(30px,3.6vw,46px)/1.06 Marcellus,Georgia,serif;letter-spacing:-.01em">Anatomía de la cuadrícula</h2>
+</div>
+<p data-reveal="1" style="margin:0 0 30px;max-width:64ch;font:400 18px/1.62 'EB Garamond',Georgia,serif;color:#4a4337">Diciembre real de 2026: Adviento en violeta, el domingo rosa de <em>Gaudete</em>, Guadalupe, la octava de Navidad con dos mártires en rojo. Toca cualquier día. Mueve los interruptores para ver qué sostiene la legibilidad.</p>
+
+<div data-reveal="1" style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 0 20px;padding:13px 16px;background:#fffdf7;border:1px solid rgba(34,29,21,.14);border-radius:10px">
+<button type="button" onClick="{{ toggleColors }}" style="display:flex;align-items:center;gap:9px;background:none;border:none;padding:5px 8px;border-radius:7px;cursor:pointer;font:500 12px/1 'IBM Plex Sans',system-ui,sans-serif;color:#4a4337;transition:background calc(.2s * var(--m))" style-hover="background:rgba(34,29,21,.05)">
+<span style="width:36px;height:20px;border-radius:10px;position:relative;flex:none;transition:background calc(.24s * var(--m));background:{{ trackColors }}"><span style="position:absolute;top:2px;left:0;width:16px;height:16px;border-radius:50%;background:#fffdf7;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform calc(.24s * var(--m)) cubic-bezier(.3,1.5,.5,1);transform:{{ knobColors }}"></span></span>
+Colores litúrgicos
+</button>
+<button type="button" onClick="{{ toggleEmph }}" style="display:flex;align-items:center;gap:9px;background:none;border:none;padding:5px 8px;border-radius:7px;cursor:pointer;font:500 12px/1 'IBM Plex Sans',system-ui,sans-serif;color:#4a4337;transition:background calc(.2s * var(--m))" style-hover="background:rgba(34,29,21,.05)">
+<span style="width:36px;height:20px;border-radius:10px;position:relative;flex:none;transition:background calc(.24s * var(--m));background:{{ trackEmph }}"><span style="position:absolute;top:2px;left:0;width:16px;height:16px;border-radius:50%;background:#fffdf7;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform calc(.24s * var(--m)) cubic-bezier(.3,1.5,.5,1);transform:{{ knobEmph }}"></span></span>
+Realzar solemnidades
+</button>
+<button type="button" onClick="{{ toggleDense }}" style="display:flex;align-items:center;gap:9px;background:none;border:none;padding:5px 8px;border-radius:7px;cursor:pointer;font:500 12px/1 'IBM Plex Sans',system-ui,sans-serif;color:#4a4337;transition:background calc(.2s * var(--m))" style-hover="background:rgba(34,29,21,.05)">
+<span style="width:36px;height:20px;border-radius:10px;position:relative;flex:none;transition:background calc(.24s * var(--m));background:{{ trackDense }}"><span style="position:absolute;top:2px;left:0;width:16px;height:16px;border-radius:50%;background:#fffdf7;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform calc(.24s * var(--m)) cubic-bezier(.3,1.5,.5,1);transform:{{ knobDense }}"></span></span>
+Densidad compacta
+</button>
+<div style="margin-left:auto;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+<span style="display:flex;align-items:center;gap:6px;font:500 10.5px/1 'IBM Plex Mono',monospace;color:#6b6255;letter-spacing:.04em"><span style="width:11px;height:11px;border-radius:3px;background:#5c3b7a"></span>ADVIENTO</span>
+<span style="display:flex;align-items:center;gap:6px;font:500 10.5px/1 'IBM Plex Mono',monospace;color:#6b6255;letter-spacing:.04em"><span style="width:11px;height:11px;border-radius:3px;background:#c06f8d"></span>GAUDETE</span>
+<span style="display:flex;align-items:center;gap:6px;font:500 10.5px/1 'IBM Plex Mono',monospace;color:#6b6255;letter-spacing:.04em"><span style="width:11px;height:11px;border-radius:3px;background:#b1872f"></span>NAVIDAD</span>
+<span style="display:flex;align-items:center;gap:6px;font:500 10.5px/1 'IBM Plex Mono',monospace;color:#6b6255;letter-spacing:.04em"><span style="width:11px;height:11px;border-radius:3px;background:#a02f27"></span>MÁRTIR</span>
+</div>
+</div>
+
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start">
+<div data-reveal="1" style="flex:1 1 640px;min-width:0;background:#fffdf7;border:1px solid rgba(34,29,21,.16);border-radius:12px;overflow:hidden;box-shadow:0 10px 30px rgba(34,29,21,.07)">
+<div style="display:flex;align-items:baseline;justify-content:space-between;padding:20px 22px 16px;border-bottom:1px solid rgba(34,29,21,.11)">
+<div>
+<div style="font:400 30px/1.05 Marcellus,Georgia,serif;letter-spacing:-.01em">Diciembre 2026</div>
+<div style="margin-top:5px;font:500 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#8a5a1f">Adviento → Navidad</div>
+</div>
+<div style="display:flex;gap:6px">
+<span style="width:30px;height:30px;border-radius:7px;border:1px solid rgba(34,29,21,.16);display:flex;align-items:center;justify-content:center;font:500 13px/1 'IBM Plex Sans',sans-serif;color:#6b6255;cursor:pointer;transition:all calc(.2s * var(--m))" style-hover="background:#f1ebdc;color:#221d15">‹</span>
+<span style="width:30px;height:30px;border-radius:7px;border:1px solid rgba(34,29,21,.16);display:flex;align-items:center;justify-content:center;font:500 13px/1 'IBM Plex Sans',sans-serif;color:#6b6255;cursor:pointer;transition:all calc(.2s * var(--m))" style-hover="background:#f1ebdc;color:#221d15">›</span>
+</div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));background:#faf5e9;border-bottom:1px solid rgba(34,29,21,.11)">
+<div style="padding:9px 10px;font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#a02f27;text-transform:uppercase">dom</div>
+<div style="padding:9px 10px;font:600 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;color:#6b6255;text-transform:uppercase">lun</div>
+<div style="padding:9px 10px;font:600 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;color:#6b6255;text-transform:uppercase">mar</div>
+<div style="padding:9px 10px;font:600 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;color:#6b6255;text-transform:uppercase">mié</div>
+<div style="padding:9px 10px;font:600 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;color:#6b6255;text-transform:uppercase">jue</div>
+<div style="padding:9px 10px;font:600 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;color:#6b6255;text-transform:uppercase">vie</div>
+<div style="padding:9px 10px;font:600 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;color:#6b6255;text-transform:uppercase">sáb</div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:1px;background:rgba(34,29,21,.1)">
+<sc-for list="{{ days }}" as="d" hint-placeholder-count="42">
+<div onClick="{{ d.pick }}" style="position:relative;padding:7px 8px 8px;cursor:pointer;display:flex;flex-direction:column;gap:4px;transition:filter calc(.18s * var(--m));background:{{ d.cellBg }};min-height:{{ cellMinH }}px;outline:{{ d.selRing }};outline-offset:-1px" style-hover="filter:brightness(.97)">
+<div style="position:absolute;top:0;left:0;right:0;height:2px;background:{{ d.edge }}"></div>
+<div style="display:flex;align-items:baseline;gap:5px">
+<span style="font:500 13px/1 'IBM Plex Mono',monospace;color:{{ d.numColor }}">{{ d.num }}</span>
+</div>
+<sc-for list="{{ d.shown }}" as="e" hint-placeholder-count="1">
+<div style="display:flex;align-items:center;gap:5px;padding:2px 5px;border-radius:4px;overflow:hidden;background:{{ e.bg }};color:{{ e.fg }};border:1px {{ e.dash }} {{ e.bd }};font-weight:{{ e.fw }};font-size:10.5px;line-height:1.3;font-family:'IBM Plex Sans',system-ui,sans-serif">
+<span style="flex:none;width:4px;height:4px;border-radius:50%;background:{{ e.dot }}"></span>
+<span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ e.t }}</span>
+</div>
+</sc-for>
+<sc-if value="{{ d.hasMore }}" hint-placeholder-val="{{ false }}">
+<span style="font:500 10.5px/1.3 'IBM Plex Mono',monospace;color:#6b6255;padding-left:2px">{{ d.more }}</span>
+</sc-if>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div style="flex:1 1 300px;min-width:0;display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start">
+<div data-reveal="1" style="flex:1 1 282px;animation-delay:.08s;background:#2a241a;border-radius:12px;padding:20px;color:#f4efe3;min-height:190px">
+<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">
+<span style="width:9px;height:9px;border-radius:50%;background:{{ selSeasonColor }}"></span>
+<span style="font:500 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#a89f8c">{{ selSeason }}</span>
+</div>
+<div style="font:400 22px/1.15 Marcellus,Georgia,serif;color:#fbf7ee;margin-bottom:16px">{{ selLabel }}</div>
+<sc-if value="{{ selHasEvents }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;flex-direction:column;gap:10px">
+<sc-for list="{{ selEvents }}" as="e" hint-placeholder-count="2">
+<div style="display:flex;gap:11px;align-items:flex-start;padding-bottom:10px;border-bottom:1px solid rgba(201,169,97,.16);animation:dcSlide calc(.4s * var(--m)) cubic-bezier(.16,.84,.24,1) both">
+<span style="flex:none;font:500 11px/1.5 'IBM Plex Mono',monospace;color:#c9a961;width:38px">{{ e.hour }}</span>
+<div style="flex:1;min-width:0">
+<div style="font:600 13px/1.35 'IBM Plex Sans',system-ui,sans-serif;color:#fbf7ee">{{ e.t }}</div>
+<div style="margin-top:3px;font:500 9px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:{{ e.color }}">{{ e.rankLabel }}</div>
+</div>
+</div>
+</sc-for>
+</div>
+</sc-if>
+<p style="margin:14px 0 0;font:400 13.5px/1.5 'EB Garamond',Georgia,serif;color:#6b6255">El panel del día es donde vive el detalle: hora, lugar, grupo, descripción. La celda solo insinúa.</p>
+</div>
+
+<div data-reveal="1" style="flex:1 1 282px;animation-delay:.14s;background:#fffdf7;border:1px solid rgba(34,29,21,.14);border-radius:12px;padding:20px">
+<div style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.18em;text-transform:uppercase;color:#8a5a1f;margin-bottom:14px">Las cinco reglas de la celda</div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;gap:11px"><span style="flex:none;width:19px;height:19px;border-radius:5px;background:#f1ebdc;font:600 10px/19px 'IBM Plex Mono',monospace;text-align:center;color:#8a5a1f">1</span><p style="margin:0;font:400 14px/1.5 'EB Garamond',Georgia,serif;color:#5d5548"><strong style="font-weight:600">Barra superior, no fondo saturado.</strong> El tiempo litúrgico se declara en 2 px de color y un tinte al 6 %. Un fondo pleno mataría el texto.</p></div>
+<div style="display:flex;gap:11px"><span style="flex:none;width:19px;height:19px;border-radius:5px;background:#f1ebdc;font:600 10px/19px 'IBM Plex Mono',monospace;text-align:center;color:#8a5a1f">2</span><p style="margin:0;font:400 14px/1.5 'EB Garamond',Georgia,serif;color:#5d5548"><strong style="font-weight:600">Dos eventos y un «+n».</strong> Techo duro. Sin scroll dentro de la celda, sin celdas de altura variable.</p></div>
+<div style="display:flex;gap:11px"><span style="flex:none;width:19px;height:19px;border-radius:5px;background:#f1ebdc;font:600 10px/19px 'IBM Plex Mono',monospace;text-align:center;color:#8a5a1f">3</span><p style="margin:0;font:400 14px/1.5 'EB Garamond',Georgia,serif;color:#5d5548"><strong style="font-weight:600">Orden por rango, luego por hora.</strong> La Solemnidad siempre gana el primer renglón, aunque sea a mediodía.</p></div>
+<div style="display:flex;gap:11px"><span style="flex:none;width:19px;height:19px;border-radius:5px;background:#f1ebdc;font:600 10px/19px 'IBM Plex Mono',monospace;text-align:center;color:#8a5a1f">4</span><p style="margin:0;font:400 14px/1.5 'EB Garamond',Georgia,serif;color:#5d5548"><strong style="font-weight:600">Lo parroquial va en línea discontinua.</strong> Gris grafito, sin relleno: presente pero nunca compitiendo con la liturgia.</p></div>
+<div style="display:flex;gap:11px"><span style="flex:none;width:19px;height:19px;border-radius:5px;background:#f1ebdc;font:600 10px/19px 'IBM Plex Mono',monospace;text-align:center;color:#8a5a1f">5</span><p style="margin:0;font:400 14px/1.5 'EB Garamond',Georgia,serif;color:#5d5548"><strong style="font-weight:600">El color nunca es el único portador.</strong> Cada rango también difiere en forma y peso — así funciona para quien no distingue el violeta del rojo.</p></div>
+</div>
+</div>
+
+<div data-reveal="1" style="flex:1 1 282px;animation-delay:.2s;background:#fdf6e8;border:1px solid rgba(177,135,47,.34);border-radius:12px;padding:20px">
+<div style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.18em;text-transform:uppercase;color:#8a5a1f;margin-bottom:12px">En móvil, no hay cuadrícula</div>
+<p style="margin:0 0 12px;font:400 14px/1.55 'EB Garamond',Georgia,serif;color:#5d5548">Siete columnas en 360 px son ilegibles. Debajo de 720 px la vista cambia de género: se vuelve una <strong style="font-weight:600">agenda vertical</strong> con encabezados de día pegajosos y una franja de color a la izquierda.</p>
+<div style="display:flex;flex-direction:column;gap:5px;background:#fffdf7;border:1px solid rgba(34,29,21,.12);border-radius:8px;padding:10px">
+<div style="display:flex;gap:9px;align-items:center;padding:6px 7px;border-left:3px solid #5c3b7a;background:#f0e9f5;border-radius:0 5px 5px 0"><span style="font:500 10px/1 'IBM Plex Mono',monospace;color:#5c3b7a;width:26px">dom 20</span><span style="font:600 11px/1.3 'IBM Plex Sans',sans-serif;color:#3c3226">IV Domingo de Adviento</span></div>
+<div style="display:flex;gap:9px;align-items:center;padding:6px 7px;border-left:3px solid #b1872f;background:#fcf5e6;border-radius:0 5px 5px 0"><span style="font:500 10px/1 'IBM Plex Mono',monospace;color:#8a5a1f;width:26px">jue 24</span><span style="font:600 11px/1.3 'IBM Plex Sans',sans-serif;color:#3c3226">Misa de Nochebuena</span></div>
+<div style="display:flex;gap:9px;align-items:center;padding:6px 7px;border-left:3px dashed rgba(107,98,85,.5);border-radius:0 5px 5px 0"><span style="font:500 10px/1 'IBM Plex Mono',monospace;color:#6b6255;width:26px">jue 31</span><span style="font:400 11px/1.3 'IBM Plex Sans',sans-serif;color:#6b6255">Te Deum de fin de año</span></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section id="s-jerarquia" style="border-bottom:1px solid rgba(34,29,21,.12);background:#f1ebdc;scroll-margin-top:64px">
+<div style="max-width:1220px;margin:0 auto;padding:72px 32px">
+<div data-reveal="1" style="display:flex;align-items:baseline;gap:14px;margin:0 0 10px">
+<span style="font:600 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.2em;color:#6b6255">05</span>
+<h2 style="margin:0;font:400 clamp(30px,3.6vw,46px)/1.06 Marcellus,Georgia,serif;letter-spacing:-.01em">Cuatro rangos, cuatro tratamientos</h2>
+</div>
+<p data-reveal="1" style="margin:0 0 40px;max-width:64ch;font:400 18px/1.62 'EB Garamond',Georgia,serif;color:#4a4337">La escala baja de <em>relleno pleno</em> a <em>línea discontinua</em>. Cada peldaño quita una capa visual, nunca añade un color nuevo. Ese es todo el sistema.</p>
+
+<div style="display:flex;flex-direction:column;gap:1px;background:rgba(34,29,21,.13);border:1px solid rgba(34,29,21,.13);border-radius:11px;overflow:hidden">
+<div style="display:grid;grid-template-columns:200px 1fr;gap:0;background:#faf5e9">
+<div style="padding:11px 20px;font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:#6b6255">Rango</div>
+<div style="padding:11px 20px;font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:#6b6255">Tratamiento · cómo se ve en la celda · por qué</div>
+</div>
+
+<div data-reveal="1" style="display:grid;grid-template-columns:200px 1fr;background:#fffdf7;transition:background calc(.25s * var(--m))" style-hover="background:#fdf6e8">
+<div style="padding:22px 20px;border-right:1px solid rgba(34,29,21,.1)">
+<div style="font:400 21px/1.1 Marcellus,Georgia,serif;color:#8a5a1f">Solemnidad</div>
+<div style="margin-top:7px;font:400 12.5px/1.45 'EB Garamond',Georgia,serif;color:#6b6255">Navidad, Guadalupe, los domingos de Adviento</div>
+</div>
+<div style="padding:22px 20px;display:flex;gap:26px;flex-wrap:wrap;align-items:center">
+<div style="flex:none;width:150px;padding:8px;background:#fcf5e6;border-radius:7px;border-top:2px solid #b1872f">
+<div style="font:500 12px/1 'IBM Plex Mono',monospace;color:#8a5a1f;margin-bottom:5px">25</div>
+<div style="display:flex;align-items:center;gap:5px;padding:3px 6px;border-radius:4px;background:#8a5a1f;color:#fffdf7;font:600 10.5px/1.3 'IBM Plex Sans',sans-serif"><span style="width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.85)"></span>Natividad del Señor</div>
+</div>
+<div style="flex:1;min-width:220px;display:flex;flex-direction:column;gap:4px">
+<div style="display:flex;gap:8px;font:400 13.5px/1.5 'EB Garamond',Georgia,serif;color:#5d5548"><span style="font:500 10px/1.7 'IBM Plex Mono',monospace;color:#b1872f;width:62px;flex:none">RELLENO</span>pleno, en el color del día</div>
+<div style="display:flex;gap:8px;font:400 13.5px/1.5 'EB Garamond',Georgia,serif;color:#5d5548"><span style="font:500 10px/1.7 'IBM Plex Mono',monospace;color:#b1872f;width:62px;flex:none">PESO</span>600 · nunca se trunca a mitad de palabra</div>
+<div style="display:flex;gap:8px;font:400 13.5px/1.5 'EB Garamond',Georgia,serif;color:#5d5548"><span style="font:500 10px/1.7 'IBM Plex Mono',monospace;color:#b1872f;width:62px;flex:none">EXTRA</span>en vista de agenda ocupa una fila entera</div>
+</div>
+</div>
+</div>
+
+<div data-reveal="1" style="animation-delay:.06s;display:grid;grid-template-columns:200px 1fr;background:#fffdf7;transition:background calc(.25s * var(--m))" style-hover="background:#fbeeec">
+<div style="padding:22px 20px;border-right:1px solid rgba(34,29,21,.1)">
+<div style="font:400 21px/1.1 Marcellus,Georgia,serif;color:#a02f27">Fiesta</div>
+<div style="margin-top:7px;font:400 12.5px/1.45 'EB Garamond',Georgia,serif;color:#6b6255">San Esteban, la Sagrada Familia, los apóstoles</div>
+</div>
+<div style="padding:22px 20px;display:flex;gap:26px;flex-wrap:wrap;align-items:center">
+<div style="flex:none;width:150px;padding:8px;background:#fcf5e6;border-radius:7px;border-top:2px solid #b1872f">
+<div style="font:500 12px/1 'IBM Plex Mono',monospace;color:#8a5a1f;margin-bottom:5px">26</div>
+<div style="display:flex;align-items:center;gap:5px;padding:3px 6px;border-radius:4px;background:rgba(160,47,39,.12);color:#a02f27;border:1px solid rgba(160,47,39,.33);font:600 10.5px/1.3 'IBM Plex Sans',sans-serif"><span style="width:4px;height:4px;border-radius:50%;background:#a02f27"></span>San Esteban</div>
+</div>
+<div style="flex:1;min-width:220px;display:flex;flex-direction:column;gap:4px">
+<div style="display:flex;gap:8px;font:400 13.5px/1.5 'EB Garamond',Georgia,serif;color:#5d5548"><span style="font:500 10px/1.7 'IBM Plex Mono',monospace;color:#a02f27;width:62px;flex:none">RELLENO</span>tinte al 12 % + borde al 33 %</div>
+<div style="display:flex;gap:8px;font:400 13.5px/1.5 'EB Garamond',Georgia,serif;color:#5d5548"><span style="font:500 10px/1.7 'IBM Plex Mono',monospace;color:#a02f27;width:62px;flex:none">PESO</span>600, pero texto en el color, no blanco</div>
+<div style="display:flex;gap:8px;font:400 13.5px/1.5 'EB Garamond',Georgia,serif;color:#5d5548"><span style="font:500 10px/1.7 'IBM Plex Mono',monospace;color:#a02f27;width:62px;flex:none">POR QUÉ</span>presencia sin robarle el ojo a la Solemnidad</div>
+</div>
+</div>
+</div>
+
+<div data-reveal="1" style="animation-delay:.12s;display:grid;grid-template-columns:200px 1fr;background:#fffdf7;transition:background calc(.25s * var(--m))" style-hover="background:#f5efff">
+<div style="padding:22px 20px;border-right:1px solid rgba(34,29,21,.1)">
+<div style="font:400 21px/1.1 Marcellus,Georgia,serif;color:#5c3b7a">Memoria</div>
+<div style="margin-top:7px;font:400 12.5px/1.45 'EB Garamond',Georgia,serif;color:#6b6255">San Juan Diego, San Francisco Javier</div>
+</div>
+<div style="padding:22px 20px;display:flex;gap:26px;flex-wrap:wrap;align-items:center">
+<div style="flex:none;width:150px;padding:8px;background:#f0e9f5;border-radius:7px;border-top:2px solid #5c3b7a">
+<div style="font:500 12px/1 'IBM Plex Mono',monospace;color:#5c3b7a;margin-bottom:5px">09</div>
+<div style="display:flex;align-items:center;gap:5px;padding:3px 6px;border-radius:4px;color:#8a5a1f;font:500 10.5px/1.3 'IBM Plex Sans',sans-serif"><span style="width:4px;height:4px;border-radius:50%;background:#b1872f"></span>San Juan Diego</div>
+</div>
+<div style="flex:1;min-width:220px;display:flex;flex-direction:column;gap:4px">
+<div style="display:flex;gap:8px;font:400 13.5px/1.5 'EB Garamond',Georgia,serif;color:#5d5548"><span style="font:500 10px/1.7 'IBM Plex Mono',monospace;color:#5c3b7a;width:62px;flex:none">RELLENO</span>ninguno. Solo un punto de 4 px</div>
+<div style="display:flex;gap:8px;font:400 13.5px/1.5 'EB Garamond',Georgia,serif;color:#5d5548"><span style="font:500 10px/1.7 'IBM Plex Mono',monospace;color:#5c3b7a;width:62px;flex:none">PESO</span>500 · texto en color, sin caja</div>
+<div style="display:flex;gap:8px;font:400 13.5px/1.5 'EB Garamond',Georgia,serif;color:#5d5548"><span style="font:500 10px/1.7 'IBM Plex Mono',monospace;color:#5c3b7a;width:62px;flex:none">POR QUÉ</span>hay muchas; una caja por cada una llenaría el mes</div>
+</div>
+</div>
+</div>
+
+<div data-reveal="1" style="animation-delay:.18s;display:grid;grid-template-columns:200px 1fr;background:#fffdf7;transition:background calc(.25s * var(--m))" style-hover="background:#f4f2ee">
+<div style="padding:22px 20px;border-right:1px solid rgba(34,29,21,.1)">
+<div style="font:400 21px/1.1 Marcellus,Georgia,serif;color:#6b6255">Evento parroquial</div>
+<div style="margin-top:7px;font:400 12.5px/1.45 'EB Garamond',Georgia,serif;color:#6b6255">Juntas, pláticas, retiros, posadas, ensayos</div>
+</div>
+<div style="padding:22px 20px;display:flex;gap:26px;flex-wrap:wrap;align-items:center">
+<div style="flex:none;width:150px;padding:8px;background:#f0e9f5;border-radius:7px;border-top:2px solid #5c3b7a">
+<div style="font:500 12px/1 'IBM Plex Mono',monospace;color:#5c3b7a;margin-bottom:5px">18</div>
+<div style="display:flex;align-items:center;gap:5px;padding:3px 6px;border-radius:4px;border:1px dashed rgba(107,98,85,.45);color:#6b6255;font:400 10.5px/1.3 'IBM Plex Sans',sans-serif">Posada juvenil</div>
+</div>
+<div style="flex:1;min-width:220px;display:flex;flex-direction:column;gap:4px">
+<div style="display:flex;gap:8px;font:400 13.5px/1.5 'EB Garamond',Georgia,serif;color:#5d5548"><span style="font:500 10px/1.7 'IBM Plex Mono',monospace;color:#6b6255;width:62px;flex:none">RELLENO</span>ninguno. Borde discontinuo, gris grafito</div>
+<div style="display:flex;gap:8px;font:400 13.5px/1.5 'EB Garamond',Georgia,serif;color:#5d5548"><span style="font:500 10px/1.7 'IBM Plex Mono',monospace;color:#6b6255;width:62px;flex:none">PESO</span>400 · fuera de la paleta litúrgica, a propósito</div>
+<div style="display:flex;gap:8px;font:400 13.5px/1.5 'EB Garamond',Georgia,serif;color:#5d5548"><span style="font:500 10px/1.7 'IBM Plex Mono',monospace;color:#6b6255;width:62px;flex:none">POR QUÉ</span>una junta de catequistas no es una celebración de la Iglesia</div>
+</div>
+</div>
+</div>
+</div>
+
+<div data-reveal="1" style="margin:28px 0 0;padding:24px 26px;background:#2a241a;border-radius:11px;display:flex;gap:26px;flex-wrap:wrap;align-items:center">
+<div style="flex:1;min-width:280px">
+<div style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.18em;text-transform:uppercase;color:#c9a961;margin-bottom:10px">La prueba de los ojos entrecerrados</div>
+<p style="margin:0;font:400 15.5px/1.6 'EB Garamond',Georgia,serif;color:#cfc7b5">Entrecierra los ojos frente a la cuadrícula de arriba. Deberías seguir viendo tres cosas: dónde cambia el tiempo litúrgico, cuáles son los días grandes, y que hay <em>algo</em> los demás días. Si ves más que eso, sobra información.</p>
+</div>
+<div style="flex:none;display:flex;gap:5px">
+<span style="width:34px;height:52px;border-radius:5px;background:#5c3b7a;opacity:.28"></span>
+<span style="width:34px;height:52px;border-radius:5px;background:#5c3b7a;opacity:.28"></span>
+<span style="width:34px;height:52px;border-radius:5px;background:#c06f8d;opacity:.28"></span>
+<span style="width:34px;height:52px;border-radius:5px;background:#b1872f;opacity:.9"></span>
+<span style="width:34px;height:52px;border-radius:5px;background:#b1872f;opacity:.28"></span>
+</div>
+</div>
+</div>
+</section>
+
+<section id="s-admin" style="border-bottom:1px solid rgba(34,29,21,.12);scroll-margin-top:64px">
+<div style="max-width:1220px;margin:0 auto;padding:72px 32px">
+<div data-reveal="1" style="display:flex;align-items:baseline;gap:14px;margin:0 0 10px">
+<span style="font:600 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.2em;color:#6b6255">06</span>
+<h2 style="margin:0;font:400 clamp(30px,3.6vw,46px)/1.06 Marcellus,Georgia,serif;letter-spacing:-.01em">El panel del párroco</h2>
+</div>
+<p data-reveal="1" style="margin:0 0 26px;max-width:64ch;font:400 18px/1.62 'EB Garamond',Georgia,serif;color:#4a4337">Tres pantallas, y la tercera es la que gana confianza: <em>ver a dónde se fue</em>. Recorre los pasos.</p>
+
+<div data-reveal="1" style="display:flex;gap:7px;margin:0 0 18px;flex-wrap:wrap">
+<button type="button" onClick="{{ goAdmin0 }}" style="font:500 11.5px/1 'IBM Plex Sans',system-ui,sans-serif;padding:9px 14px;border-radius:7px;cursor:pointer;border:1px solid rgba(34,29,21,.16);transition:all calc(.2s * var(--m));background:{{ tab0bg }};color:{{ tab0fg }}">1 · Los eventos del mes</button>
+<button type="button" onClick="{{ goAdmin1 }}" style="font:500 11.5px/1 'IBM Plex Sans',system-ui,sans-serif;padding:9px 14px;border-radius:7px;cursor:pointer;border:1px solid rgba(34,29,21,.16);transition:all calc(.2s * var(--m));background:{{ tab1bg }};color:{{ tab1fg }}">2 · Publicar uno nuevo</button>
+<button type="button" onClick="{{ goAdmin2 }}" style="font:500 11.5px/1 'IBM Plex Sans',system-ui,sans-serif;padding:9px 14px;border-radius:7px;cursor:pointer;border:1px solid rgba(34,29,21,.16);transition:all calc(.2s * var(--m));background:{{ tab2bg }};color:{{ tab2fg }}">3 · A dónde se fue</button>
+</div>
+
+<div data-reveal="1" style="border:1px solid rgba(34,29,21,.18);border-radius:12px;overflow:hidden;box-shadow:0 14px 38px rgba(34,29,21,.1);background:#fffdf7">
+<div style="display:flex;align-items:center;gap:9px;padding:11px 15px;background:#e9e2d2;border-bottom:1px solid rgba(34,29,21,.13)">
+<span style="width:11px;height:11px;border-radius:50%;background:#c9695f"></span>
+<span style="width:11px;height:11px;border-radius:50%;background:#d3ab52"></span>
+<span style="width:11px;height:11px;border-radius:50%;background:#7ba86a"></span>
+<span style="margin-left:12px;flex:1;max-width:340px;padding:5px 11px;border-radius:6px;background:#fdfaf2;border:1px solid rgba(34,29,21,.12);font:400 10.5px/1.4 'IBM Plex Mono',monospace;color:#6b6255">parroquia.mx/admin/eventos</span>
+<span style="font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#6b6255">P. MIGUEL · PÁRROCO</span>
+</div>
+
+<sc-if value="{{ adminIsList }}" hint-placeholder-val="{{ true }}">
+<div style="padding:24px 26px;animation:dcSlide calc(.34s * var(--m)) cubic-bezier(.16,.84,.24,1) both">
+<div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;flex-wrap:wrap">
+<div style="font:400 24px/1.1 Marcellus,Georgia,serif">Diciembre 2026</div>
+<span style="font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;padding:5px 9px;border-radius:5px;background:#ecf5f0;color:#2f6b4f;border:1px solid rgba(47,107,79,.28)">24 PUBLICADOS</span>
+<span style="font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;padding:5px 9px;border-radius:5px;background:#fdf6e8;color:#8a5a1f;border:1px solid rgba(177,135,47,.34)">2 BORRADORES</span>
+<button type="button" onClick="{{ goAdmin1 }}" style="margin-left:auto;font:600 11.5px/1 'IBM Plex Sans',system-ui,sans-serif;padding:11px 16px;border-radius:7px;border:none;background:#2a241a;color:#fbf7ee;cursor:pointer;transition:transform calc(.2s * var(--m))" style-hover="transform:translateY(-1px)">+ Nuevo evento</button>
+</div>
+<div style="border:1px solid rgba(34,29,21,.12);border-radius:9px;overflow:hidden">
+<div style="display:grid;grid-template-columns:64px 1fr 150px 118px 96px;padding:10px 14px;background:#faf5e9;font:600 10px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:#6b6255;border-bottom:1px solid rgba(34,29,21,.11)">
+<span>Día</span><span>Evento</span><span>Grupo</span><span>Rango</span><span>Difusión</span>
+</div>
+<div style="display:grid;grid-template-columns:64px 1fr 150px 118px 96px;padding:13px 14px;align-items:center;border-bottom:1px solid rgba(34,29,21,.08);transition:background calc(.2s * var(--m))" style-hover="background:#faf5e9">
+<span style="font:500 12px/1 'IBM Plex Mono',monospace;color:#8a5a1f">12</span>
+<span style="font:600 13px/1.3 'IBM Plex Sans',system-ui,sans-serif">Nuestra Señora de Guadalupe</span>
+<span style="font:400 11.5px/1 'IBM Plex Sans',system-ui,sans-serif;color:#6b6255">Toda la parroquia</span>
+<span style="font:500 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#8a5a1f">SOLEMNIDAD</span>
+<span style="display:flex;align-items:center;gap:5px;font:500 10px/1 'IBM Plex Mono',monospace;color:#2f6b4f"><span style="width:6px;height:6px;border-radius:50%;background:#2f6b4f"></span>4/4</span>
+</div>
+<div style="display:grid;grid-template-columns:64px 1fr 150px 118px 96px;padding:13px 14px;align-items:center;border-bottom:1px solid rgba(34,29,21,.08);transition:background calc(.2s * var(--m))" style-hover="background:#faf5e9">
+<span style="font:500 12px/1 'IBM Plex Mono',monospace;color:#5c3b7a">13</span>
+<span style="font:600 13px/1.3 'IBM Plex Sans',system-ui,sans-serif">III Domingo · Gaudete</span>
+<span style="font:400 11.5px/1 'IBM Plex Sans',system-ui,sans-serif;color:#6b6255">Toda la parroquia</span>
+<span style="font:500 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#8a5a1f">SOLEMNIDAD</span>
+<span style="display:flex;align-items:center;gap:5px;font:500 10px/1 'IBM Plex Mono',monospace;color:#2f6b4f"><span style="width:6px;height:6px;border-radius:50%;background:#2f6b4f"></span>4/4</span>
+</div>
+<div style="display:grid;grid-template-columns:64px 1fr 150px 118px 96px;padding:13px 14px;align-items:center;border-bottom:1px solid rgba(34,29,21,.08);background:#fdf6e8;transition:background calc(.2s * var(--m))" style-hover="background:#fbf0d9">
+<span style="font:500 12px/1 'IBM Plex Mono',monospace;color:#5c3b7a">18</span>
+<span style="display:flex;align-items:center;gap:9px;font:600 13px/1.3 'IBM Plex Sans',system-ui,sans-serif">Posada del grupo juvenil<span style="font:500 8.5px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;padding:3px 6px;border-radius:4px;background:#8a5a1f;color:#fff">BORRADOR</span></span>
+<span style="font:400 11.5px/1 'IBM Plex Sans',system-ui,sans-serif;color:#6b6255">Pastoral juvenil</span>
+<span style="font:500 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#6b6255">PARROQUIAL</span>
+<span style="font:500 10px/1 'IBM Plex Mono',monospace;color:#6b6255">—</span>
+</div>
+<div style="display:grid;grid-template-columns:64px 1fr 150px 118px 96px;padding:13px 14px;align-items:center;transition:background calc(.2s * var(--m))" style-hover="background:#faf5e9">
+<span style="font:500 12px/1 'IBM Plex Mono',monospace;color:#8a5a1f">24</span>
+<span style="font:600 13px/1.3 'IBM Plex Sans',system-ui,sans-serif">Misa de Nochebuena</span>
+<span style="font:400 11.5px/1 'IBM Plex Sans',system-ui,sans-serif;color:#6b6255">Toda la parroquia</span>
+<span style="font:500 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#8a5a1f">SOLEMNIDAD</span>
+<span style="display:flex;align-items:center;gap:5px;font:500 10px/1 'IBM Plex Mono',monospace;color:#a02f27"><span style="width:6px;height:6px;border-radius:50%;background:#a02f27;animation:dcPulse calc(2s * var(--m)) ease-in-out infinite"></span>3/4</span>
+</div>
+</div>
+<p style="margin:16px 0 0;font:400 14px/1.55 'EB Garamond',Georgia,serif;color:#5d5548;max-width:70ch">La columna de <strong style="font-weight:600">difusión</strong> es el único indicador que el párroco realmente mira. Un <code style="font:500 12px/1 'IBM Plex Mono',monospace;color:#a02f27">3/4</code> en rojo significa «un grupo no recibió» y es clicable hasta el error concreto del proveedor.</p>
+</div>
+</sc-if>
+
+<sc-if value="{{ adminIsForm }}" hint-placeholder-val="{{ false }}">
+<div style="padding:24px 26px;animation:dcSlide calc(.34s * var(--m)) cubic-bezier(.16,.84,.24,1) both">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:26px;align-items:start">
+<div>
+<div style="font:400 24px/1.1 Marcellus,Georgia,serif;margin-bottom:20px">Nuevo evento</div>
+<div style="display:flex;flex-direction:column;gap:16px">
+<div>
+<label style="display:block;font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#6b6255;margin-bottom:7px">Título</label>
+<div style="padding:12px 13px;border:1px solid rgba(34,29,21,.2);border-radius:7px;background:#fdfaf2;font:500 14px/1.3 'IBM Plex Sans',system-ui,sans-serif">Posada del grupo juvenil</div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+<div>
+<label style="display:block;font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#6b6255;margin-bottom:7px">Inicia</label>
+<div style="padding:12px 13px;border:1px solid rgba(34,29,21,.2);border-radius:7px;background:#fdfaf2;font:500 13px/1.3 'IBM Plex Mono',monospace">18 dic 2026 · 20:00</div>
+</div>
+<div>
+<label style="display:block;font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#6b6255;margin-bottom:7px">Termina</label>
+<div style="padding:12px 13px;border:1px solid rgba(34,29,21,.2);border-radius:7px;background:#fdfaf2;font:500 13px/1.3 'IBM Plex Mono',monospace">18 dic 2026 · 22:30</div>
+</div>
+</div>
+<div>
+<label style="display:block;font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#6b6255;margin-bottom:7px">Grupo parroquial</label>
+<div style="display:flex;gap:7px;flex-wrap:wrap">
+<span style="font:500 11.5px/1 'IBM Plex Sans',system-ui,sans-serif;padding:9px 13px;border-radius:20px;background:#2f6b4f;color:#fff">Pastoral juvenil</span>
+<span style="font:500 11.5px/1 'IBM Plex Sans',system-ui,sans-serif;padding:9px 13px;border-radius:20px;border:1px solid rgba(34,29,21,.18);color:#6b6255;cursor:pointer;transition:all calc(.2s * var(--m))" style-hover="border-color:#2f6b4f;color:#2f6b4f">Catequesis</span>
+<span style="font:500 11.5px/1 'IBM Plex Sans',system-ui,sans-serif;padding:9px 13px;border-radius:20px;border:1px solid rgba(34,29,21,.18);color:#6b6255;cursor:pointer;transition:all calc(.2s * var(--m))" style-hover="border-color:#2f6b4f;color:#2f6b4f">Coro</span>
+<span style="font:500 11.5px/1 'IBM Plex Sans',system-ui,sans-serif;padding:9px 13px;border-radius:20px;border:1px solid rgba(34,29,21,.18);color:#6b6255;cursor:pointer;transition:all calc(.2s * var(--m))" style-hover="border-color:#2f6b4f;color:#2f6b4f">Toda la parroquia</span>
+</div>
+</div>
+<div>
+<label style="display:block;font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#6b6255;margin-bottom:7px">Rango</label>
+<div style="display:flex;gap:0;border:1px solid rgba(34,29,21,.18);border-radius:7px;overflow:hidden;width:fit-content">
+<span style="font:500 11.5px/1 'IBM Plex Sans',system-ui,sans-serif;padding:10px 14px;color:#6b6255;cursor:pointer;border-right:1px solid rgba(34,29,21,.13)">Solemnidad</span>
+<span style="font:500 11.5px/1 'IBM Plex Sans',system-ui,sans-serif;padding:10px 14px;color:#6b6255;cursor:pointer;border-right:1px solid rgba(34,29,21,.13)">Fiesta</span>
+<span style="font:500 11.5px/1 'IBM Plex Sans',system-ui,sans-serif;padding:10px 14px;color:#6b6255;cursor:pointer;border-right:1px solid rgba(34,29,21,.13)">Memoria</span>
+<span style="font:600 11.5px/1 'IBM Plex Sans',system-ui,sans-serif;padding:10px 14px;background:#2a241a;color:#fbf7ee">Parroquial</span>
+</div>
+<p style="margin:9px 0 0;font:400 13.5px/1.5 'EB Garamond',Georgia,serif;color:#6b6255">El color no se elige aquí: lo hereda del tiempo litúrgico. Solo una fiesta patronal puede pedir un <code style="font:500 12px/1 'IBM Plex Mono',monospace;color:#8a5a1f">color_override</code>, y aparece como opción avanzada.</p>
+</div>
+</div>
+</div>
+<div style="background:#faf5e9;border:1px solid rgba(34,29,21,.13);border-radius:9px;padding:19px">
+<div style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:#8a5a1f;margin-bottom:15px">Al guardar se difunde a</div>
+<div style="display:flex;flex-direction:column;gap:11px">
+<div style="display:flex;gap:10px;align-items:center;padding:11px;background:#fffdf7;border:1px solid rgba(34,29,21,.12);border-radius:7px">
+<span style="width:8px;height:8px;border-radius:50%;background:#2f6b4f;flex:none"></span>
+<div style="flex:1;min-width:0"><div style="font:600 12px/1.3 'IBM Plex Sans',system-ui,sans-serif">Grupo WA · Juvenil</div><div style="font:400 10px/1.3 'IBM Plex Mono',monospace;color:#6b6255">62 integrantes</div></div>
+</div>
+<div style="display:flex;gap:10px;align-items:center;padding:11px;background:#fffdf7;border:1px solid rgba(34,29,21,.12);border-radius:7px">
+<span style="width:8px;height:8px;border-radius:50%;background:#2f6b4f;flex:none"></span>
+<div style="flex:1;min-width:0"><div style="font:600 12px/1.3 'IBM Plex Sans',system-ui,sans-serif">Grupo WA · Avisos</div><div style="font:400 10px/1.3 'IBM Plex Mono',monospace;color:#6b6255">248 integrantes</div></div>
+</div>
+<div style="display:flex;gap:10px;align-items:center;padding:11px;background:#fffdf7;border:1px dashed rgba(34,29,21,.22);border-radius:7px;opacity:.6">
+<span style="width:8px;height:8px;border-radius:50%;border:1.5px solid #6b6255;flex:none"></span>
+<div style="flex:1;min-width:0"><div style="font:500 12px/1.3 'IBM Plex Sans',system-ui,sans-serif;color:#6b6255">Boletín semanal</div><div style="font:400 10px/1.3 'IBM Plex Mono',monospace;color:#6b6255">agrupado, sale el viernes</div></div>
+</div>
+</div>
+<button type="button" onClick="{{ goAdmin2 }}" style="width:100%;margin-top:17px;font:600 12.5px/1 'IBM Plex Sans',system-ui,sans-serif;padding:13px;border-radius:7px;border:none;background:#2f6b4f;color:#fff;cursor:pointer;transition:transform calc(.2s * var(--m)),box-shadow calc(.2s * var(--m))" style-hover="transform:translateY(-2px);box-shadow:0 8px 20px rgba(47,107,79,.32)">Publicar y difundir</button>
+<button type="button" onClick="{{ goAdmin0 }}" style="width:100%;margin-top:8px;font:500 12px/1 'IBM Plex Sans',system-ui,sans-serif;padding:11px;border-radius:7px;border:1px solid rgba(34,29,21,.18);background:none;color:#6b6255;cursor:pointer">Guardar como borrador</button>
+<p style="margin:14px 0 0;font:400 13px/1.5 'EB Garamond',Georgia,serif;color:#6b6255">Borrador = no difunde y no aparece en la web. Es el único freno de emergencia que necesita.</p>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ adminIsSent }}" hint-placeholder-val="{{ false }}">
+<div style="padding:24px 26px;animation:dcSlide calc(.34s * var(--m)) cubic-bezier(.16,.84,.24,1) both">
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">
+<span style="width:26px;height:26px;border-radius:50%;background:#2f6b4f;display:flex;align-items:center;justify-content:center;color:#fff;font:600 13px/1 'IBM Plex Sans',sans-serif">✓</span>
+<div style="font:400 24px/1.1 Marcellus,Georgia,serif">Publicado y en camino</div>
+</div>
+<p style="margin:0 0 22px;font:400 15px/1.6 'EB Garamond',Georgia,serif;color:#5d5548;max-width:66ch">La web ya se revalidó. La difusión entra escalonada para no levantar sospechas en WhatsApp; cada renglón se actualiza solo.</p>
+<div style="display:flex;flex-direction:column;gap:10px;max-width:640px">
+<div style="display:flex;gap:13px;align-items:center;padding:14px 16px;background:#ecf5f0;border:1px solid rgba(47,107,79,.24);border-radius:8px">
+<span style="width:9px;height:9px;border-radius:50%;background:#2f6b4f;flex:none"></span>
+<span style="flex:1;font:600 13px/1.3 'IBM Plex Sans',system-ui,sans-serif">Grupo WA · Juvenil</span>
+<span style="font:500 10.5px/1 'IBM Plex Mono',monospace;color:#2f6b4f;letter-spacing:.08em">ENTREGADO · 20:04:12</span>
+</div>
+<div style="display:flex;gap:13px;align-items:center;padding:14px 16px;background:#fdf6e8;border:1px solid rgba(177,135,47,.3);border-radius:8px">
+<span style="width:9px;height:9px;border-radius:50%;background:#b1872f;flex:none;animation:dcPulse calc(1.6s * var(--m)) ease-in-out infinite"></span>
+<span style="flex:1;font:600 13px/1.3 'IBM Plex Sans',system-ui,sans-serif">Grupo WA · Avisos</span>
+<span style="font:500 10.5px/1 'IBM Plex Mono',monospace;color:#8a5a1f;letter-spacing:.08em">EN COLA · sale en 8 s</span>
+</div>
+<div style="display:flex;gap:13px;align-items:center;padding:14px 16px;background:#f4f2ee;border:1px dashed rgba(34,29,21,.2);border-radius:8px">
+<span style="width:9px;height:9px;border-radius:50%;border:1.5px solid #6b6255;flex:none"></span>
+<span style="flex:1;font:500 13px/1.3 'IBM Plex Sans',system-ui,sans-serif;color:#6b6255">Boletín semanal · 812 correos</span>
+<span style="font:500 10.5px/1 'IBM Plex Mono',monospace;color:#6b6255;letter-spacing:.08em">AGRUPADO · viernes 07:00</span>
+</div>
+<div style="display:flex;gap:13px;align-items:flex-start;padding:14px 16px;background:#fbeeec;border:1px solid rgba(160,47,39,.28);border-radius:8px">
+<span style="width:9px;height:9px;border-radius:50%;background:#a02f27;flex:none;margin-top:4px"></span>
+<div style="flex:1">
+<div style="font:600 13px/1.3 'IBM Plex Sans',system-ui,sans-serif">Grupo WA · Coro</div>
+<div style="margin-top:4px;font:400 11px/1.4 'IBM Plex Mono',monospace;color:#a02f27">provider: group not found (jid caducado) · reintento 2/5</div>
+</div>
+<span style="font:500 10.5px/1 'IBM Plex Mono',monospace;color:#a02f27;letter-spacing:.08em;flex:none">FALLÓ</span>
+</div>
+</div>
+<div style="margin-top:22px;display:flex;gap:16px;flex-wrap:wrap">
+<div style="flex:1;min-width:250px;padding:18px;background:#2a241a;border-radius:9px;color:#f4efe3">
+<div style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:#c9a961;margin-bottom:10px">Borrar también difunde</div>
+<p style="margin:0;font:400 14.5px/1.55 'EB Garamond',Georgia,serif;color:#cfc7b5">Si el párroco cancela una misa, el silencio es peor que el aviso. Borrar dispara un mensaje de <em>cancelación</em> a los mismos canales que recibieron el original — se sabe cuáles porque están en <code style="font:500 12px/1 'IBM Plex Mono',monospace;color:#c9a961">broadcasts</code>.</p>
+</div>
+<div style="flex:1;min-width:250px;padding:18px;background:#fdf6e8;border:1px solid rgba(177,135,47,.32);border-radius:9px">
+<div style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:#8a5a1f;margin-bottom:10px">Editar no siempre difunde</div>
+<p style="margin:0;font:400 14.5px/1.55 'EB Garamond',Georgia,serif;color:#5d5548">Cambiar una coma no merece un WhatsApp. Solo <strong style="font-weight:600">fecha, hora, lugar o cancelación</strong> disparan aviso; el resto se guarda en silencio. La regla vive en el backend, no en un checkbox que alguien olvide.</p>
+</div>
+</div>
+</div>
+</sc-if>
+</div>
+</div>
+</section>
+
+<section id="s-libs" style="border-bottom:1px solid rgba(34,29,21,.12);background:#f1ebdc;scroll-margin-top:64px">
+<div style="max-width:1220px;margin:0 auto;padding:72px 32px">
+<div data-reveal="1" style="display:flex;align-items:baseline;gap:14px;margin:0 0 10px">
+<span style="font:600 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.2em;color:#6b6255">07</span>
+<h2 style="margin:0;font:400 clamp(30px,3.6vw,46px)/1.06 Marcellus,Georgia,serif;letter-spacing:-.01em">Tres librerías y una advertencia</h2>
+</div>
+<p data-reveal="1" style="margin:0 0 40px;max-width:64ch;font:400 18px/1.62 'EB Garamond',Georgia,serif;color:#4a4337">La pregunta correcta no es «¿cuál es mejor?» sino «¿cuánto control me deja sobre el interior de la celda?». Todo el diseño de arriba vive ahí.</p>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:18px;align-items:start">
+<div data-reveal="1" style="background:#fffdf7;border:2px solid #2f6b4f;border-radius:11px;overflow:hidden;transition:transform calc(.3s * var(--m)) cubic-bezier(.16,.84,.24,1),box-shadow calc(.3s * var(--m))" style-hover="transform:translateY(-5px);box-shadow:0 18px 36px rgba(34,29,21,.13)">
+<div style="padding:6px 16px;background:#2f6b4f;font:600 9px/1 'IBM Plex Mono',monospace;letter-spacing:.18em;text-transform:uppercase;color:#fff;display:flex;justify-content:space-between;align-items:center"><span>Mi recomendación</span><span style="letter-spacing:.06em">MIT</span></div>
+<div style="padding:22px">
+<div style="font:400 25px/1.1 Marcellus,Georgia,serif;margin-bottom:5px">Schedule-X</div>
+<div style="font:500 10.5px/1 'IBM Plex Mono',monospace;color:#6b6255;letter-spacing:.06em;margin-bottom:16px">~40 KB · agnóstico de framework</div>
+<p style="margin:0 0 16px;font:400 15px/1.6 'EB Garamond',Georgia,serif;color:#5d5548">Se monta como isla en Astro sin arrastrar React al bundle público, y su API de <em>custom components</em> deja reemplazar el contenido de la celda del mes por tu propio marcado. Es exactamente el punto de control que este diseño necesita.</p>
+<div style="display:flex;flex-direction:column;gap:7px">
+<div style="display:flex;gap:9px;font:400 13.5px/1.45 'EB Garamond',Georgia,serif;color:#4a4337"><span style="color:#2f6b4f;flex:none;font-weight:600">+</span>Ligero, moderno, tematizable por variables CSS</div>
+<div style="display:flex;gap:9px;font:400 13.5px/1.45 'EB Garamond',Georgia,serif;color:#4a4337"><span style="color:#2f6b4f;flex:none;font-weight:600">+</span>Vistas mes / semana / agenda con la misma configuración</div>
+<div style="display:flex;gap:9px;font:400 13.5px/1.45 'EB Garamond',Georgia,serif;color:#4a4337"><span style="color:#a02f27;flex:none;font-weight:600">−</span>Comunidad más joven; algunos extras son de pago</div>
+</div>
+</div>
+</div>
+
+<div data-reveal="1" style="animation-delay:.08s;background:#fffdf7;border:1px solid rgba(34,29,21,.15);border-radius:11px;overflow:hidden;transition:transform calc(.3s * var(--m)) cubic-bezier(.16,.84,.24,1),box-shadow calc(.3s * var(--m))" style-hover="transform:translateY(-5px);box-shadow:0 18px 36px rgba(34,29,21,.13)">
+<div style="padding:6px 16px;background:#e9e2d2;font:600 9px/1 'IBM Plex Mono',monospace;letter-spacing:.18em;text-transform:uppercase;color:#6b6255;display:flex;justify-content:space-between;align-items:center"><span>La apuesta segura</span><span style="letter-spacing:.06em">MIT + premium</span></div>
+<div style="padding:22px">
+<div style="font:400 25px/1.1 Marcellus,Georgia,serif;margin-bottom:5px">FullCalendar</div>
+<div style="font:500 10.5px/1 'IBM Plex Mono',monospace;color:#6b6255;letter-spacing:.06em;margin-bottom:16px">~200 KB · adaptador oficial de React</div>
+<p style="margin:0 0 16px;font:400 15px/1.6 'EB Garamond',Georgia,serif;color:#5d5548">Quince años de casos límite ya resueltos: zonas horarias, recurrencia, eventos que cruzan medianoche. <code style="font:500 12.5px/1 'IBM Plex Mono',monospace;color:#8a5a1f">eventContent</code> y <code style="font:500 12.5px/1 'IBM Plex Mono',monospace;color:#8a5a1f">dayCellClassNames</code> dan todo el control que necesitas.</p>
+<div style="display:flex;flex-direction:column;gap:7px">
+<div style="display:flex;gap:9px;font:400 13.5px/1.45 'EB Garamond',Georgia,serif;color:#4a4337"><span style="color:#2f6b4f;flex:none;font-weight:600">+</span>Feed <code style="font:500 12px/1 'IBM Plex Mono',monospace">.ics</code> y recurrencia listos de fábrica</div>
+<div style="display:flex;gap:9px;font:400 13.5px/1.45 'EB Garamond',Georgia,serif;color:#4a4337"><span style="color:#2f6b4f;flex:none;font-weight:600">+</span>Accesibilidad y i18n en español muy trabajadas</div>
+<div style="display:flex;gap:9px;font:400 13.5px/1.45 'EB Garamond',Georgia,serif;color:#4a4337"><span style="color:#a02f27;flex:none;font-weight:600">−</span>Pesado para una página pública; su CSS pelea con el tuyo</div>
+</div>
+</div>
+</div>
+
+<div data-reveal="1" style="animation-delay:.16s;background:#fffdf7;border:1px solid rgba(34,29,21,.15);border-radius:11px;overflow:hidden;transition:transform calc(.3s * var(--m)) cubic-bezier(.16,.84,.24,1),box-shadow calc(.3s * var(--m))" style-hover="transform:translateY(-5px);box-shadow:0 18px 36px rgba(34,29,21,.13)">
+<div style="padding:6px 16px;background:#e9e2d2;font:600 9px/1 'IBM Plex Mono',monospace;letter-spacing:.18em;text-transform:uppercase;color:#6b6255;display:flex;justify-content:space-between;align-items:center"><span>Si eliges Next.js</span><span style="letter-spacing:.06em">MIT</span></div>
+<div style="padding:22px">
+<div style="font:400 25px/1.1 Marcellus,Georgia,serif;margin-bottom:5px">react-big-calendar</div>
+<div style="font:500 10.5px/1 'IBM Plex Mono',monospace;color:#6b6255;letter-spacing:.06em;margin-bottom:16px">~90 KB · React puro</div>
+<p style="margin:0 0 16px;font:400 15px/1.6 'EB Garamond',Georgia,serif;color:#5d5548">Su sistema de <code style="font:500 12.5px/1 'IBM Plex Mono',monospace;color:#8a5a1f">components</code> permite sustituir celda, encabezado y evento por componentes propios. Es lo más cercano a escribir tu propia cuadrícula sin escribirla.</p>
+<div style="display:flex;flex-direction:column;gap:7px">
+<div style="display:flex;gap:9px;font:400 13.5px/1.45 'EB Garamond',Georgia,serif;color:#4a4337"><span style="color:#2f6b4f;flex:none;font-weight:600">+</span>Control total del render, API pequeña</div>
+<div style="display:flex;gap:9px;font:400 13.5px/1.45 'EB Garamond',Georgia,serif;color:#4a4337"><span style="color:#2f6b4f;flex:none;font-weight:600">+</span>Se integra con date-fns o Luxon, sin envolver fechas</div>
+<div style="display:flex;gap:9px;font:400 13.5px/1.45 'EB Garamond',Georgia,serif;color:#4a4337"><span style="color:#a02f27;flex:none;font-weight:600">−</span>Ata la web pública a React; su estética base pide ser reescrita</div>
+</div>
+</div>
+</div>
+</div>
+
+<div data-reveal="1" style="margin:26px 0 0;padding:26px 28px;background:#2a241a;border-radius:11px;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:26px">
+<div>
+<div style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.18em;text-transform:uppercase;color:#e08b83;margin-bottom:12px">La advertencia</div>
+<p style="margin:0;font:400 15.5px/1.6 'EB Garamond',Georgia,serif;color:#cfc7b5">Estas librerías existen para calendarios <em>editables</em>: arrastrar, redimensionar, resolver choques. Tú no necesitas nada de eso en la vista pública. Una cuadrícula de mes de solo lectura son unas 40 líneas de <code style="font:500 12.5px/1 'IBM Plex Mono',monospace;color:#c9a961">grid-template-columns:repeat(7,1fr)</code> — la que estás viendo en la sección 04 no usa ninguna librería.</p>
+</div>
+<div>
+<div style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.18em;text-transform:uppercase;color:#c9a961;margin-bottom:12px">Lo que yo haría</div>
+<p style="margin:0;font:400 15.5px/1.6 'EB Garamond',Georgia,serif;color:#cfc7b5">Cuadrícula propia en la web pública — cero JS, cero conflicto de CSS, control absoluto del diseño. Y <strong style="color:#fbf7ee;font-weight:600">FullCalendar solo dentro de <code style="font:500 12.5px/1 'IBM Plex Mono',monospace;color:#c9a961">/admin</code></strong>, donde arrastrar y soltar sí vale su peso y nadie mide los kilobytes.</p>
+</div>
+</div>
+</div>
+</section>
+
+<footer style="background:#fffdf7">
+<div style="max-width:1220px;margin:0 auto;padding:66px 32px 76px">
+<div data-reveal="1" style="display:flex;align-items:baseline;gap:14px;margin:0 0 26px">
+<span style="font:600 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.2em;color:#6b6255">08</span>
+<h2 style="margin:0;font:400 clamp(26px,3vw,36px)/1.08 Marcellus,Georgia,serif;letter-spacing:-.01em">Qué decidir después</h2>
+</div>
+<div data-reveal="1" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px">
+<div style="background:#fffdf7;border:1px solid rgba(34,29,21,.14);border-radius:10px;padding:22px"><div style="font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#8a5a1f;margin-bottom:10px">SIGUIENTE</div><div style="font:600 14px/1.35 'IBM Plex Sans',system-ui,sans-serif;margin-bottom:7px">Elegir el proveedor de WhatsApp</div><p style="margin:0;font:400 14px/1.5 'EB Garamond',Georgia,serif;color:#5d5548">Es la única decisión con riesgo real de bloqueo. Todo lo demás es reversible.</p></div>
+<div style="background:#fffdf7;border:1px solid rgba(34,29,21,.14);border-radius:10px;padding:22px"><div style="font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#8a5a1f;margin-bottom:10px">SIGUIENTE</div><div style="font:600 14px/1.35 'IBM Plex Sans',system-ui,sans-serif;margin-bottom:7px">Cargar los tiempos de 2027</div><p style="margin:0;font:400 14px/1.5 'EB Garamond',Georgia,serif;color:#5d5548">Cinco rangos de fecha por año. Un <em>seed</em> a mano basta hasta que quieras Pascua calculada.</p></div>
+<div style="background:#fffdf7;border:1px solid rgba(34,29,21,.14);border-radius:10px;padding:22px"><div style="font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#8a5a1f;margin-bottom:10px">SIGUIENTE</div><div style="font:600 14px/1.35 'IBM Plex Sans',system-ui,sans-serif;margin-bottom:7px">Redactar la plantilla del mensaje</div><p style="margin:0;font:400 14px/1.5 'EB Garamond',Georgia,serif;color:#5d5548">Cómo suena un aviso de misa en WhatsApp importa más que el esquema. Es diseño de copy.</p></div>
+<div style="background:#fdf6e8;border:1px solid rgba(177,135,47,.34);border-radius:10px;padding:22px"><div style="font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#8a5a1f;margin-bottom:10px">SI LO PIDES</div><div style="font:600 14px/1.35 'IBM Plex Sans',system-ui,sans-serif;margin-bottom:7px">Un DESIGN.md de este sistema</div><p style="margin:0;font:400 14px/1.5 'EB Garamond',Georgia,serif;color:#5d5548">Tokens, tipografía, reglas de celda y motion — en el formato que le pasas a tu agente de código.</p></div>
+</div>
+<div data-reveal="1" style="margin:34px 0 0;padding-top:24px;border-top:1px solid rgba(34,29,21,.13);display:flex;gap:18px;flex-wrap:wrap;align-items:baseline;justify-content:space-between">
+<span style="font:400 12px/1.5 'IBM Plex Mono',monospace;color:#6b6255">Blueprint arquitectónico · Calendario Pastoral · panorámica para decidir</span>
+<span style="font:400 12px/1.5 'IBM Plex Mono',monospace;color:#6b6255">Astro · Go · PostgreSQL · asynq</span>
+</div>
+</div>
+</footer>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;motion&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:8,&quot;min&quot;:0,&quot;max&quot;:10,&quot;step&quot;:1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Documento&quot;},&quot;acento&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#b1872f&quot;,&quot;options&quot;:[&quot;#b1872f&quot;,&quot;#5c3b7a&quot;,&quot;#2f6b4f&quot;,&quot;#a02f27&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Documento&quot;}}">
+const SEA = {
+  adviento: { n: 'Adviento', c: '#5c3b7a', s: '#f0e9f5', t: '#5c3b7a' },
+  gaudete:  { n: 'Adviento · Gaudete', c: '#c06f8d', s: '#fbeef2', t: '#a8517080' },
+  navidad:  { n: 'Navidad', c: '#b1872f', s: '#fcf5e6', t: '#8a5a1f' }
+};
+const RANKS = {
+  solemnidad: { label: 'Solemnidad' },
+  fiesta:     { label: 'Fiesta' },
+  memoria:    { label: 'Memoria' },
+  parroquial: { label: 'Parroquial' }
+};
+const ORO = '#8a5a1f', ROJO = '#a02f27', VIO = '#5c3b7a', ROSA = '#c06f8d', GRAF = '#6b6255';
+
+const EV = {
+  '11-29': [['I Domingo de Adviento', 'solemnidad', VIO, '19:00']],
+  '11-30': [['San Andrés, apóstol', 'fiesta', ROJO, '07:00']],
+  '12-02': [['Junta de catequistas', 'parroquial', GRAF, '18:00']],
+  '12-03': [['San Francisco Javier', 'memoria', ORO, '07:00']],
+  '12-05': [['Retiro de Adviento', 'parroquial', GRAF, '09:00']],
+  '12-06': [['II Domingo de Adviento', 'solemnidad', VIO, '19:00'], ['Bendición de coronas', 'parroquial', GRAF, '11:00']],
+  '12-08': [['Inmaculada Concepción', 'solemnidad', ORO, '12:00']],
+  '12-09': [['San Juan Diego', 'memoria', ORO, '07:00']],
+  '12-10': [['Plática prebautismal', 'parroquial', GRAF, '19:00']],
+  '12-12': [['Nuestra Señora de Guadalupe', 'solemnidad', ORO, '05:00'], ['Mañanitas', 'parroquial', GRAF, '00:00'], ['Danza matachines', 'parroquial', GRAF, '17:00']],
+  '12-13': [['III Domingo · Gaudete', 'solemnidad', ROSA, '19:00']],
+  '12-15': [['Confesiones comunitarias', 'parroquial', GRAF, '18:00']],
+  '12-16': [['Novena de Aguinaldo', 'parroquial', GRAF, '19:30']],
+  '12-18': [['Posada del grupo juvenil', 'parroquial', GRAF, '20:00']],
+  '12-20': [['IV Domingo de Adviento', 'solemnidad', VIO, '19:00']],
+  '12-24': [['Misa de Nochebuena', 'solemnidad', ORO, '22:00'], ['Última posada', 'parroquial', GRAF, '19:00']],
+  '12-25': [['Natividad del Señor', 'solemnidad', ORO, '10:00']],
+  '12-26': [['San Esteban, protomártir', 'fiesta', ROJO, '07:00']],
+  '12-27': [['La Sagrada Familia', 'fiesta', ORO, '12:00'], ['Bendición de familias', 'parroquial', GRAF, '13:00']],
+  '12-28': [['Santos Inocentes', 'fiesta', ROJO, '07:00']],
+  '12-31': [['Te Deum de fin de año', 'parroquial', GRAF, '20:00']],
+  '01-01': [['Santa María, Madre de Dios', 'solemnidad', ORO, '12:00']],
+  '01-06': [['Epifanía del Señor', 'solemnidad', ORO, '12:00'], ['Rosca y villancicos', 'parroquial', GRAF, '18:00']],
+  '01-08': [['Junta de pastoral', 'parroquial', GRAF, '18:00']]
+};
+
+const CHIP = {
+  solemnidad: (c) => ({ bg: c, fg: '#fffdf7', bd: c, fw: 600, dot: 'rgba(255,255,255,.85)', dash: 'solid' }),
+  fiesta:     (c) => ({ bg: c + '1f', fg: c, bd: c + '55', fw: 600, dot: c, dash: 'solid' }),
+  memoria:    (c) => ({ bg: 'transparent', fg: c, bd: 'transparent', fw: 500, dot: c, dash: 'solid' }),
+  parroquial: (c) => ({ bg: 'transparent', fg: '#6b6255', bd: 'rgba(107,98,85,.42)', fw: 400, dot: 'transparent', dash: 'dashed' })
+};
+
+class Component extends DCLogic {
+  state = { dense: false, colors: true, emph: true, sel: '12-12', admin: 0 };
+
+  constructor(p) { super(p); this.bar = React.createRef(); }
+
+  componentDidMount() {
+    this.tune();
+    this.onScroll = () => {
+      const el = document.scrollingElement || document.documentElement;
+      const p = el.scrollTop / Math.max(1, el.scrollHeight - el.clientHeight);
+      if (this.bar.current) this.bar.current.style.transform = 'scaleX(' + p.toFixed(4) + ')';
+    };
+    window.addEventListener('scroll', this.onScroll, { passive: true });
+    this.onScroll();
+    this.countUp();
+  }
+  componentDidUpdate() { this.tune(); }
+  componentWillUnmount() { window.removeEventListener('scroll', this.onScroll); }
+
+  tune() {
+    const m = Number(this.props.motion != null ? this.props.motion : 8);
+    document.documentElement.style.setProperty('--m', String(Math.max(0.02, (11 - m) / 3)));
+  }
+  countUp() {
+    if (Number(this.props.motion != null ? this.props.motion : 8) <= 1) return;
+    document.querySelectorAll('[data-count]').forEach((n) => {
+      const end = Number(n.dataset.count);
+      if (!end) return;
+      const t0 = performance.now(), dur = 1000;
+      const step = (t) => {
+        const k = Math.min(1, (t - t0) / dur);
+        n.textContent = String(Math.round(end * (1 - Math.pow(1 - k, 3))));
+        if (k < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    });
+  }
+
+  buildDays() {
+    const out = [];
+    for (let i = 0; i < 42; i++) {
+      const d = new Date(2026, 10, 29 + i);
+      const m = d.getMonth() + 1, day = d.getDate();
+      const key = String(m).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+      let sk = 'adviento';
+      if (m === 12 && day === 13) sk = 'gaudete';
+      else if ((m === 12 && day >= 25) || m === 1) sk = 'navidad';
+      const se = SEA[sk];
+      const raw = EV[key] || [];
+      const evs = raw.map(([t, r, c, hh]) => {
+        const st = CHIP[r](c);
+        return {
+          t: t, rank: r, rankLabel: RANKS[r].label, hour: hh, color: c,
+          bg: st.bg, fg: st.fg, bd: st.bd, fw: st.fw, dot: st.dot, dash: st.dash
+        };
+      });
+      const showColors = this.state.colors;
+      out.push({
+        key: key, num: day, dow: d.getDay(),
+        outside: m !== 12,
+        seasonName: se.n,
+        cellBg: m !== 12 ? '#f3efe5' : (showColors ? se.s : '#fffdf7'),
+        edge: showColors ? se.c : 'rgba(34,29,21,.14)',
+        numColor: m !== 12 ? '#6f6557' : (showColors ? se.t : '#221d15'),
+        shown: evs.slice(0, 2),
+        more: evs.length > 2 ? '+' + (evs.length - 2) + ' más' : '',
+        hasMore: evs.length > 2,
+        isSel: key === this.state.sel,
+        selRing: key === this.state.sel ? '2px solid #221d15' : '1px solid rgba(34,29,21,.1)',
+        pick: () => this.setState({ sel: key })
+      });
+    }
+    return out;
+  }
+
+  renderVals() {
+    const days = this.buildDays();
+    const sel = days.find((d) => d.key === this.state.sel) || days[0];
+    const raw = EV[sel.key] || [];
+    const selEvents = raw.map(([t, r, c, hh]) => {
+      const st = CHIP[r](c);
+      return { t: t, rankLabel: RANKS[r].label, hour: hh, color: c, fg: st.fg, bg: st.bg, bd: st.bd };
+    });
+    const nice = new Date(2026, sel.key.slice(0, 2) === '01' ? 0 : (sel.key.slice(0, 2) === '11' ? 10 : 11), Number(sel.key.slice(3)));
+    const MES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+    const DIA = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+    return {
+      bar: this.bar,
+      days: days,
+      cellMinH: this.state.dense ? 74 : 112,
+      selEvents: selEvents,
+      selHasEvents: selEvents.length > 0,
+      selLabel: DIA[nice.getDay()].charAt(0).toUpperCase() + DIA[nice.getDay()].slice(1) + ' ' + nice.getDate() + ' de ' + MES[nice.getMonth()],
+      selSeason: sel.seasonName,
+      selSeasonColor: sel.edge,
+      dense: this.state.dense,
+      colors: this.state.colors,
+      emph: this.state.emph,
+      denseLabel: this.state.dense ? 'Compacta' : 'Cómoda',
+      toggleDense: () => this.setState((s) => ({ dense: !s.dense })),
+      toggleColors: () => this.setState((s) => ({ colors: !s.colors })),
+      toggleEmph: () => this.setState((s) => ({ emph: !s.emph })),
+      knobDense: this.state.dense ? 'translateX(18px)' : 'translateX(2px)',
+      knobColors: this.state.colors ? 'translateX(18px)' : 'translateX(2px)',
+      knobEmph: this.state.emph ? 'translateX(18px)' : 'translateX(2px)',
+      trackDense: this.state.dense ? '#2f6b4f' : 'rgba(34,29,21,.2)',
+      trackColors: this.state.colors ? '#2f6b4f' : 'rgba(34,29,21,.2)',
+      trackEmph: this.state.emph ? '#2f6b4f' : 'rgba(34,29,21,.2)',
+      admin: this.state.admin,
+      tab0bg: this.state.admin === 0 ? '#2a241a' : '#fffdf7',
+      tab0fg: this.state.admin === 0 ? '#fbf7ee' : '#6b6255',
+      tab1bg: this.state.admin === 1 ? '#2a241a' : '#fffdf7',
+      tab1fg: this.state.admin === 1 ? '#fbf7ee' : '#6b6255',
+      tab2bg: this.state.admin === 2 ? '#2a241a' : '#fffdf7',
+      tab2fg: this.state.admin === 2 ? '#fbf7ee' : '#6b6255',
+      adminIsList: this.state.admin === 0,
+      adminIsForm: this.state.admin === 1,
+      adminIsSent: this.state.admin === 2,
+      goAdmin0: () => this.setState({ admin: 0 }),
+      goAdmin1: () => this.setState({ admin: 1 }),
+      goAdmin2: () => this.setState({ admin: 2 })
+    };
+  }
+}
+</script>
+</body>
+</html>

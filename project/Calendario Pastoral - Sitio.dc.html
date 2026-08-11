@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--m:1}
+*{box-sizing:border-box}
+body{margin:0;background:#f6f1e6;color:#221d15;-webkit-font-smoothing:antialiased;text-wrap:pretty}
+a{color:#8a5a1f;text-decoration:none}
+a:hover{color:#221d15}
+::selection{background:#e9d8ad}
+@keyframes cpRise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes cpIn{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
+@keyframes cpGrow{from{transform:scaleY(.4);opacity:0}to{transform:scaleY(1);opacity:1}}
+@keyframes cpSheen{0%{background-position:-150% 0}100%{background-position:250% 0}}
+@keyframes cpPulse{0%,100%{opacity:.25;transform:scale(1)}50%{opacity:.9;transform:scale(1.5)}}
+@keyframes cpFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.001s!important;transition-duration:.001s!important}}
+</style>
+</helmet>
+
+<header style="position:sticky;top:0;z-index:40;background:rgba(246,241,230,.9);backdrop-filter:blur(14px);border-bottom:1px solid rgba(34,29,21,.13)">
+<div style="max-width:1360px;margin:0 auto;display:flex;align-items:center;gap:22px;padding:{{ headPad }}">
+<div style="display:flex;align-items:center;gap:11px;flex:none">
+<div style="width:30px;height:30px;border-radius:50%;border:2px solid #b1872f;position:relative;flex:none">
+<div style="position:absolute;inset:6px;border-radius:50%;transition:background calc(.6s * var(--m)) ease;background:{{ seasonSwatch }}"></div>
+</div>
+<div>
+<div style="font:400 15px/1.15 Marcellus,Georgia,serif;letter-spacing:.01em">Cristo de Los Álamos</div>
+<div style="font:400 9.5px/1.3 'IBM Plex Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#5d5548">Calendario pastoral</div>
+</div>
+</div>
+<a href="#suscribirse" style="flex:none;margin-left:auto;font:600 11.5px/1 'IBM Plex Sans',system-ui,sans-serif;padding:11px 15px;border-radius:7px;background:#2a241a;color:#fbf7ee;transition:transform calc(.2s * var(--m))" style-hover="transform:translateY(-1px);color:#fbf7ee">Suscribirse</a>
+</div>
+</header>
+
+<div style="position:relative;overflow:hidden;background:{{ seasonDeep }};transition:background calc(.6s * var(--m)) ease">
+<div style="position:absolute;inset:0;pointer-events:none;background:linear-gradient(100deg,transparent 38%,rgba(255,255,255,.18) 50%,transparent 62%);background-size:220% 100%;animation:cpSheen calc(9s * var(--m)) linear infinite"></div>
+<div style="position:relative;max-width:1360px;margin:0 auto;display:flex;gap:28px;flex-wrap:wrap;align-items:flex-end;padding:{{ bannerPad }}">
+<div style="flex:1;min-width:280px">
+<div style="font:600 10px/1 'IBM Plex Mono',monospace;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.66);margin-bottom:13px">Tiempo litúrgico en curso</div>
+<div style="font:400 clamp(34px,4.6vw,54px)/1.02 Marcellus,Georgia,serif;color:#fffdf7;letter-spacing:-.01em">{{ seasonTitle }}</div>
+<div style="margin-top:11px;font:400 17px/1.5 'EB Garamond',Georgia,serif;color:rgba(255,255,255,.8);max-width:52ch">{{ seasonBlurb }}</div>
+</div>
+<div style="flex:none;display:flex;gap:9px;align-items:flex-end">
+<div style="padding:14px 17px;border-radius:9px;background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.18)">
+<div style="font:600 9px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;color:rgba(255,255,255,.6);margin-bottom:8px">HOY</div>
+<div style="font:400 26px/1 Marcellus,Georgia,serif;color:#fffdf7">{{ todayLabel }}</div>
+</div>
+<div style="padding:14px 17px;border-radius:9px;background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.18)">
+<div style="font:600 9px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;color:rgba(255,255,255,.6);margin-bottom:8px">COLOR</div>
+<div style="font:400 15px/1.6 'IBM Plex Sans',system-ui,sans-serif;color:#fffdf7;display:flex;align-items:center;gap:8px"><span style="flex:none;width:22px;height:22px;border-radius:5px;background:#fffdf7;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,.25)"><span style="width:12px;height:12px;border-radius:3px;background:{{ seasonSwatch }}"></span></span>{{ seasonColorName }}</div>
+</div>
+</div>
+</div>
+</div>
+
+<main id="calendario" style="max-width:1360px;margin:0 auto;padding:{{ mainPad }}">
+
+<div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-bottom:18px">
+<div style="display:flex;gap:0;border:1px solid rgba(34,29,21,.18);border-radius:8px;overflow:hidden;background:#fffdf7;flex:none">
+<button type="button" onClick="{{ goMes }}" style="font:600 12px/1 'IBM Plex Sans',system-ui,sans-serif;padding:11px 18px;border:none;cursor:pointer;transition:all calc(.22s * var(--m));background:{{ mesBg }};color:{{ mesFg }}">Mes</button>
+<button type="button" onClick="{{ goSemana }}" style="font:600 12px/1 'IBM Plex Sans',system-ui,sans-serif;padding:11px 18px;border:none;border-left:1px solid rgba(34,29,21,.14);cursor:pointer;transition:all calc(.22s * var(--m));background:{{ semBg }};color:{{ semFg }}">Semana</button>
+</div>
+<div style="display:flex;gap:7px;align-items:center;flex:none">
+<button type="button" onClick="{{ prev }}" style="width:36px;height:36px;border-radius:8px;border:1px solid rgba(34,29,21,.18);background:#fffdf7;cursor:pointer;font:500 15px/1 'IBM Plex Sans',sans-serif;color:#5d5548;transition:all calc(.2s * var(--m))" style-hover="background:#f1ebdc;color:#221d15">‹</button>
+<button type="button" onClick="{{ today }}" style="height:36px;padding:0 15px;border-radius:8px;border:1px solid rgba(34,29,21,.18);background:#fffdf7;cursor:pointer;font:600 11.5px/1 'IBM Plex Sans',sans-serif;color:#5d5548;transition:all calc(.2s * var(--m))" style-hover="background:#f1ebdc;color:#221d15">Hoy</button>
+<button type="button" onClick="{{ next }}" style="width:36px;height:36px;border-radius:8px;border:1px solid rgba(34,29,21,.18);background:#fffdf7;cursor:pointer;font:500 15px/1 'IBM Plex Sans',sans-serif;color:#5d5548;transition:all calc(.2s * var(--m))" style-hover="background:#f1ebdc;color:#221d15">›</button>
+</div>
+<div style="font:400 clamp(20px,2.3vw,27px)/1.1 Marcellus,Georgia,serif;flex:none;min-width:200px">{{ rangeLabel }}</div>
+<div style="display:flex;gap:6px;flex-wrap:wrap;margin-left:auto;align-items:center">
+<span style="font:600 10px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#6b6255;margin-right:3px">Filtrar</span>
+<sc-for list="{{ groupChips }}" as="g" hint-placeholder-count="6">
+<button type="button" onClick="{{ g.toggle }}" style="font:500 11px/1 'IBM Plex Sans',system-ui,sans-serif;padding:8px 12px;border-radius:18px;cursor:pointer;transition:all calc(.2s * var(--m));background:{{ g.bg }};color:{{ g.fg }};border:1px solid {{ g.bd }}">{{ g.name }}</button>
+</sc-for>
+</div>
+</div>
+
+<sc-if value="{{ isMes }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start;animation:cpRise calc(.4s * var(--m)) cubic-bezier(.16,.84,.24,1) both">
+<sc-if value="{{ showMonthGrid }}" hint-placeholder-val="{{ true }}">
+<div style="flex:1 1 660px;min-width:0;background:#fffdf7;border:1px solid rgba(34,29,21,.16);border-radius:12px;overflow:hidden;box-shadow:0 10px 30px rgba(34,29,21,.07)">
+<div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));background:#faf5e9;border-bottom:1px solid rgba(34,29,21,.11)">
+<div style="padding:10px 11px;font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#a02f27;text-transform:uppercase">dom</div>
+<div style="padding:10px 11px;font:600 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;color:#6b6255;text-transform:uppercase">lun</div>
+<div style="padding:10px 11px;font:600 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;color:#6b6255;text-transform:uppercase">mar</div>
+<div style="padding:10px 11px;font:600 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;color:#6b6255;text-transform:uppercase">mié</div>
+<div style="padding:10px 11px;font:600 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;color:#6b6255;text-transform:uppercase">jue</div>
+<div style="padding:10px 11px;font:600 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;color:#6b6255;text-transform:uppercase">vie</div>
+<div style="padding:10px 11px;font:600 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;color:#6b6255;text-transform:uppercase">sáb</div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:1px;background:rgba(34,29,21,.1)">
+<sc-for list="{{ monthDays }}" as="d" hint-placeholder-count="42">
+<div onClick="{{ d.pick }}" style="position:relative;padding:8px 8px 9px;cursor:pointer;display:flex;flex-direction:column;gap:4px;transition:filter calc(.18s * var(--m));min-height:{{ monthCellH }}px;background:{{ d.bg }};outline:{{ d.ring }};outline-offset:-1px" style-hover="filter:brightness(.975)">
+<div style="position:absolute;top:0;left:0;right:0;height:2px;background:{{ d.bar }}"></div>
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:5px">
+<span style="font:500 13px/1 'IBM Plex Mono',monospace;color:{{ d.numColor }}">{{ d.num }}</span>
+<span style="font:500 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.05em;color:#6b6255">{{ d.massLabel }}</span>
+</div>
+<sc-if value="{{ d.hasCeleb }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;gap:5px;padding:3px 6px;border-radius:4px;overflow:hidden;background:{{ d.celebBg }};color:{{ d.celebFg }};border:1px solid {{ d.celebBd }};font-weight:{{ d.celebFw }};font-size:10.5px;line-height:1.3;font-family:'IBM Plex Sans',system-ui,sans-serif">
+<span style="flex:none;width:4px;height:4px;border-radius:50%;background:{{ d.celebDot }}"></span>
+<span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ d.celebTitle }}</span>
+</div>
+</sc-if>
+<sc-for list="{{ d.chips }}" as="c" hint-placeholder-count="1">
+<div style="padding:3px 6px;border-radius:4px;border:1px dashed rgba(107,98,85,.42);color:#6b6255;font:400 10.5px/1.3 'IBM Plex Sans',system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ c.title }}</div>
+</sc-for>
+<sc-if value="{{ d.hasMore }}" hint-placeholder-val="{{ false }}">
+<span style="font:500 10.5px/1.3 'IBM Plex Mono',monospace;color:#6b6255;padding-left:2px">{{ d.more }}</span>
+</sc-if>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ showMonthAgenda }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1 1 300px;min-width:0;background:#fffdf7;border:1px solid rgba(34,29,21,.16);border-radius:12px;overflow:hidden">
+<sc-for list="{{ agenda }}" as="d" hint-placeholder-count="8">
+<div style="display:flex;gap:0;border-bottom:1px solid rgba(34,29,21,.09)">
+<div style="flex:none;width:52px;padding:13px 0 14px 10px">
+<div style="font:600 10px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:#6b6255">{{ d.dow }}</div>
+<div style="margin-top:4px;font:400 23px/1 Marcellus,Georgia,serif;color:{{ d.numColor }}">{{ d.num }}</div>
+<div style="margin-top:4px;font:600 8px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;color:#b1872f">{{ d.todayTag }}</div>
+</div>
+<div style="flex:1;min-width:0;padding:13px 12px 14px;background:{{ d.tint }};border-left:3px solid {{ d.bar }}">
+<sc-if value="{{ d.hasCeleb }}" hint-placeholder-val="{{ false }}">
+<div style="display:inline-block;padding:4px 8px;border-radius:5px;margin-bottom:9px;background:{{ d.celebBg }};color:{{ d.celebFg }};border:1px solid {{ d.celebBd }};font:600 11.5px/1.3 'IBM Plex Sans',system-ui,sans-serif">{{ d.celebTitle }}</div>
+</sc-if>
+<div style="display:flex;flex-direction:column;gap:6px">
+<sc-for list="{{ d.items }}" as="e" hint-placeholder-count="2">
+<div onClick="{{ e.pick }}" style="display:flex;gap:10px;align-items:baseline;padding:6px 8px;border-radius:5px;cursor:pointer;min-height:38px;background:{{ e.bg }};border-left:2px {{ e.dash }} {{ e.bd }}">
+<span style="flex:none;font:500 11px/1.5 'IBM Plex Mono',monospace;width:38px;color:{{ e.fg }}">{{ e.t }}</span>
+<div style="flex:1;min-width:0">
+<div style="font:600 13px/1.35 'IBM Plex Sans',system-ui,sans-serif;color:#2a241a">{{ e.title }}</div>
+<div style="margin-top:2px;font:500 8.5px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:#a89f8c">{{ e.groupName }}</div>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+</sc-for>
+</div>
+</sc-if>
+
+<div style="flex:1 1 300px;min-width:0;display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start">
+<div style="flex:1 1 288px;background:#2a241a;border-radius:12px;padding:22px;color:#f4efe3">
+<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">
+<span style="width:9px;height:9px;border-radius:50%;background:{{ selBar }}"></span>
+<span style="font:500 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#a89f8c">{{ selSeason }}</span>
+</div>
+<div style="font:400 23px/1.14 Marcellus,Georgia,serif;color:#fbf7ee;margin-bottom:4px">{{ selDayLabel }}</div>
+<div style="font:400 14px/1.5 'EB Garamond',Georgia,serif;color:#c9a961;margin-bottom:18px">{{ selCelebLine }}</div>
+<div style="display:flex;flex-direction:column;gap:0">
+<sc-for list="{{ selAgenda }}" as="e" hint-placeholder-count="4">
+<div onClick="{{ e.pick }}" style="display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-top:1px solid rgba(201,169,97,.16);cursor:pointer;transition:opacity calc(.2s * var(--m))" style-hover="opacity:.72">
+<span style="flex:none;font:500 11px/1.5 'IBM Plex Mono',monospace;color:#c9a961;width:40px">{{ e.t }}</span>
+<div style="flex:1;min-width:0">
+<div style="font:600 13px/1.35 'IBM Plex Sans',system-ui,sans-serif;color:#fbf7ee">{{ e.title }}</div>
+<div style="margin-top:3px;font:500 9px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:#a89f8c">{{ e.groupName }}</div>
+</div>
+</div>
+</sc-for>
+</div>
+<sc-if value="{{ selEmpty }}" hint-placeholder-val="{{ false }}">
+<p style="margin:0;font:400 14.5px/1.55 'EB Garamond',Georgia,serif;color:#6b6255">Sin actividades publicadas para este día.</p>
+</sc-if>
+</div>
+<div id="horarios" style="flex:1 1 288px;background:#fffdf7;border:1px solid rgba(34,29,21,.14);border-radius:12px;padding:22px">
+<div style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.18em;text-transform:uppercase;color:#8a5a1f;margin-bottom:15px">Horarios ordinarios de misa</div>
+<div style="display:flex;flex-direction:column;gap:11px">
+<div style="display:flex;justify-content:space-between;gap:12px;padding-bottom:11px;border-bottom:1px solid rgba(34,29,21,.1)"><span style="font:600 12.5px/1.3 'IBM Plex Sans',system-ui,sans-serif">Domingo</span><span style="font:500 12px/1.3 'IBM Plex Mono',monospace;color:#5d5548;text-align:right">07:00 · 09:00<br>12:00 · 19:00</span></div>
+<div style="display:flex;justify-content:space-between;gap:12px;padding-bottom:11px;border-bottom:1px solid rgba(34,29,21,.1)"><span style="font:600 12.5px/1.3 'IBM Plex Sans',system-ui,sans-serif">Lunes a viernes</span><span style="font:500 12px/1.3 'IBM Plex Mono',monospace;color:#5d5548">07:00</span></div>
+<div style="display:flex;justify-content:space-between;gap:12px"><span style="font:600 12.5px/1.3 'IBM Plex Sans',system-ui,sans-serif">Sábado</span><span style="font:500 12px/1.3 'IBM Plex Mono',monospace;color:#5d5548;text-align:right">07:00 · 19:00<br><span style="color:#6b6255;font-size:10.5px">vespertina</span></span></div>
+</div>
+<p style="margin:16px 0 0;font:400 13.5px/1.5 'EB Garamond',Georgia,serif;color:#6b6255">Las solemnidades y fiestas pueden cambiar el horario. El calendario siempre manda sobre esta tabla.</p>
+</div>
+</div>
+</div>
+</sc-if>
+
+
+<sc-if value="{{ isSemana }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start;animation:cpRise calc(.4s * var(--m)) cubic-bezier(.16,.84,.24,1) both">
+<sc-if value="{{ showWeekGrid }}" hint-placeholder-val="{{ true }}">
+<div style="flex:1 1 700px;min-width:0;background:#fffdf7;border:1px solid rgba(34,29,21,.16);border-radius:12px;overflow:hidden;box-shadow:0 10px 30px rgba(34,29,21,.07)">
+
+<div style="display:flex;border-bottom:1px solid rgba(34,29,21,.13)">
+<div style="flex:none;width:56px;border-right:1px solid rgba(34,29,21,.1);background:#faf5e9"></div>
+<sc-for list="{{ weekDays }}" as="w" hint-placeholder-count="7">
+<div style="flex:1;min-width:0;border-right:1px solid rgba(34,29,21,.08);background:{{ w.headBg }}">
+<div style="height:3px;background:{{ w.bar }}"></div>
+<div style="padding:11px 10px 9px;display:flex;align-items:baseline;gap:7px">
+<span style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#6b6255">{{ w.dow }}</span>
+<span style="font:400 21px/1 Marcellus,Georgia,serif;color:{{ w.numColor }}">{{ w.num }}</span>
+</div>
+<div style="padding:0 7px 9px;min-height:40px">
+<sc-if value="{{ w.hasCeleb }}" hint-placeholder-val="{{ false }}">
+<div style="padding:5px 7px;border-radius:5px;background:{{ w.celebBg }};color:{{ w.celebFg }};border:1px solid {{ w.celebBd }};font:600 10px/1.32 'IBM Plex Sans',system-ui,sans-serif">{{ w.celebTitle }}</div>
+</sc-if>
+</div>
+</div>
+</sc-for>
+</div>
+
+<div style="display:flex;position:relative;background:#fffdf7">
+<div style="flex:none;width:56px;position:relative;border-right:1px solid rgba(34,29,21,.1);background:#faf5e9;height:{{ gridH }}px">
+<sc-for list="{{ hours }}" as="h" hint-placeholder-count="19">
+<div style="position:absolute;left:0;right:7px;text-align:right;top:{{ h.top }}px;transform:translateY(-6px);font:500 9.5px/1 'IBM Plex Mono',monospace;color:#6b6255">{{ h.label }}</div>
+</sc-for>
+</div>
+<sc-for list="{{ weekDays }}" as="w" hint-placeholder-count="7">
+<div style="flex:1;min-width:0;position:relative;border-right:1px solid rgba(34,29,21,.08);background:{{ w.tint }};height:{{ gridH }}px">
+<sc-for list="{{ hours }}" as="h" hint-placeholder-count="19">
+<div style="position:absolute;left:0;right:0;height:1px;background:rgba(34,29,21,.07);top:{{ h.top }}px"></div>
+</sc-for>
+<sc-for list="{{ w.blocks }}" as="b" hint-placeholder-count="3">
+<div onClick="{{ b.pick }}" style="position:absolute;overflow:hidden;padding:3px 4px;border-radius:5px;cursor:pointer;backdrop-filter:blur(2px);transition:transform calc(.18s * var(--m)),box-shadow calc(.18s * var(--m));animation:cpGrow calc(.42s * var(--m)) cubic-bezier(.16,.84,.24,1) both;transform-origin:50% 0;top:{{ b.top }}px;height:{{ b.height }}px;left:{{ b.left }}%;width:{{ b.width }}%;background:{{ b.bg }};color:{{ b.fg }};border:1px {{ b.dash }} {{ b.bd }};font-weight:{{ b.fw }}" style-hover="transform:scale(1.02);box-shadow:0 6px 16px rgba(34,29,21,.16)">
+<sc-if value="{{ b.showTime }}" hint-placeholder-val="{{ true }}">
+<div style="font:500 9px/1.2 'IBM Plex Mono',monospace;opacity:.8">{{ b.t }}</div>
+</sc-if>
+<div style="margin-top:2px;line-height:1.16;font-family:'IBM Plex Sans',system-ui,sans-serif;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere;hyphens:auto;font-size:{{ b.fs }}">{{ b.label }}</div>
+</div>
+</sc-for>
+</div>
+</sc-for>
+<sc-if value="{{ showNow }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;left:56px;right:0;height:0;pointer-events:none;top:{{ nowTop }}px">
+<div style="height:1.5px;background:#a02f27;position:relative"><span style="position:absolute;left:-6px;top:-4px;width:9px;height:9px;border-radius:50%;background:#a02f27;animation:cpPulse calc(2.2s * var(--m)) ease-in-out infinite"></span></div>
+</div>
+</sc-if>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ showWeekDay }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1 1 300px;min-width:0;background:#fffdf7;border:1px solid rgba(34,29,21,.16);border-radius:12px;overflow:hidden">
+<div style="display:flex;gap:5px;padding:11px 10px;border-bottom:1px solid rgba(34,29,21,.11);background:#faf5e9">
+<sc-for list="{{ weekPicker }}" as="p" hint-placeholder-count="7">
+<button type="button" onClick="{{ p.pick }}" style="flex:1;min-width:0;border:none;border-radius:8px;padding:8px 2px 7px;cursor:pointer;min-height:48px;transition:all calc(.2s * var(--m));background:{{ p.bg }};color:{{ p.fg }}">
+<div style="height:3px;border-radius:2px;margin:0 auto 6px;width:60%;background:{{ p.bar }}"></div>
+<div style="font:600 8.5px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;text-transform:uppercase;opacity:.7">{{ p.dow }}</div>
+<div style="margin-top:3px;font:500 14px/1 'IBM Plex Mono',monospace">{{ p.num }}</div>
+</button>
+</sc-for>
+</div>
+<sc-for list="{{ dayColList }}" as="w" hint-placeholder-count="1">
+<div>
+<div style="padding:13px 14px 12px;border-bottom:1px solid rgba(34,29,21,.1);background:{{ w.headBg }}">
+<div style="font:400 20px/1.1 Marcellus,Georgia,serif;color:{{ w.numColor }};margin-bottom:8px">{{ dayColLabel }}</div>
+<sc-if value="{{ w.hasCeleb }}" hint-placeholder-val="{{ false }}">
+<div style="display:inline-block;padding:5px 9px;border-radius:5px;background:{{ w.celebBg }};color:{{ w.celebFg }};border:1px solid {{ w.celebBd }};font:600 11.5px/1.3 'IBM Plex Sans',system-ui,sans-serif">{{ w.celebTitle }}</div>
+</sc-if>
+</div>
+<div style="display:flex;position:relative">
+<div style="flex:none;width:46px;position:relative;border-right:1px solid rgba(34,29,21,.1);background:#faf5e9;height:{{ gridH }}px">
+<sc-for list="{{ hours }}" as="h" hint-placeholder-count="19">
+<div style="position:absolute;left:0;right:6px;text-align:right;transform:translateY(-6px);font:500 9.5px/1 'IBM Plex Mono',monospace;color:#6b6255;top:{{ h.top }}px">{{ h.label }}</div>
+</sc-for>
+</div>
+<div style="flex:1;min-width:0;position:relative;background:{{ w.tint }};height:{{ gridH }}px">
+<sc-for list="{{ hours }}" as="h" hint-placeholder-count="19">
+<div style="position:absolute;left:0;right:0;height:1px;background:rgba(34,29,21,.07);top:{{ h.top }}px"></div>
+</sc-for>
+<sc-for list="{{ w.blocks }}" as="b" hint-placeholder-count="3">
+<div onClick="{{ b.pick }}" style="position:absolute;overflow:hidden;padding:5px 8px;border-radius:5px;cursor:pointer;top:{{ b.top }}px;height:{{ b.height }}px;left:{{ b.left }}%;width:{{ b.width }}%;background:{{ b.bg }};color:{{ b.fg }};border:1px {{ b.dash }} {{ b.bd }};font-weight:{{ b.fw }}">
+<div style="font:500 9.5px/1.2 'IBM Plex Mono',monospace;opacity:.8">{{ b.t }}</div>
+<div style="margin-top:2px;font-size:12px;line-height:1.25;font-family:'IBM Plex Sans',system-ui,sans-serif;overflow-wrap:anywhere">{{ b.title }}</div>
+</div>
+</sc-for>
+<sc-if value="{{ w.isToday }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;left:0;right:0;height:0;pointer-events:none;top:{{ nowTop }}px">
+<div style="height:1.5px;background:#a02f27;position:relative"><span style="position:absolute;left:-5px;top:-4px;width:9px;height:9px;border-radius:50%;background:#a02f27"></span></div>
+</div>
+</sc-if>
+</div>
+</div>
+</div>
+</sc-for>
+</div>
+</sc-if>
+
+<div style="flex:1 1 300px;min-width:0;display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start">
+<sc-if value="{{ sheetOpen }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1 1 288px;background:#2a241a;border-radius:12px;padding:22px;color:#f4efe3;animation:cpIn calc(.36s * var(--m)) cubic-bezier(.16,.84,.24,1) both">
+<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px">
+<span style="font:500 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:#c9a961">{{ sheet.groupName }}</span>
+<button type="button" onClick="{{ closeSheet }}" style="flex:none;width:24px;height:24px;border-radius:6px;border:1px solid rgba(201,169,97,.3);background:none;color:#a89f8c;cursor:pointer;font:500 12px/1 'IBM Plex Sans',sans-serif;transition:all calc(.2s * var(--m))" style-hover="background:rgba(201,169,97,.14);color:#fbf7ee">✕</button>
+</div>
+<div style="font:400 25px/1.12 Marcellus,Georgia,serif;color:#fbf7ee;margin-bottom:14px">{{ sheet.title }}</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;gap:12px;align-items:baseline"><span style="flex:none;width:56px;font:500 9px/1.6 'IBM Plex Mono',monospace;letter-spacing:.12em;color:#6b6255">HORA</span><span style="font:500 14px/1.4 'IBM Plex Mono',monospace;color:#c9a961">{{ sheet.t }}</span></div>
+<div style="display:flex;gap:12px;align-items:baseline"><span style="flex:none;width:56px;font:500 9px/1.6 'IBM Plex Mono',monospace;letter-spacing:.12em;color:#6b6255">LUGAR</span><span style="font:400 14.5px/1.45 'EB Garamond',Georgia,serif;color:#d8d1c1">Templo parroquial</span></div>
+<div style="display:flex;gap:12px;align-items:baseline"><span style="flex:none;width:56px;font:500 9px/1.6 'IBM Plex Mono',monospace;letter-spacing:.12em;color:#6b6255">AVISO</span><span style="font:400 14.5px/1.45 'EB Garamond',Georgia,serif;color:#d8d1c1">Difundido a los grupos de la parroquia</span></div>
+</div>
+<p style="margin:16px 0 0;padding-top:15px;border-top:1px solid rgba(201,169,97,.16);font:400 14.5px/1.55 'EB Garamond',Georgia,serif;color:#a89f8c">Sin inscripción previa. Toda la comunidad está invitada.</p>
+</div>
+</sc-if>
+<div style="flex:1 1 288px;background:#fffdf7;border:1px solid rgba(34,29,21,.14);border-radius:12px;padding:22px">
+<div style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.18em;text-transform:uppercase;color:#8a5a1f;margin-bottom:15px">Cómo leer la semana</div>
+<div style="display:flex;flex-direction:column;gap:13px">
+<div style="display:flex;gap:11px;align-items:flex-start">
+<span style="flex:none;width:34px;height:22px;border-radius:5px;background:rgba(92,59,122,.11);border:1px solid #5c3b7a;margin-top:2px"></span>
+<p style="margin:0;font:400 14px/1.5 'EB Garamond',Georgia,serif;color:#5d5548"><strong style="font-weight:600">Borde continuo:</strong> liturgia. Toma el color del tiempo — o el del mártir, si el día lo pide.</p>
+</div>
+<div style="display:flex;gap:11px;align-items:flex-start">
+<span style="flex:none;width:34px;height:22px;border-radius:5px;background:rgba(107,98,85,.07);border:1px dashed rgba(107,98,85,.5);margin-top:2px"></span>
+<p style="margin:0;font:400 14px/1.5 'EB Garamond',Georgia,serif;color:#5d5548"><strong style="font-weight:600">Borde discontinuo:</strong> actividad de un grupo parroquial. Fuera de la paleta litúrgica, a propósito.</p>
+</div>
+<div style="display:flex;gap:11px;align-items:flex-start">
+<span style="flex:none;width:34px;height:22px;border-radius:5px;background:#5c3b7a;margin-top:2px"></span>
+<p style="margin:0;font:400 14px/1.5 'EB Garamond',Georgia,serif;color:#5d5548"><strong style="font-weight:600">Franja superior rellena:</strong> la celebración del día. Solemnidad en pleno, fiesta en tinte.</p>
+</div>
+<div style="display:flex;gap:11px;align-items:flex-start">
+<span style="flex:none;width:34px;height:22px;border-radius:5px;position:relative;margin-top:2px"><span style="position:absolute;left:0;right:0;top:10px;height:1.5px;background:#a02f27"></span><span style="position:absolute;left:-2px;top:7px;width:8px;height:8px;border-radius:50%;background:#a02f27"></span></span>
+<p style="margin:0;font:400 14px/1.5 'EB Garamond',Georgia,serif;color:#5d5548"><strong style="font-weight:600">Línea roja:</strong> la hora actual. Solo aparece en la semana en curso.</p>
+</div>
+</div>
+</div>
+<div style="flex:1 1 288px;background:#fdf6e8;border:1px solid rgba(177,135,47,.34);border-radius:12px;padding:22px">
+<div style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.18em;text-transform:uppercase;color:#8a5a1f;margin-bottom:12px">El verde no es monotonía</div>
+<p style="margin:0;font:400 14.5px/1.55 'EB Garamond',Georgia,serif;color:#5d5548">Esta semana del 9 al 15 de agosto: verde del Tiempo Ordinario, el lunes rojo de San Lorenzo, el viernes rojo de Kolbe y el sábado dorado de la Asunción. Avanza al 29 y verás la fiesta patronal.</p>
+</div>
+</div>
+</div>
+</sc-if>
+
+<section id="grupos" style="margin-top:44px;padding-top:36px;border-top:1px solid rgba(34,29,21,.13);display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:18px">
+<div>
+<h2 style="margin:0 0 10px;font:400 26px/1.1 Marcellus,Georgia,serif">Grupos parroquiales</h2>
+<p style="margin:0;font:400 15.5px/1.6 'EB Garamond',Georgia,serif;color:#5d5548">Cada actividad del calendario pertenece a un grupo. Usa los filtros de arriba para ver solo lo tuyo.</p>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:9px;align-content:flex-start">
+<span style="font:500 12px/1 'IBM Plex Sans',system-ui,sans-serif;padding:10px 14px;border-radius:20px;background:#fffdf7;border:1px solid rgba(34,29,21,.16);color:#4a4337">Liturgia</span>
+<span style="font:500 12px/1 'IBM Plex Sans',system-ui,sans-serif;padding:10px 14px;border-radius:20px;background:#fffdf7;border:1px solid rgba(34,29,21,.16);color:#4a4337">Catequesis</span>
+<span style="font:500 12px/1 'IBM Plex Sans',system-ui,sans-serif;padding:10px 14px;border-radius:20px;background:#fffdf7;border:1px solid rgba(34,29,21,.16);color:#4a4337">Pastoral juvenil</span>
+<span style="font:500 12px/1 'IBM Plex Sans',system-ui,sans-serif;padding:10px 14px;border-radius:20px;background:#fffdf7;border:1px solid rgba(34,29,21,.16);color:#4a4337">Coro</span>
+<span style="font:500 12px/1 'IBM Plex Sans',system-ui,sans-serif;padding:10px 14px;border-radius:20px;background:#fffdf7;border:1px solid rgba(34,29,21,.16);color:#4a4337">Caridad</span>
+<span style="font:500 12px/1 'IBM Plex Sans',system-ui,sans-serif;padding:10px 14px;border-radius:20px;background:#fffdf7;border:1px solid rgba(34,29,21,.16);color:#4a4337">Formación</span>
+</div>
+<div id="suscribirse" style="background:#2a241a;border-radius:12px;padding:24px;color:#f4efe3">
+<div style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.18em;text-transform:uppercase;color:#c9a961;margin-bottom:12px">Llévalo contigo</div>
+<p style="margin:0 0 16px;font:400 15px/1.6 'EB Garamond',Georgia,serif;color:#cfc7b5">Suscribe el calendario a tu teléfono y las nuevas fechas aparecen solas. Sin cuenta, sin contraseña.</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<span style="font:600 11.5px/1 'IBM Plex Sans',system-ui,sans-serif;padding:11px 15px;border-radius:7px;background:#c9a961;color:#2a241a;cursor:pointer">Suscribir calendario</span>
+<span style="font:500 11.5px/1 'IBM Plex Sans',system-ui,sans-serif;padding:11px 15px;border-radius:7px;border:1px solid rgba(201,169,97,.4);color:#c9a961;cursor:pointer">Recibir el boletín</span>
+</div>
+</div>
+</section>
+</main>
+
+<footer style="border-top:1px solid rgba(34,29,21,.13);background:#f1ebdc">
+<div style="max-width:1360px;margin:0 auto;padding:30px 28px;display:flex;gap:18px;flex-wrap:wrap;align-items:baseline;justify-content:space-between">
+<span style="font:400 12px/1.5 'IBM Plex Mono',monospace;color:#6b6255">Parroquia del Cristo de Los Álamos · calendario público, solo lectura</span>
+<span style="display:flex;gap:16px;flex-wrap:wrap;font:400 12px/1.5 'IBM Plex Mono',monospace;color:#6b6255"><span>Actualizado el 12 de agosto, 11:20</span><a href="Admin%20Login.dc.html" style="color:#8a5a1f">Acceso del equipo →</a></span>
+</div>
+</footer>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;motion&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:8,&quot;min&quot;:0,&quot;max&quot;:10,&quot;step&quot;:1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Ajustes&quot;},&quot;vistaInicial&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;mes&quot;,&quot;semana&quot;],&quot;default&quot;:&quot;mes&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Ajustes&quot;}}">
+const SEA = {
+  adviento: { name: 'Adviento', color: '#5c3b7a', deep: '#4a2f63', tint: '#f0e9f5', ink: '#5c3b7a', cname: 'Violeta', blurb: 'Cuatro semanas de espera. La parroquia se prepara con la Novena de Aguinaldo, las posadas y las confesiones comunitarias.' },
+  gaudete:  { name: 'Adviento · Gaudete', color: '#c06f8d', deep: '#9d5474', tint: '#fbeef2', ink: '#a85170', cname: 'Rosa', blurb: 'El tercer domingo de Adviento la Iglesia se alegra: el rosa suaviza el violeta por un solo día.' },
+  navidad:  { name: 'Navidad', color: '#b1872f', deep: '#8a5a1f', tint: '#fcf5e6', ink: '#8a5a1f', cname: 'Blanco y oro', blurb: 'De la Nochebuena al Bautismo del Señor. Octava de Navidad, Sagrada Familia y Epifanía.' },
+  ordinario:{ name: 'Tiempo Ordinario', color: '#2f6b4f', deep: '#255440', tint: '#eaf2ed', ink: '#2f6b4f', cname: 'Verde', blurb: 'El verde de la vida cotidiana de la Iglesia. En agosto: inscripciones a catequesis, la Asunción y el novenario de nuestra fiesta patronal.' }
+};
+const ROJO = '#a02f27', ORO = '#8a5a1f', GRAF = '#6b6255';
+
+const GRUPOS = [
+  { id: 'liturgia', name: 'Liturgia' },
+  { id: 'catequesis', name: 'Catequesis' },
+  { id: 'juvenil', name: 'Pastoral juvenil' },
+  { id: 'coro', name: 'Coro' },
+  { id: 'caridad', name: 'Caridad' },
+  { id: 'formacion', name: 'Formación' }
+];
+const GNAME = {};
+GRUPOS.forEach((g) => { GNAME[g.id] = g.name; });
+
+const CELEB = {
+  '2026-08-01': ['San Alfonso María de Ligorio', 'memoria', ORO],
+  '2026-08-02': ['XVIII Domingo del Tiempo Ordinario', 'solemnidad', null],
+  '2026-08-04': ['San Juan María Vianney', 'memoria', ORO],
+  '2026-08-06': ['Transfiguración del Señor', 'fiesta', ORO],
+  '2026-08-09': ['XIX Domingo del Tiempo Ordinario', 'solemnidad', null],
+  '2026-08-10': ['San Lorenzo, mártir', 'fiesta', ROJO],
+  '2026-08-11': ['Santa Clara de Asís', 'memoria', ORO],
+  '2026-08-14': ['San Maximiliano Kolbe', 'memoria', ROJO],
+  '2026-08-15': ['Asunción de la Virgen María', 'solemnidad', ORO],
+  '2026-08-16': ['XX Domingo del Tiempo Ordinario', 'solemnidad', null],
+  '2026-08-20': ['San Bernardo, abad', 'memoria', ORO],
+  '2026-08-22': ['Santa María Reina', 'memoria', ORO],
+  '2026-08-23': ['XXI Domingo del Tiempo Ordinario', 'solemnidad', null],
+  '2026-08-24': ['San Bartolomé, apóstol', 'fiesta', ROJO],
+  '2026-08-27': ['Santa Mónica', 'memoria', ORO],
+  '2026-08-28': ['San Agustín', 'memoria', ORO],
+  '2026-08-29': ['Exaltación del Santo Cristo · fiesta patronal', 'solemnidad', ROJO],
+  '2026-08-30': ['XXII Domingo del Tiempo Ordinario', 'solemnidad', null],
+  '2026-11-29': ['I Domingo de Adviento', 'solemnidad', null],
+  '2026-11-30': ['San Andrés, apóstol', 'fiesta', ROJO],
+  '2026-12-03': ['San Francisco Javier', 'memoria', null],
+  '2026-12-06': ['II Domingo de Adviento', 'solemnidad', null],
+  '2026-12-08': ['Inmaculada Concepción', 'solemnidad', ORO],
+  '2026-12-09': ['San Juan Diego', 'memoria', ORO],
+  '2026-12-12': ['Nuestra Señora de Guadalupe', 'solemnidad', ORO],
+  '2026-12-13': ['III Domingo · Gaudete', 'solemnidad', null],
+  '2026-12-20': ['IV Domingo de Adviento', 'solemnidad', null],
+  '2026-12-24': ['Nochebuena', 'solemnidad', ORO],
+  '2026-12-25': ['Natividad del Señor', 'solemnidad', null],
+  '2026-12-26': ['San Esteban, protomártir', 'fiesta', ROJO],
+  '2026-12-27': ['La Sagrada Familia', 'fiesta', null],
+  '2026-12-28': ['Santos Inocentes', 'fiesta', ROJO],
+  '2027-01-01': ['Santa María, Madre de Dios', 'solemnidad', null],
+  '2027-01-06': ['Epifanía del Señor', 'solemnidad', null],
+  '2027-01-10': ['Bautismo del Señor', 'fiesta', null]
+};
+
+const ACTOS = [
+  ['2026-08-03', '18:00', 90, 'Inscripciones a catequesis', 'catequesis'],
+  ['2026-08-04', '19:00', 60, 'Hora santa', 'liturgia'],
+  ['2026-08-05', '10:00', 180, 'Despensa solidaria', 'caridad'],
+  ['2026-08-06', '19:00', 75, 'Misa de la Transfiguración', 'liturgia'],
+  ['2026-08-07', '18:00', 90, 'Primer viernes · adoración', 'liturgia'],
+  ['2026-08-08', '09:00', 240, 'Taller para catequistas', 'formacion'],
+  ['2026-08-09', '11:00', 90, 'Catequesis infantil', 'catequesis'],
+  ['2026-08-09', '17:00', 120, 'Ensayo del coro', 'coro'],
+  ['2026-08-10', '19:00', 60, 'Misa de San Lorenzo', 'liturgia'],
+  ['2026-08-11', '19:00', 90, 'Plática prebautismal', 'catequesis'],
+  ['2026-08-12', '10:00', 180, 'Despensa solidaria', 'caridad'],
+  ['2026-08-12', '19:30', 90, 'Junta de pastoral', 'formacion'],
+  ['2026-08-13', '17:00', 120, 'Ensayo del coro', 'coro'],
+  ['2026-08-14', '18:00', 90, 'Confesiones', 'liturgia'],
+  ['2026-08-14', '20:00', 120, 'Vigilia de la Asunción', 'liturgia', ORO],
+  ['2026-08-15', '12:00', 90, 'Misa solemne de la Asunción', 'liturgia'],
+  ['2026-08-15', '18:00', 150, 'Procesión y kermés', 'juvenil'],
+  ['2026-08-16', '11:00', 90, 'Catequesis infantil', 'catequesis'],
+  ['2026-08-17', '19:00', 90, 'Curso prematrimonial', 'formacion'],
+  ['2026-08-19', '10:00', 180, 'Despensa solidaria', 'caridad'],
+  ['2026-08-20', '17:00', 120, 'Ensayo del coro', 'coro'],
+  ['2026-08-21', '19:00', 90, 'Preparación del retiro juvenil', 'juvenil'],
+  ['2026-08-22', '09:00', 240, 'Retiro juvenil', 'juvenil'],
+  ['2026-08-23', '11:00', 90, 'Catequesis infantil', 'catequesis'],
+  ['2026-08-24', '19:00', 60, 'Misa de San Bartolomé', 'liturgia'],
+  ['2026-08-26', '10:00', 180, 'Despensa solidaria', 'caridad'],
+  ['2026-08-27', '18:00', 120, 'Novenario patronal', 'liturgia'],
+  ['2026-08-28', '18:00', 120, 'Novenario patronal', 'liturgia'],
+  ['2026-08-29', '08:00', 90, 'Mañanitas al Santo Cristo', 'coro'],
+  ['2026-08-29', '12:00', 105, 'Misa patronal solemne', 'liturgia'],
+  ['2026-08-29', '18:00', 240, 'Kermés parroquial', 'juvenil'],
+  ['2026-08-30', '11:00', 90, 'Catequesis infantil', 'catequesis'],
+  ['2026-08-31', '19:00', 90, 'Junta de catequistas', 'catequesis'],
+  ['2026-12-02', '18:00', 90, 'Junta de catequistas', 'catequesis'],
+  ['2026-12-03', '19:00', 60, 'Hora santa', 'liturgia'],
+  ['2026-12-05', '09:00', 240, 'Retiro de Adviento', 'formacion'],
+  ['2026-12-06', '11:00', 45, 'Bendición de coronas de Adviento', 'liturgia'],
+  ['2026-12-08', '12:00', 75, 'Misa solemne de la Inmaculada', 'liturgia'],
+  ['2026-12-09', '18:30', 45, 'Rosario guadalupano', 'liturgia'],
+  ['2026-12-10', '19:00', 90, 'Plática prebautismal', 'catequesis'],
+  ['2026-12-11', '20:00', 120, 'Serenata a la Virgen', 'coro'],
+  ['2026-12-12', '05:00', 90, 'Mañanitas a la Virgen', 'coro'],
+  ['2026-12-12', '12:00', 90, 'Misa de Guadalupe', 'liturgia'],
+  ['2026-12-12', '17:00', 120, 'Danza de matachines', 'juvenil'],
+  ['2026-12-13', '11:00', 90, 'Catequesis infantil', 'catequesis'],
+  ['2026-12-15', '18:00', 120, 'Confesiones comunitarias', 'liturgia'],
+  ['2026-12-17', '16:00', 180, 'Despensa solidaria', 'caridad'],
+  ['2026-12-18', '20:00', 150, 'Posada del grupo juvenil', 'juvenil'],
+  ['2026-12-19', '17:00', 120, 'Ensayo del coro navideño', 'coro'],
+  ['2026-12-20', '11:00', 90, 'Catequesis infantil', 'catequesis'],
+  ['2026-12-20', '17:00', 120, 'Ensayo del coro navideño', 'coro'],
+  ['2026-12-21', '18:00', 90, 'Confesiones', 'liturgia'],
+  ['2026-12-22', '10:00', 180, 'Despensa solidaria', 'caridad'],
+  ['2026-12-23', '16:00', 120, 'Ensayo de pastorela', 'juvenil'],
+  ['2026-12-24', '19:00', 120, 'Última posada', 'juvenil'],
+  ['2026-12-24', '22:00', 90, 'Misa de Nochebuena', 'liturgia'],
+  ['2026-12-25', '08:00', 60, 'Misa de la Aurora', 'liturgia'],
+  ['2026-12-25', '12:00', 75, 'Misa del Día de Navidad', 'liturgia'],
+  ['2026-12-26', '18:00', 45, 'Bendición de niños', 'liturgia'],
+  ['2026-12-26', '20:00', 120, 'Posada de agradecimiento', 'juvenil'],
+  ['2026-12-27', '13:00', 45, 'Bendición de familias', 'liturgia'],
+  ['2026-12-31', '20:00', 90, 'Te Deum de fin de año', 'liturgia'],
+  ['2027-01-06', '18:00', 120, 'Rosca y villancicos', 'coro'],
+  ['2027-01-08', '18:00', 120, 'Junta de pastoral', 'formacion']
+];
+for (let d = 16; d <= 23; d++) ACTOS.push(['2026-12-' + d, '19:30', 60, 'Novena de Aguinaldo', 'liturgia']);
+
+const TODAY = '2026-08-12';
+const NOW_MIN = 11 * 60 + 20;
+const MES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+const DIA = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+const DIAC = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
+const H0 = 5, H1 = 24, ROW = 54;
+
+function laneize(cluster) {
+  const lanes = [];
+  cluster.forEach((e) => {
+    let li = 0;
+    while (li < lanes.length && lanes[li] > e.min) li++;
+    lanes[li] = e.min + e.dur;
+    e._lane = li;
+  });
+  cluster.forEach((e) => { e._lanes = lanes.length; });
+  return cluster;
+}
+function layout(items) {
+  const out = [];
+  let cluster = [], cEnd = -1;
+  items.forEach((e) => {
+    if (cluster.length && e.min >= cEnd) { out.push(laneize(cluster)); cluster = []; cEnd = -1; }
+    cluster.push(e);
+    cEnd = Math.max(cEnd, e.min + e.dur);
+  });
+  if (cluster.length) out.push(laneize(cluster));
+  return [].concat.apply([], out);
+}
+
+function key(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function parse(k) { const p = k.split('-'); return new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2])); }
+function seasonKey(d) {
+  const t = d.getTime(), D = (y, m, day) => new Date(y, m, day).getTime();
+  if (t === D(2026, 11, 13)) return 'gaudete';
+  if (t >= D(2026, 10, 29) && t <= D(2026, 11, 24)) return 'adviento';
+  if (t >= D(2026, 11, 25) && t <= D(2027, 0, 10)) return 'navidad';
+  return 'ordinario';
+}
+function mins(t) { const p = t.split(':'); return Number(p[0]) * 60 + Number(p[1]); }
+function hhmm(m) { return String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0'); }
+
+function masses(d) {
+  const k = key(d), out = [], dow = d.getDay();
+  const add = (t, n) => out.push({ id: k + '#m' + t, k: k, t: t, min: mins(t), dur: 60, title: n, group: 'liturgia', liturgy: true });
+  if (k === '2026-12-25') return out;
+  if (k === '2026-12-24') { add('08:00', 'Misa de feria'); return out; }
+  add('07:00', dow === 0 ? 'Misa de la mañana' : 'Misa');
+  if (dow === 0) { add('09:00', 'Misa de familias'); add('12:00', 'Misa mayor'); add('19:00', 'Misa vespertina'); }
+  if (dow === 6) add('19:00', 'Misa vespertina');
+  return out;
+}
+function actsOf(d) {
+  const k = key(d);
+  return ACTOS.filter((a) => a[0] === k).map((a, i) => ({
+    id: k + '#a' + i, k: k, t: a[1], min: mins(a[1]), dur: a[2], title: a[3], group: a[4],
+    liturgy: a[4] === 'liturgia', ov: a[5] || null
+  }));
+}
+function dayItems(d, filter) {
+  let all = masses(d).concat(actsOf(d));
+  if (filter && filter.length) all = all.filter((e) => filter.indexOf(e.group) >= 0);
+  return all.sort((a, b) => a.min - b.min);
+}
+const RANKFW = { solemnidad: 600, fiesta: 600, memoria: 500 };
+
+class Component extends DCLogic {
+  state = {
+    view: this.props.vistaInicial === 'semana' ? 'semana' : 'mes',
+    anchor: TODAY, sel: TODAY, filter: [], sheet: null, dayIx: 3,
+    w: typeof window !== 'undefined' ? window.innerWidth : 1280
+  };
+
+  componentDidMount() {
+    this.tune();
+    this.onResize = () => {
+      if (this._raf) return;
+      this._raf = requestAnimationFrame(() => {
+        this._raf = null;
+        const w = window.innerWidth;
+        if (w !== this.state.w) this.setState({ w: w });
+      });
+    };
+    window.addEventListener('resize', this.onResize);
+    this.onResize();
+  }
+  componentDidUpdate() { this.tune(); }
+  componentWillUnmount() { window.removeEventListener('resize', this.onResize); }
+
+  agendaDays() {
+    const a = parse(this.state.anchor);
+    const last = new Date(a.getFullYear(), a.getMonth() + 1, 0).getDate();
+    const out = [];
+    for (let i = 1; i <= last; i++) {
+      const d = new Date(a.getFullYear(), a.getMonth(), i);
+      const k = key(d), se = SEA[seasonKey(d)], c = CELEB[k];
+      const cc = c && c[2] ? c[2] : se.color;
+      const items = dayItems(d, this.state.filter);
+      if (!c && !items.length) continue;
+      out.push({
+        k: k, num: d.getDate(), dow: DIAC[d.getDay()],
+        bar: cc, tint: se.tint, ink: se.ink,
+        numColor: k === TODAY ? '#8a5a1f' : se.ink,
+        isToday: k === TODAY,
+        todayTag: k === TODAY ? 'HOY' : '',
+        hasCeleb: !!c,
+        celebTitle: c ? c[0] : '',
+        celebBg: c && c[1] === 'solemnidad' ? cc : cc + '1c',
+        celebFg: c && c[1] === 'solemnidad' ? '#fffdf7' : cc,
+        celebBd: c && c[1] === 'solemnidad' ? cc : cc + '4d',
+        items: items.map((e) => ({
+          t: e.t, title: e.title, groupName: GNAME[e.group],
+          fg: e.liturgy ? (e.ov || cc) : GRAF,
+          bd: e.liturgy ? (e.ov || cc) : 'rgba(107,98,85,.4)',
+          dash: e.liturgy ? 'solid' : 'dashed',
+          bg: e.liturgy ? (e.ov || cc) + '14' : 'transparent',
+          pick: () => this.setState({ sheet: e.id, sel: e.k, view: 'semana' })
+        }))
+      });
+    }
+    return out;
+  }
+  tune() {
+    const m = Number(this.props.motion != null ? this.props.motion : 8);
+    document.documentElement.style.setProperty('--m', String(Math.max(0.02, (11 - m) / 3)));
+  }
+
+  shift(days) {
+    const d = parse(this.state.anchor);
+    d.setDate(d.getDate() + days);
+    this.setState({ anchor: key(d) });
+  }
+  shiftMonth(n) {
+    const d = parse(this.state.anchor);
+    d.setMonth(d.getMonth() + n, 1);
+    this.setState({ anchor: key(d) });
+  }
+
+  monthCells() {
+    const a = parse(this.state.anchor);
+    const first = new Date(a.getFullYear(), a.getMonth(), 1);
+    const start = new Date(first);
+    start.setDate(1 - first.getDay());
+    const out = [];
+    for (let i = 0; i < 42; i++) {
+      const d = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i);
+      const k = key(d), se = SEA[seasonKey(d)], outside = d.getMonth() !== a.getMonth();
+      const c = CELEB[k];
+      const cc = c && c[2] ? c[2] : se.color;
+      const items = dayItems(d, this.state.filter);
+      const ms = items.filter((e) => e.liturgy);
+      const chips = items.filter((e) => !e.liturgy);
+      const room = c ? 1 : 2;
+      out.push({
+        k: k, num: d.getDate(),
+        bg: outside ? '#f3efe5' : se.tint,
+        bar: outside ? 'rgba(34,29,21,.12)' : cc,
+        numColor: outside ? '#6f6557' : se.ink,
+        ring: k === this.state.sel ? '2px solid #221d15' : (k === TODAY ? '2px solid ' + ORO : '1px solid rgba(34,29,21,.09)'),
+        hasCeleb: !!c,
+        celebTitle: c ? c[0] : '',
+        celebBg: c && c[1] === 'solemnidad' ? cc : (c && c[1] === 'fiesta' ? cc + '20' : 'transparent'),
+        celebFg: c && c[1] === 'solemnidad' ? '#fffdf7' : cc,
+        celebBd: c && c[1] === 'fiesta' ? cc + '55' : 'transparent',
+        celebFw: c ? RANKFW[c[1]] : 400,
+        celebDot: c && c[1] === 'solemnidad' ? 'rgba(255,255,255,.85)' : cc,
+        chips: chips.slice(0, room).map((e) => ({ title: e.t.slice(0, 5) + ' · ' + e.title })),
+        hasMore: chips.length > room,
+        more: '+' + (chips.length - room) + ' más',
+        massLabel: ms.length ? ms.length + (ms.length === 1 ? ' misa' : ' misas') : '',
+        pick: () => this.setState({ sel: k })
+      });
+    }
+    return out;
+  }
+
+  weekDays() {
+    const a = parse(this.state.anchor);
+    const start = new Date(a.getFullYear(), a.getMonth(), a.getDate() - a.getDay());
+    const out = [];
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i);
+      const k = key(d), se = SEA[seasonKey(d)], c = CELEB[k];
+      const cc = c && c[2] ? c[2] : se.color;
+      const items = layout(dayItems(d, this.state.filter));
+      out.push({
+        k: k, num: d.getDate(), dow: DIAC[d.getDay()], isToday: k === TODAY,
+        tint: se.tint, bar: cc, ink: se.ink,
+        headBg: k === TODAY ? '#fdf6e8' : '#fffdf7',
+        numColor: k === TODAY ? '#8a5a1f' : se.ink,
+        hasCeleb: !!c,
+        celebTitle: c ? c[0] : '',
+        celebBg: c && c[1] === 'solemnidad' ? cc : (c ? cc + '1c' : 'transparent'),
+        celebFg: c && c[1] === 'solemnidad' ? '#fffdf7' : cc,
+        celebBd: c && c[1] !== 'solemnidad' ? cc + '4d' : cc,
+        blocks: items.map((e) => {
+          const w = 100 / e._lanes;
+          const cc2 = e.ov || cc;
+          const h = Math.max(28, Math.round(e.dur / 60 * ROW) - 3);
+          return {
+            id: e.id,
+            top: Math.round((e.min - H0 * 60) / 60 * ROW),
+            height: h,
+            left: e._lane * w, width: w,
+            fs: e._lanes > 1 ? '9.5px' : '10.5px',
+            showTime: e._lanes === 1 || h >= 62,
+            label: e.title,
+            bg: e.liturgy ? cc2 + '1c' : 'rgba(107,98,85,.07)',
+            fg: e.liturgy ? cc2 : GRAF,
+            bd: e.liturgy ? cc2 : 'rgba(107,98,85,.4)',
+            dash: e.liturgy ? 'solid' : 'dashed',
+            fw: e.liturgy ? 600 : 400,
+            t: e.t, title: e.title, groupName: GNAME[e.group],
+            pick: () => this.setState({ sheet: e.id, sel: e.k })
+          };
+        })
+      });
+    }
+    return out;
+  }
+
+  renderVals() {
+    const a = parse(this.state.anchor);
+    const isMes = this.state.view === 'mes';
+    const se = SEA[seasonKey(parse(TODAY))];
+    const selD = parse(this.state.sel);
+    const selSe = SEA[seasonKey(selD)];
+    const selC = CELEB[this.state.sel];
+    const selItems = dayItems(selD, this.state.filter);
+    const wd = isMes ? [] : this.weekDays();
+    const hours = [];
+    for (let h = H0; h <= H1 - 1; h++) hours.push({ h: h, label: String(h).padStart(2, '0') + ':00', top: (h - H0) * ROW });
+    const weekStart = wd.length ? parse(wd[0].k) : a;
+    const weekEnd = wd.length ? parse(wd[6].k) : a;
+    const rangeLabel = isMes
+      ? MES[a.getMonth()].charAt(0).toUpperCase() + MES[a.getMonth()].slice(1) + ' ' + a.getFullYear()
+      : (weekStart.getMonth() === weekEnd.getMonth()
+          ? weekStart.getDate() + '–' + weekEnd.getDate() + ' de ' + MES[weekStart.getMonth()]
+          : weekStart.getDate() + ' ' + MES[weekStart.getMonth()].slice(0, 3) + ' – ' + weekEnd.getDate() + ' ' + MES[weekEnd.getMonth()].slice(0, 3));
+    const sheetE = this.state.sheet
+      ? [].concat.apply([], wd.map((w) => w.blocks)).find((b) => b.id === this.state.sheet)
+      : null;
+    const todayD = parse(TODAY);
+    const isPhone = this.state.w < 720;
+    const isTablet = this.state.w < 1040;
+    const dayIx = Math.min(6, Math.max(0, this.state.dayIx));
+    return {
+      isMes: isMes, isSemana: !isMes,
+      isPhone: isPhone, notPhone: !isPhone,
+      showMonthGrid: isMes && !isPhone,
+      showMonthAgenda: isMes && isPhone,
+      showWeekGrid: !isMes && !isPhone,
+      showWeekDay: !isMes && isPhone,
+      mainPad: isPhone ? '20px 16px 56px' : '26px 28px 70px',
+      headPad: isPhone ? '11px 16px' : '12px 28px',
+      bannerPad: isPhone ? '26px 16px 24px' : '34px 28px 30px',
+      monthCellH: isTablet ? 96 : 118,
+      gutterW: isPhone ? 46 : 56,
+      agenda: isMes && isPhone ? this.agendaDays() : [],
+      dayColList: !isMes && isPhone ? [wd[dayIx]] : [],
+      weekPicker: !isMes && isPhone ? wd.map((w, i) => ({
+        num: w.num, dow: w.dow,
+        bg: i === dayIx ? '#2a241a' : '#fffdf7',
+        fg: i === dayIx ? '#fbf7ee' : w.ink,
+        bar: w.bar,
+        pick: () => this.setState({ dayIx: i, sel: w.k })
+      })) : [],
+      dayColLabel: wd.length ? DIA[parse(wd[dayIx].k).getDay()] + ' ' + wd[dayIx].num : '',
+      seasonTitle: se.name, seasonBlurb: se.blurb, seasonDeep: se.deep, seasonSwatch: se.color, seasonColorName: se.cname,
+      todayLabel: todayD.getDate() + ' ' + MES[todayD.getMonth()].slice(0, 3),
+      mesBg: isMes ? '#2a241a' : '#fffdf7', mesFg: isMes ? '#fbf7ee' : '#6b6255',
+      semBg: !isMes ? '#2a241a' : '#fffdf7', semFg: !isMes ? '#fbf7ee' : '#6b6255',
+      goMes: () => this.setState({ view: 'mes', sheet: null }),
+      goSemana: () => this.setState({ view: 'semana' }),
+      prev: () => (isMes ? this.shiftMonth(-1) : this.shift(-7)),
+      next: () => (isMes ? this.shiftMonth(1) : this.shift(7)),
+      today: () => this.setState({ anchor: TODAY, sel: TODAY }),
+      rangeLabel: rangeLabel,
+      groupChips: GRUPOS.map((g) => {
+        const on = this.state.filter.indexOf(g.id) >= 0;
+        return {
+          name: g.name,
+          bg: on ? '#2a241a' : '#fffdf7', fg: on ? '#fbf7ee' : '#6b6255',
+          bd: on ? '#2a241a' : 'rgba(34,29,21,.18)',
+          toggle: () => this.setState((s) => ({
+            filter: s.filter.indexOf(g.id) >= 0 ? s.filter.filter((x) => x !== g.id) : s.filter.concat([g.id])
+          }))
+        };
+      }),
+      monthDays: isMes ? this.monthCells() : [],
+      weekDays: wd,
+      hours: hours,
+      gridH: (H1 - H0) * ROW,
+      nowTop: Math.round((NOW_MIN - H0 * 60) / 60 * ROW),
+      showNow: !isMes && wd.some((w) => w.isToday),
+      nowLabel: hhmm(NOW_MIN),
+      selBar: selC && selC[2] ? selC[2] : selSe.color,
+      selSeason: selSe.name,
+      selDayLabel: DIA[selD.getDay()] + ' ' + selD.getDate() + ' de ' + MES[selD.getMonth()],
+      selCelebLine: selC ? selC[0] : 'Feria · sin celebración propia',
+      selAgenda: selItems.map((e) => ({ t: e.t, title: e.title, groupName: GNAME[e.group], pick: () => this.setState({ sheet: e.id }) })),
+      selEmpty: selItems.length === 0,
+      sheetOpen: !!sheetE,
+      sheet: sheetE || { t: '', title: '', groupName: '', bd: ORO, fg: ORO },
+      closeSheet: () => this.setState({ sheet: null })
+    };
+  }
+}
+</script>
+</body>
+</html>

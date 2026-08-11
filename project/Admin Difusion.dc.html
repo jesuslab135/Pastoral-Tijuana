@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--m:1}
+*{box-sizing:border-box}
+body{margin:0;background:#f6f1e6;color:#221d15;-webkit-font-smoothing:antialiased;text-wrap:pretty}
+a{color:#8a5a1f;text-decoration:none}
+a:hover{color:#221d15}
+::selection{background:#e9d8ad}
+@keyframes cpRise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes cpPulse{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:.95;transform:scale(1.4)}}
+@keyframes cpFlow{to{background-position:36px 0}}
+@keyframes cpBar{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.001s!important;transition-duration:.001s!important}}
+</style>
+</helmet>
+
+<div style="min-height:100vh;display:flex;flex-direction:{{ shellDir }}">
+
+<sc-if value="{{ notPhone }}" hint-placeholder-val="{{ true }}">
+<aside style="flex:none;width:236px;background:#2a241a;color:#f4efe3;padding:22px 16px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh">
+<div style="display:flex;align-items:center;gap:10px;padding:0 6px 22px;border-bottom:1px solid rgba(201,169,97,.16)">
+<div style="width:28px;height:28px;border-radius:50%;border:2px solid rgba(201,169,97,.6);position:relative;flex:none"><div style="position:absolute;inset:5px;border-radius:50%;background:#2f6b4f"></div></div>
+<div style="min-width:0">
+<div style="font:400 13.5px/1.2 Marcellus,Georgia,serif;color:#fffdf7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Cristo de Los Álamos</div>
+<div style="font:400 8.5px/1.3 'IBM Plex Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#a89f8c">Panel pastoral</div>
+</div>
+</div>
+<nav style="display:flex;flex-direction:column;gap:3px;padding-top:16px">
+<a href="Admin%20Eventos.dc.html" style="padding:11px 12px;border-radius:7px;color:#a89f8c;font:500 12.5px/1 'IBM Plex Sans',system-ui,sans-serif;display:flex;justify-content:space-between;align-items:center;transition:all calc(.2s * var(--m))" style-hover="background:rgba(201,169,97,.09);color:#fffdf7">Eventos<span style="font:500 9.5px/1 'IBM Plex Mono',monospace;color:#a89f8c">36</span></a>
+<a href="Admin%20Difusion.dc.html" style="padding:11px 12px;border-radius:7px;background:rgba(201,169,97,.16);color:#fffdf7;font:600 12.5px/1 'IBM Plex Sans',system-ui,sans-serif;display:flex;justify-content:space-between;align-items:center">Difusión<span style="width:7px;height:7px;border-radius:50%;background:#a02f27;animation:cpPulse calc(2.2s * var(--m)) ease-in-out infinite"></span></a>
+<a href="Admin%20Equipo.dc.html" style="padding:11px 12px;border-radius:7px;color:#a89f8c;font:500 12.5px/1 'IBM Plex Sans',system-ui,sans-serif;transition:all calc(.2s * var(--m))" style-hover="background:rgba(201,169,97,.09);color:#fffdf7">Equipo y permisos</a>
+<a href="Calendario%20Pastoral%20-%20Sitio.dc.html" style="padding:11px 12px;border-radius:7px;color:#a89f8c;font:500 12.5px/1 'IBM Plex Sans',system-ui,sans-serif;transition:all calc(.2s * var(--m))" style-hover="background:rgba(201,169,97,.09);color:#fffdf7">Ver sitio público ↗</a>
+</nav>
+<div style="margin-top:auto;padding:16px 6px 0;border-top:1px solid rgba(201,169,97,.16)">
+<div style="display:flex;align-items:center;gap:10px">
+<div style="width:30px;height:30px;border-radius:50%;background:#5c3b7a;flex:none;display:flex;align-items:center;justify-content:center;font:600 11px/1 'IBM Plex Sans',sans-serif;color:#fff">MR</div>
+<div style="min-width:0;flex:1">
+<div style="font:600 12px/1.3 'IBM Plex Sans',system-ui,sans-serif;color:#fffdf7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">P. Miguel Ramírez</div>
+<div style="font:400 9px/1.3 'IBM Plex Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:#a89f8c">Párroco</div>
+</div>
+</div>
+<a href="Admin%20Login.dc.html" style="display:block;margin-top:12px;font:500 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#a89f8c">CERRAR SESIÓN</a>
+</div>
+</aside>
+</sc-if>
+
+<sc-if value="{{ isPhone }}" hint-placeholder-val="{{ false }}">
+<div style="background:#2a241a;color:#f4efe3;padding:13px 16px;position:sticky;top:0;z-index:30">
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+<div style="width:26px;height:26px;border-radius:50%;border:2px solid rgba(201,169,97,.6);position:relative;flex:none"><div style="position:absolute;inset:5px;border-radius:50%;background:#2f6b4f"></div></div>
+<div style="font:400 14px/1.2 Marcellus,Georgia,serif;color:#fffdf7;flex:1;min-width:0">Cristo de Los Álamos</div>
+<a href="Admin%20Login.dc.html" style="font:500 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#a89f8c">SALIR</a>
+</div>
+<div style="display:flex;gap:5px;overflow-x:auto">
+<a href="Admin%20Eventos.dc.html" style="flex:none;padding:9px 13px;border-radius:18px;color:#a89f8c;font:500 11.5px/1 'IBM Plex Sans',system-ui,sans-serif;border:1px solid rgba(201,169,97,.2);min-height:36px;line-height:18px">Eventos</a>
+<a href="Admin%20Difusion.dc.html" style="flex:none;padding:9px 13px;border-radius:18px;background:rgba(201,169,97,.18);color:#fffdf7;font:600 11.5px/1 'IBM Plex Sans',system-ui,sans-serif;min-height:36px;line-height:18px">Difusión</a>
+<a href="Admin%20Equipo.dc.html" style="flex:none;padding:9px 13px;border-radius:18px;color:#a89f8c;font:500 11.5px/1 'IBM Plex Sans',system-ui,sans-serif;border:1px solid rgba(201,169,97,.2);min-height:36px;line-height:18px">Equipo</a>
+<a href="Calendario%20Pastoral%20-%20Sitio.dc.html" style="flex:none;padding:9px 13px;border-radius:18px;color:#a89f8c;font:500 11.5px/1 'IBM Plex Sans',system-ui,sans-serif;border:1px solid rgba(201,169,97,.2);min-height:36px;line-height:18px">Sitio ↗</a>
+</div>
+</div>
+</sc-if>
+
+<main style="flex:1;min-width:0;padding:{{ pad }}">
+<div style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.2em;text-transform:uppercase;color:#8a5a1f;margin-bottom:11px">Motor de difusión</div>
+<h1 style="margin:0 0 8px;font:400 clamp(28px,3.6vw,40px)/1.06 Marcellus,Georgia,serif;letter-spacing:-.01em">A dónde se fue cada aviso</h1>
+<p style="margin:0 0 26px;max-width:66ch;font:400 16px/1.58 'EB Garamond',Georgia,serif;color:#5d5548">Nada se manda a mano. Cada evento publicado abre una tarea por canal, con su propio ritmo y sus reintentos.</p>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:24px">
+<div style="background:#fffdf7;border:1px solid rgba(34,29,21,.14);border-radius:10px;padding:16px 17px">
+<div style="font:400 30px/1 Marcellus,Georgia,serif;color:#2f6b4f">128</div>
+<div style="margin-top:6px;font:500 10.5px/1.35 'IBM Plex Sans',system-ui,sans-serif;color:#6b6255">entregados<br>este mes</div>
+</div>
+<div style="background:#fffdf7;border:1px solid rgba(34,29,21,.14);border-radius:10px;padding:16px 17px">
+<div style="font:400 30px/1 Marcellus,Georgia,serif;color:#b1872f">6</div>
+<div style="margin-top:6px;font:500 10.5px/1.35 'IBM Plex Sans',system-ui,sans-serif;color:#6b6255">en cola<br>ahora mismo</div>
+</div>
+<div style="background:#fbeeec;border:1px solid rgba(160,47,39,.28);border-radius:10px;padding:16px 17px">
+<div style="font:400 30px/1 Marcellus,Georgia,serif;color:#a02f27">2</div>
+<div style="margin-top:6px;font:500 10.5px/1.35 'IBM Plex Sans',system-ui,sans-serif;color:#6b6255">fallidos<br>con reintento</div>
+</div>
+<div style="background:#fffdf7;border:1px solid rgba(34,29,21,.14);border-radius:10px;padding:16px 17px">
+<div style="font:400 30px/1 Marcellus,Georgia,serif;color:#5c3b7a">8 s</div>
+<div style="margin-top:6px;font:500 10.5px/1.35 'IBM Plex Sans',system-ui,sans-serif;color:#6b6255">retraso entre<br>grupo y grupo</div>
+</div>
+</div>
+
+<div style="display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start">
+<div style="flex:1 1 460px;min-width:0">
+
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+<sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4">
+<button type="button" onClick="{{ t.pick }}" style="padding:9px 14px;border-radius:20px;cursor:pointer;font:500 11.5px/1 'IBM Plex Sans',system-ui,sans-serif;min-height:38px;transition:all calc(.2s * var(--m));background:{{ t.bg }};color:{{ t.fg }};border:1px solid {{ t.bd }}">{{ t.label }}</button>
+</sc-for>
+</div>
+
+<div style="background:#fffdf7;border:1px solid rgba(34,29,21,.15);border-radius:12px;overflow:hidden">
+<sc-for list="{{ log }}" as="l" hint-placeholder-count="7">
+<div style="padding:15px 17px;border-bottom:1px solid rgba(34,29,21,.08);border-left:3px solid {{ l.accent }};background:{{ l.bg }}">
+<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:baseline;margin-bottom:6px">
+<span style="font:600 13px/1.3 'IBM Plex Sans',system-ui,sans-serif;flex:1;min-width:140px">{{ l.event }}</span>
+<span style="font:500 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;padding:4px 8px;border-radius:4px;background:{{ l.stateBg }};color:{{ l.stateFg }}">{{ l.state }}</span>
+</div>
+<div style="display:flex;gap:12px;flex-wrap:wrap;align-items:baseline">
+<span style="font:400 11.5px/1.4 'IBM Plex Sans',system-ui,sans-serif;color:#5d5548">{{ l.channel }}</span>
+<span style="font:400 10.5px/1.4 'IBM Plex Mono',monospace;color:#6b6255">{{ l.stamp }}</span>
+</div>
+<sc-if value="{{ l.hasNote }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:9px;padding:9px 11px;border-radius:6px;background:rgba(160,47,39,.07);border:1px solid rgba(160,47,39,.2);font:400 11px/1.45 'IBM Plex Mono',monospace;color:#8f2a23">{{ l.note }}</div>
+<div style="display:flex;gap:7px;margin-top:9px;flex-wrap:wrap">
+<button type="button" style="padding:9px 13px;border-radius:6px;border:1px solid rgba(160,47,39,.3);background:#fffdf7;color:#a02f27;font:600 11px/1 'IBM Plex Sans',system-ui,sans-serif;min-height:38px;cursor:pointer;transition:background calc(.2s * var(--m))" style-hover="background:rgba(160,47,39,.08)">Reintentar ahora</button>
+<a href="Admin%20Equipo.dc.html" style="padding:9px 13px;border-radius:6px;border:1px solid rgba(34,29,21,.16);background:#fffdf7;color:#5d5548;font:600 11px/1 'IBM Plex Sans',system-ui,sans-serif;min-height:38px;line-height:20px">Revisar el canal</a>
+</div>
+</sc-if>
+</div>
+</sc-for>
+<sc-if value="{{ noLog }}" hint-placeholder-val="{{ false }}">
+<div style="padding:36px 20px;text-align:center">
+<div style="font:400 19px/1.2 Marcellus,Georgia,serif;color:#6b6255;margin-bottom:7px">Nada en este filtro</div>
+<p style="margin:0;font:400 14.5px/1.5 'EB Garamond',Georgia,serif;color:#6b6255">Buena señal si buscabas fallos.</p>
+</div>
+</sc-if>
+</div>
+</div>
+
+<div style="flex:1 1 300px;min-width:0;display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start">
+
+<div style="flex:1 1 288px;background:#fffdf7;border:1px solid rgba(34,29,21,.14);border-radius:12px;padding:20px">
+<div style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.18em;text-transform:uppercase;color:#8a5a1f;margin-bottom:15px">Canales conectados</div>
+<div style="display:flex;flex-direction:column;gap:11px">
+<sc-for list="{{ channels }}" as="c" hint-placeholder-count="4">
+<div style="padding:12px;border-radius:8px;border:1px solid rgba(34,29,21,.12);background:#faf5e9">
+<div style="display:flex;gap:9px;align-items:center;margin-bottom:7px">
+<span style="width:8px;height:8px;border-radius:50%;flex:none;background:{{ c.dot }}"></span>
+<span style="flex:1;min-width:0;font:600 12.5px/1.3 'IBM Plex Sans',system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ c.name }}</span>
+<span style="font:500 9px/1 'IBM Plex Mono',monospace;letter-spacing:.08em;color:{{ c.dot }}">{{ c.state }}</span>
+</div>
+<div style="font:400 10.5px/1.4 'IBM Plex Mono',monospace;color:#6b6255;margin-bottom:8px">{{ c.meta }}</div>
+<div style="height:4px;border-radius:2px;background:rgba(34,29,21,.09);overflow:hidden">
+<div style="height:100%;border-radius:2px;transform-origin:0 50%;animation:cpBar calc(.9s * var(--m)) cubic-bezier(.16,.84,.24,1) both;width:{{ c.pct }};background:{{ c.dot }}"></div>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div style="flex:1 1 288px;background:#2a241a;border-radius:12px;padding:20px;color:#f4efe3">
+<div style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.18em;text-transform:uppercase;color:#c9a961;margin-bottom:15px">Reglas activas</div>
+<div style="display:flex;flex-direction:column;gap:13px">
+<sc-for list="{{ rules }}" as="r" hint-placeholder-count="4">
+<button type="button" onClick="{{ r.toggle }}" style="display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;background:none;border:none;padding:0;cursor:pointer">
+<span style="flex:none;width:34px;height:20px;border-radius:10px;position:relative;margin-top:2px;transition:background calc(.24s * var(--m));background:{{ r.track }}"><span style="position:absolute;top:2px;left:0;width:16px;height:16px;border-radius:50%;background:#fbf7ee;transition:transform calc(.24s * var(--m)) cubic-bezier(.3,1.5,.5,1);transform:{{ r.knob }}"></span></span>
+<span style="flex:1;min-width:0">
+<span style="display:block;font:600 12.5px/1.3 'IBM Plex Sans',system-ui,sans-serif;color:#fffdf7;margin-bottom:3px">{{ r.name }}</span>
+<span style="display:block;font:400 13.5px/1.5 'EB Garamond',Georgia,serif;color:#a89f8c">{{ r.desc }}</span>
+</span>
+</button>
+</sc-for>
+</div>
+</div>
+
+<div style="flex:1 1 288px;background:#fbeeec;border:1px solid rgba(160,47,39,.3);border-radius:12px;padding:20px">
+<div style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.18em;text-transform:uppercase;color:#a02f27;margin-bottom:12px">Salud del proveedor</div>
+<p style="margin:0 0 14px;font:400 14.5px/1.55 'EB Garamond',Georgia,serif;color:#5d5548">El número que escribe en los grupos usa un proveedor no oficial. Si WhatsApp lo bloquea, el calendario y el boletín siguen funcionando.</p>
+<div style="height:26px;margin-bottom:14px;background-image:repeating-linear-gradient(90deg,rgba(160,47,39,.5) 0 10px,transparent 10px 18px);background-size:18px 1px;background-repeat:repeat-x;background-position:0 50%;animation:cpFlow calc(1.2s * var(--m)) linear infinite"></div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;justify-content:space-between;gap:10px;font:500 11.5px/1.4 'IBM Plex Mono',monospace"><span style="color:#5d5548">Sesión</span><span style="color:#2f6b4f">activa · 19 días</span></div>
+<div style="display:flex;justify-content:space-between;gap:10px;font:500 11.5px/1.4 'IBM Plex Mono',monospace"><span style="color:#5d5548">Mensajes hoy</span><span style="color:#4a4337">34 / 300</span></div>
+<div style="display:flex;justify-content:space-between;gap:10px;font:500 11.5px/1.4 'IBM Plex Mono',monospace"><span style="color:#5d5548">Respaldo</span><span style="color:#4a4337">boletín + .ics</span></div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;motion&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:8,&quot;min&quot;:0,&quot;max&quot;:10,&quot;step&quot;:1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Ajustes&quot;}}">
+const ROJO = '#a02f27', ORO = '#8a5a1f', VERDE = '#2f6b4f';
+
+const LOG = [
+  { event: 'Misa patronal solemne', channel: 'Grupo WA · Avisos generales', stamp: 'hoy 11:04:12', state: 'ENTREGADO', kind: 'ok' },
+  { event: 'Misa patronal solemne', channel: 'Grupo WA · Coro', stamp: 'hoy 11:04:20', state: 'ENTREGADO', kind: 'ok' },
+  { event: 'Novenario patronal', channel: 'Grupo WA · Avisos generales', stamp: 'hoy 11:06:02', state: 'EN COLA', kind: 'queue', note: '' },
+  { event: 'Kermés parroquial', channel: 'Grupo WA · Pastoral juvenil', stamp: 'hoy 10:58:41', state: 'FALLÓ', kind: 'fail', note: 'provider: group not found (jid caducado) · reintento 2 de 5 en 4 min' },
+  { event: 'Retiro juvenil', channel: 'Boletín semanal · 812 correos', stamp: 'viernes 07:00', state: 'AGRUPADO', kind: 'group' },
+  { event: 'Procesión y kermés', channel: 'Grupo WA · Caridad', stamp: 'ayer 19:12:55', state: 'FALLÓ', kind: 'fail', note: 'provider: rate limit alcanzado · reintento 1 de 5 en 12 min' },
+  { event: 'Misa solemne de la Asunción', channel: 'Grupo WA · Avisos generales', stamp: '14 ago 20:30:08', state: 'ENTREGADO', kind: 'ok' },
+  { event: 'Vigilia de la Asunción', channel: 'Boletín semanal · 812 correos', stamp: '14 ago 07:00:00', state: 'ENTREGADO', kind: 'ok' }
+];
+
+const STATE_STYLE = {
+  ok:    { bg: 'rgba(47,107,79,.12)', fg: VERDE, accent: VERDE, row: '#fffdf7' },
+  queue: { bg: 'rgba(177,135,47,.16)', fg: '#8a5a1f', accent: ORO, row: '#fdf6e8' },
+  fail:  { bg: 'rgba(160,47,39,.14)', fg: ROJO, accent: ROJO, row: '#fbeeec' },
+  group: { bg: 'rgba(34,29,21,.08)', fg: '#6b6255', accent: '#6b6255', row: '#fffdf7' }
+};
+
+const CHANNELS = [
+  { name: 'Grupo WA · Avisos generales', meta: '248 integrantes · 34 avisos este mes', state: 'OK', dot: VERDE, pct: '92%' },
+  { name: 'Grupo WA · Pastoral juvenil', meta: '62 integrantes · jid por revisar', state: 'FALLO', dot: ROJO, pct: '38%' },
+  { name: 'Grupo WA · Coro', meta: '31 integrantes · 12 avisos este mes', state: 'OK', dot: VERDE, pct: '78%' },
+  { name: 'Boletín semanal', meta: '812 correos · sale viernes 07:00', state: 'OK', dot: VERDE, pct: '99%' }
+];
+
+class Component extends DCLogic {
+  state = {
+    tab: 'todos',
+    rules: { agrupar: true, reposo: true, cancelar: true, soloCambios: true },
+    w: typeof window !== 'undefined' ? window.innerWidth : 1280
+  };
+
+  componentDidMount() {
+    this.tune();
+    this.onResize = () => {
+      if (this._raf) return;
+      this._raf = requestAnimationFrame(() => {
+        this._raf = null;
+        const w = window.innerWidth;
+        if (w !== this.state.w) this.setState({ w: w });
+      });
+    };
+    window.addEventListener('resize', this.onResize);
+    this.onResize();
+  }
+  componentDidUpdate() { this.tune(); }
+  componentWillUnmount() { window.removeEventListener('resize', this.onResize); }
+  tune() {
+    const m = Number(this.props.motion != null ? this.props.motion : 8);
+    document.documentElement.style.setProperty('--m', String(Math.max(0.02, (11 - m) / 3)));
+  }
+
+  renderVals() {
+    const isPhone = this.state.w < 900;
+    const tab = this.state.tab;
+    const TABS = [
+      { id: 'todos', label: 'Todo · 8' },
+      { id: 'fail', label: 'Fallos · 2' },
+      { id: 'queue', label: 'En cola · 1' },
+      { id: 'ok', label: 'Entregados · 4' }
+    ];
+    const log = tab === 'todos' ? LOG : LOG.filter((l) => l.kind === tab);
+    const R = this.state.rules;
+    const rule = (k, name, desc) => ({
+      name: name, desc: desc,
+      track: R[k] ? VERDE : 'rgba(201,169,97,.22)',
+      knob: R[k] ? 'translateX(16px)' : 'translateX(2px)',
+      toggle: () => this.setState((s) => {
+        const n = Object.assign({}, s.rules);
+        n[k] = !n[k];
+        return { rules: n };
+      })
+    });
+    return {
+      isPhone: isPhone, notPhone: !isPhone,
+      shellDir: isPhone ? 'column' : 'row',
+      pad: isPhone ? '22px 16px 52px' : '32px 34px 60px',
+      tabs: TABS.map((t) => ({
+        label: t.label,
+        bg: tab === t.id ? '#2a241a' : '#fffdf7',
+        fg: tab === t.id ? '#fbf7ee' : '#6b6255',
+        bd: tab === t.id ? '#2a241a' : 'rgba(34,29,21,.18)',
+        pick: () => this.setState({ tab: t.id })
+      })),
+      log: log.map((l) => {
+        const s = STATE_STYLE[l.kind];
+        return {
+          event: l.event, channel: l.channel, stamp: l.stamp, state: l.state,
+          stateBg: s.bg, stateFg: s.fg, accent: s.accent, bg: s.row,
+          hasNote: !!l.note, note: l.note || ''
+        };
+      }),
+      noLog: log.length === 0,
+      channels: CHANNELS,
+      rules: [
+        rule('agrupar', 'Agrupar ediciones', 'Cinco correcciones en diez minutos salen como un solo aviso.'),
+        rule('reposo', 'Ventana de reposo', 'Nada sale entre las 22:00 y las 07:00. Se reprograma, no se descarta.'),
+        rule('cancelar', 'Avisar cancelaciones', 'Borrar un evento manda mensaje a los mismos canales que lo recibieron.'),
+        rule('soloCambios', 'Solo cambios que importan', 'Fecha, hora, lugar o cancelación disparan aviso. Una coma, no.')
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

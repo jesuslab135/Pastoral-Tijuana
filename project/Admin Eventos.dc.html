@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--m:1}
+*{box-sizing:border-box}
+body{margin:0;background:#f6f1e6;color:#221d15;-webkit-font-smoothing:antialiased;text-wrap:pretty}
+a{color:#8a5a1f;text-decoration:none}
+a:hover{color:#221d15}
+::selection{background:#e9d8ad}
+@keyframes cpRise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes cpIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:none}}
+@keyframes cpPop{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:none}}
+@keyframes cpPulse{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:.95;transform:scale(1.4)}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.001s!important;transition-duration:.001s!important}}
+</style>
+</helmet>
+
+<div style="min-height:100vh;display:flex;flex-direction:{{ shellDir }}">
+
+<sc-if value="{{ notPhone }}" hint-placeholder-val="{{ true }}">
+<aside style="flex:none;width:236px;background:#2a241a;color:#f4efe3;padding:22px 16px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh">
+<div style="display:flex;align-items:center;gap:10px;padding:0 6px 22px;border-bottom:1px solid rgba(201,169,97,.16)">
+<div style="width:28px;height:28px;border-radius:50%;border:2px solid rgba(201,169,97,.6);position:relative;flex:none"><div style="position:absolute;inset:5px;border-radius:50%;background:#2f6b4f"></div></div>
+<div style="min-width:0">
+<div style="font:400 13.5px/1.2 Marcellus,Georgia,serif;color:#fffdf7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Cristo de Los Álamos</div>
+<div style="font:400 8.5px/1.3 'IBM Plex Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#a89f8c">Panel pastoral</div>
+</div>
+</div>
+<nav style="display:flex;flex-direction:column;gap:3px;padding-top:16px">
+<a href="Admin%20Eventos.dc.html" style="padding:11px 12px;border-radius:7px;background:rgba(201,169,97,.16);color:#fffdf7;font:600 12.5px/1 'IBM Plex Sans',system-ui,sans-serif;display:flex;justify-content:space-between;align-items:center">Eventos<span style="font:500 9.5px/1 'IBM Plex Mono',monospace;color:#c9a961">36</span></a>
+<a href="Admin%20Difusion.dc.html" style="padding:11px 12px;border-radius:7px;color:#a89f8c;font:500 12.5px/1 'IBM Plex Sans',system-ui,sans-serif;display:flex;justify-content:space-between;align-items:center;transition:all calc(.2s * var(--m))" style-hover="background:rgba(201,169,97,.09);color:#fffdf7">Difusión<span style="width:7px;height:7px;border-radius:50%;background:#a02f27;animation:cpPulse calc(2.2s * var(--m)) ease-in-out infinite"></span></a>
+<a href="Admin%20Equipo.dc.html" style="padding:11px 12px;border-radius:7px;color:#a89f8c;font:500 12.5px/1 'IBM Plex Sans',system-ui,sans-serif;transition:all calc(.2s * var(--m))" style-hover="background:rgba(201,169,97,.09);color:#fffdf7">Equipo y permisos</a>
+<a href="Calendario%20Pastoral%20-%20Sitio.dc.html" style="padding:11px 12px;border-radius:7px;color:#a89f8c;font:500 12.5px/1 'IBM Plex Sans',system-ui,sans-serif;transition:all calc(.2s * var(--m))" style-hover="background:rgba(201,169,97,.09);color:#fffdf7">Ver sitio público ↗</a>
+</nav>
+<div style="margin-top:auto;padding:16px 6px 0;border-top:1px solid rgba(201,169,97,.16)">
+<div style="display:flex;align-items:center;gap:10px">
+<div style="width:30px;height:30px;border-radius:50%;background:#5c3b7a;flex:none;display:flex;align-items:center;justify-content:center;font:600 11px/1 'IBM Plex Sans',sans-serif;color:#fff">MR</div>
+<div style="min-width:0;flex:1">
+<div style="font:600 12px/1.3 'IBM Plex Sans',system-ui,sans-serif;color:#fffdf7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">P. Miguel Ramírez</div>
+<div style="font:400 9px/1.3 'IBM Plex Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:#a89f8c">Párroco</div>
+</div>
+</div>
+<a href="Admin%20Login.dc.html" style="display:block;margin-top:12px;font:500 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#a89f8c">CERRAR SESIÓN</a>
+</div>
+</aside>
+</sc-if>
+
+<sc-if value="{{ isPhone }}" hint-placeholder-val="{{ false }}">
+<div style="background:#2a241a;color:#f4efe3;padding:13px 16px;position:sticky;top:0;z-index:30">
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+<div style="width:26px;height:26px;border-radius:50%;border:2px solid rgba(201,169,97,.6);position:relative;flex:none"><div style="position:absolute;inset:5px;border-radius:50%;background:#2f6b4f"></div></div>
+<div style="font:400 14px/1.2 Marcellus,Georgia,serif;color:#fffdf7;flex:1;min-width:0">Cristo de Los Álamos</div>
+<a href="Admin%20Login.dc.html" style="font:500 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#a89f8c">SALIR</a>
+</div>
+<div style="display:flex;gap:5px;overflow-x:auto">
+<a href="Admin%20Eventos.dc.html" style="flex:none;padding:9px 13px;border-radius:18px;background:rgba(201,169,97,.18);color:#fffdf7;font:600 11.5px/1 'IBM Plex Sans',system-ui,sans-serif;min-height:36px;line-height:18px">Eventos</a>
+<a href="Admin%20Difusion.dc.html" style="flex:none;padding:9px 13px;border-radius:18px;color:#a89f8c;font:500 11.5px/1 'IBM Plex Sans',system-ui,sans-serif;border:1px solid rgba(201,169,97,.2);min-height:36px;line-height:18px">Difusión</a>
+<a href="Admin%20Equipo.dc.html" style="flex:none;padding:9px 13px;border-radius:18px;color:#a89f8c;font:500 11.5px/1 'IBM Plex Sans',system-ui,sans-serif;border:1px solid rgba(201,169,97,.2);min-height:36px;line-height:18px">Equipo</a>
+<a href="Calendario%20Pastoral%20-%20Sitio.dc.html" style="flex:none;padding:9px 13px;border-radius:18px;color:#a89f8c;font:500 11.5px/1 'IBM Plex Sans',system-ui,sans-serif;border:1px solid rgba(201,169,97,.2);min-height:36px;line-height:18px">Sitio ↗</a>
+</div>
+</div>
+</sc-if>
+
+<main style="flex:1;min-width:0;padding:{{ pad }}">
+
+<sc-if value="{{ isLista }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-end;margin-bottom:22px">
+<div style="flex:1;min-width:220px">
+<div style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.2em;text-transform:uppercase;color:#8a5a1f;margin-bottom:11px">Agosto 2026 · Tiempo Ordinario</div>
+<h1 style="margin:0;font:400 clamp(28px,3.6vw,40px)/1.06 Marcellus,Georgia,serif;letter-spacing:-.01em">Eventos del mes</h1>
+</div>
+<button type="button" onClick="{{ openNew }}" style="flex:none;padding:14px 18px;border-radius:8px;border:none;background:#2a241a;color:#fbf7ee;font:600 12.5px/1 'IBM Plex Sans',system-ui,sans-serif;min-height:48px;cursor:pointer;transition:transform calc(.2s * var(--m)),box-shadow calc(.2s * var(--m))" style-hover="transform:translateY(-2px);box-shadow:0 10px 22px rgba(34,29,21,.2)">+ Nuevo evento</button>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:12px;margin-bottom:22px">
+<div style="background:#fffdf7;border:1px solid rgba(34,29,21,.14);border-radius:10px;padding:16px 17px">
+<div style="font:400 30px/1 Marcellus,Georgia,serif;color:#2f6b4f">33</div>
+<div style="margin-top:6px;font:500 10.5px/1.35 'IBM Plex Sans',system-ui,sans-serif;color:#6b6255">publicados<br>y visibles</div>
+</div>
+<div style="background:#fffdf7;border:1px solid rgba(34,29,21,.14);border-radius:10px;padding:16px 17px">
+<div style="font:400 30px/1 Marcellus,Georgia,serif;color:#b1872f">3</div>
+<div style="margin-top:6px;font:500 10.5px/1.35 'IBM Plex Sans',system-ui,sans-serif;color:#6b6255">borradores<br>sin difundir</div>
+</div>
+<div style="background:#fffdf7;border:1px solid rgba(34,29,21,.14);border-radius:10px;padding:16px 17px">
+<div style="font:400 30px/1 Marcellus,Georgia,serif;color:#a02f27">1</div>
+<div style="margin-top:6px;font:500 10.5px/1.35 'IBM Plex Sans',system-ui,sans-serif;color:#6b6255">difusión<br>con fallo</div>
+</div>
+<div style="background:#fdf6e8;border:1px solid rgba(177,135,47,.34);border-radius:10px;padding:16px 17px">
+<div style="font:400 30px/1 Marcellus,Georgia,serif;color:#8a5a1f">29</div>
+<div style="margin-top:6px;font:500 10.5px/1.35 'IBM Plex Sans',system-ui,sans-serif;color:#6b6255">fiesta patronal<br>en 17 días</div>
+</div>
+</div>
+
+<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:16px">
+<sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4">
+<button type="button" onClick="{{ t.pick }}" style="padding:9px 14px;border-radius:20px;cursor:pointer;font:500 11.5px/1 'IBM Plex Sans',system-ui,sans-serif;min-height:38px;transition:all calc(.2s * var(--m));background:{{ t.bg }};color:{{ t.fg }};border:1px solid {{ t.bd }}">{{ t.label }}</button>
+</sc-for>
+</div>
+
+<div style="background:#fffdf7;border:1px solid rgba(34,29,21,.15);border-radius:12px;overflow:hidden">
+<sc-if value="{{ notPhone }}" hint-placeholder-val="{{ true }}">
+<div style="display:grid;grid-template-columns:72px minmax(0,1fr) 104px 92px 88px;gap:12px;padding:11px 18px;background:#faf5e9;border-bottom:1px solid rgba(34,29,21,.11);font:600 10px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:#6b6255">
+<span>Día</span><span>Evento</span><span>Rango</span><span>Difusión</span><span></span>
+</div>
+</sc-if>
+<sc-for list="{{ rows }}" as="r" hint-placeholder-count="8">
+<sc-if value="{{ notPhone }}" hint-placeholder-val="{{ true }}">
+<div style="display:grid;grid-template-columns:72px minmax(0,1fr) 104px 92px 88px;gap:12px;padding:14px 18px;align-items:center;border-bottom:1px solid rgba(34,29,21,.08);transition:background calc(.2s * var(--m));background:{{ r.rowBg }}" style-hover="background:#faf5e9">
+<span style="display:flex;flex-direction:column;gap:2px">
+<span style="font:500 13px/1 'IBM Plex Mono',monospace;color:{{ r.dayColor }}">{{ r.day }}</span>
+<span style="font:400 10px/1 'IBM Plex Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:#6b6255">{{ r.dow }} · {{ r.time }}</span>
+</span>
+<span style="min-width:0;display:flex;flex-direction:column;gap:3px">
+<span style="display:flex;align-items:center;gap:8px;min-width:0">
+<span style="font:600 13.5px/1.3 'IBM Plex Sans',system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.title }}</span>
+<sc-if value="{{ r.isDraft }}" hint-placeholder-val="{{ false }}">
+<span style="flex:none;font:600 8.5px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;padding:4px 7px;border-radius:4px;background:#8a5a1f;color:#fff">BORRADOR</span>
+</sc-if>
+</span>
+<span style="font:400 11px/1.3 'IBM Plex Sans',system-ui,sans-serif;color:#6b6255;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.group }}</span>
+</span>
+<span style="font:500 9.5px/1.3 'IBM Plex Mono',monospace;letter-spacing:.1em;color:{{ r.rankColor }}">{{ r.rank }}</span>
+<span style="display:flex;align-items:center;gap:6px;font:500 10px/1.3 'IBM Plex Mono',monospace;color:{{ r.castColor }}"><span style="width:6px;height:6px;border-radius:50%;flex:none;background:{{ r.castColor }}"></span>{{ r.cast }}</span>
+<span style="display:flex;gap:5px;justify-content:flex-end">
+<button type="button" onClick="{{ r.edit }}" style="padding:7px 10px;border-radius:6px;border:1px solid rgba(34,29,21,.16);background:#fffdf7;cursor:pointer;font:500 10.5px/1 'IBM Plex Sans',system-ui,sans-serif;color:#5d5548;min-height:32px;transition:all calc(.2s * var(--m))" style-hover="background:#f1ebdc;color:#221d15">Editar</button>
+<button type="button" onClick="{{ r.del }}" style="padding:7px 9px;border-radius:6px;border:1px solid rgba(160,47,39,.24);background:#fffdf7;cursor:pointer;font:500 10.5px/1 'IBM Plex Sans',system-ui,sans-serif;color:#a02f27;min-height:32px;transition:all calc(.2s * var(--m))" style-hover="background:rgba(160,47,39,.08)">✕</button>
+</span>
+</div>
+</sc-if>
+<sc-if value="{{ isPhone }}" hint-placeholder-val="{{ false }}">
+<div style="padding:14px 15px;border-bottom:1px solid rgba(34,29,21,.08);border-left:3px solid {{ r.dayColor }};background:{{ r.rowBg }}">
+<div style="display:flex;align-items:baseline;gap:9px;margin-bottom:7px">
+<span style="font:500 12px/1 'IBM Plex Mono',monospace;color:{{ r.dayColor }}">{{ r.dow }} {{ r.day }}</span>
+<span style="font:500 11px/1 'IBM Plex Mono',monospace;color:#6b6255">{{ r.time }}</span>
+<span style="margin-left:auto;display:flex;align-items:center;gap:5px;font:500 9.5px/1 'IBM Plex Mono',monospace;color:{{ r.castColor }}"><span style="width:6px;height:6px;border-radius:50%;background:{{ r.castColor }}"></span>{{ r.cast }}</span>
+</div>
+<div style="font:600 14px/1.3 'IBM Plex Sans',system-ui,sans-serif;margin-bottom:5px">{{ r.title }}</div>
+<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:11px">
+<span style="font:500 9px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:{{ r.rankColor }}">{{ r.rank }}</span>
+<span style="font:400 11px/1 'IBM Plex Sans',system-ui,sans-serif;color:#6b6255">{{ r.group }}</span>
+<sc-if value="{{ r.isDraft }}" hint-placeholder-val="{{ false }}">
+<span style="font:600 8.5px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;padding:4px 7px;border-radius:4px;background:#8a5a1f;color:#fff">BORRADOR</span>
+</sc-if>
+</div>
+<div style="display:flex;gap:7px">
+<button type="button" onClick="{{ r.edit }}" style="flex:1;padding:11px;border-radius:7px;border:1px solid rgba(34,29,21,.18);background:#fffdf7;cursor:pointer;font:600 11.5px/1 'IBM Plex Sans',system-ui,sans-serif;color:#4a4337;min-height:44px">Editar</button>
+<button type="button" onClick="{{ r.del }}" style="flex:none;padding:11px 16px;border-radius:7px;border:1px solid rgba(160,47,39,.26);background:#fffdf7;cursor:pointer;font:600 11.5px/1 'IBM Plex Sans',system-ui,sans-serif;color:#a02f27;min-height:44px">Borrar</button>
+</div>
+</div>
+</sc-if>
+</sc-for>
+<sc-if value="{{ noRows }}" hint-placeholder-val="{{ false }}">
+<div style="padding:38px 20px;text-align:center">
+<div style="font:400 19px/1.2 Marcellus,Georgia,serif;color:#6b6255;margin-bottom:7px">Nada en este filtro</div>
+<p style="margin:0;font:400 14.5px/1.5 'EB Garamond',Georgia,serif;color:#6b6255">Cambia de pestaña o crea un evento nuevo.</p>
+</div>
+</sc-if>
+</div>
+
+<p style="margin:18px 0 0;font:400 14px/1.55 'EB Garamond',Georgia,serif;color:#6b6255;max-width:76ch">La columna de <strong style="font-weight:600">difusión</strong> cuenta cuántos canales recibieron el aviso. Un número en rojo es clicable hasta el error concreto del proveedor, en <a href="Admin%20Difusion.dc.html">Difusión</a>.</p>
+</sc-if>
+
+<sc-if value="{{ isEditor }}" hint-placeholder-val="{{ false }}">
+<div style="animation:cpRise calc(.4s * var(--m)) cubic-bezier(.16,.84,.24,1) both">
+<button type="button" onClick="{{ back }}" style="border:none;background:none;padding:0;margin-bottom:16px;cursor:pointer;font:500 11.5px/1 'IBM Plex Mono',monospace;letter-spacing:.08em;color:#8a5a1f;min-height:32px">← VOLVER A EVENTOS</button>
+<h1 style="margin:0 0 6px;font:400 clamp(27px,3.4vw,38px)/1.06 Marcellus,Georgia,serif;letter-spacing:-.01em">{{ editorTitle }}</h1>
+<p style="margin:0 0 28px;max-width:62ch;font:400 16px/1.55 'EB Garamond',Georgia,serif;color:#5d5548">El color no se elige: lo hereda del tiempo litúrgico del día. Solo una fiesta patronal puede pedir un color propio.</p>
+
+<div style="display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start">
+<div style="flex:1 1 440px;min-width:0;display:flex;flex-direction:column;gap:18px">
+
+<div>
+<label style="display:block;font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#6b6255;margin-bottom:8px">Título</label>
+<input type="text" value="{{ fTitle }}" onChange="{{ setTitle }}" placeholder="Ej. Kermés parroquial" style="width:100%;padding:14px;border:1px solid rgba(34,29,21,.22);border-radius:8px;background:#fffdf7;font:500 15px/1.3 'IBM Plex Sans',system-ui,sans-serif;color:#221d15;outline:none;transition:border-color calc(.2s * var(--m)),box-shadow calc(.2s * var(--m))" style-focus="border-color:#2f6b4f;box-shadow:0 0 0 3px rgba(47,107,79,.16)">
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px">
+<div>
+<label style="display:block;font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#6b6255;margin-bottom:8px">Fecha</label>
+<input type="date" value="{{ fDate }}" onChange="{{ setDate }}" style="width:100%;padding:13px 14px;border:1px solid rgba(34,29,21,.22);border-radius:8px;background:#fffdf7;font:500 14px/1.3 'IBM Plex Mono',monospace;color:#221d15;outline:none" style-focus="border-color:#2f6b4f;box-shadow:0 0 0 3px rgba(47,107,79,.16)">
+</div>
+<div>
+<label style="display:block;font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#6b6255;margin-bottom:8px">Hora</label>
+<input type="time" value="{{ fTime }}" onChange="{{ setTime }}" style="width:100%;padding:13px 14px;border:1px solid rgba(34,29,21,.22);border-radius:8px;background:#fffdf7;font:500 14px/1.3 'IBM Plex Mono',monospace;color:#221d15;outline:none" style-focus="border-color:#2f6b4f;box-shadow:0 0 0 3px rgba(47,107,79,.16)">
+</div>
+<div>
+<label style="display:block;font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#6b6255;margin-bottom:8px">Duración</label>
+<input type="text" value="{{ fDur }}" onChange="{{ setDur }}" style="width:100%;padding:13px 14px;border:1px solid rgba(34,29,21,.22);border-radius:8px;background:#fffdf7;font:500 14px/1.3 'IBM Plex Mono',monospace;color:#221d15;outline:none" style-focus="border-color:#2f6b4f;box-shadow:0 0 0 3px rgba(47,107,79,.16)">
+</div>
+</div>
+
+<div>
+<label style="display:block;font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#6b6255;margin-bottom:8px">Lugar</label>
+<input type="text" value="{{ fPlace }}" onChange="{{ setPlace }}" style="width:100%;padding:14px;border:1px solid rgba(34,29,21,.22);border-radius:8px;background:#fffdf7;font:500 14px/1.3 'IBM Plex Sans',system-ui,sans-serif;color:#221d15;outline:none" style-focus="border-color:#2f6b4f;box-shadow:0 0 0 3px rgba(47,107,79,.16)">
+</div>
+
+<div>
+<label style="display:block;font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#6b6255;margin-bottom:9px">Grupo parroquial</label>
+<div style="display:flex;gap:7px;flex-wrap:wrap">
+<sc-for list="{{ groupOpts }}" as="g" hint-placeholder-count="6">
+<button type="button" onClick="{{ g.pick }}" style="padding:10px 14px;border-radius:20px;cursor:pointer;font:500 12px/1 'IBM Plex Sans',system-ui,sans-serif;min-height:40px;transition:all calc(.2s * var(--m));background:{{ g.bg }};color:{{ g.fg }};border:1px solid {{ g.bd }}">{{ g.name }}</button>
+</sc-for>
+</div>
+</div>
+
+<div>
+<label style="display:block;font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#6b6255;margin-bottom:9px">Rango litúrgico</label>
+<div style="display:flex;flex-wrap:wrap;gap:0;border:1px solid rgba(34,29,21,.18);border-radius:8px;overflow:hidden;width:fit-content;max-width:100%">
+<sc-for list="{{ rankOpts }}" as="k" hint-placeholder-count="4">
+<button type="button" onClick="{{ k.pick }}" style="padding:11px 15px;border:none;cursor:pointer;font:500 12px/1 'IBM Plex Sans',system-ui,sans-serif;min-height:42px;border-right:1px solid rgba(34,29,21,.13);transition:all calc(.2s * var(--m));background:{{ k.bg }};color:{{ k.fg }}">{{ k.name }}</button>
+</sc-for>
+</div>
+</div>
+
+<div>
+<label style="display:block;font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#6b6255;margin-bottom:8px">Descripción para el aviso</label>
+<textarea onChange="{{ setDesc }}" value="{{ fDesc }}" rows="3" style="width:100%;padding:14px;border:1px solid rgba(34,29,21,.22);border-radius:8px;background:#fffdf7;font:400 15px/1.55 'EB Garamond',Georgia,serif;color:#221d15;outline:none;resize:vertical" style-focus="border-color:#2f6b4f;box-shadow:0 0 0 3px rgba(47,107,79,.16)"></textarea>
+<p style="margin:8px 0 0;font:400 13.5px/1.5 'EB Garamond',Georgia,serif;color:#6b6255">Esto es lo que la gente leerá en WhatsApp. Dos líneas bastan.</p>
+</div>
+</div>
+
+<div style="flex:1 1 300px;min-width:0;display:flex;flex-direction:column;gap:16px">
+<div style="background:#faf5e9;border:1px solid rgba(34,29,21,.14);border-radius:11px;padding:20px">
+<div style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:#8a5a1f;margin-bottom:15px">Al guardar se difunde a</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<sc-for list="{{ channels }}" as="c" hint-placeholder-count="3">
+<div style="display:flex;gap:10px;align-items:center;padding:11px;background:#fffdf7;border-radius:7px;border:1px {{ c.dash }} {{ c.bd }};opacity:{{ c.op }}">
+<span style="width:8px;height:8px;border-radius:50%;flex:none;background:{{ c.dot }}"></span>
+<div style="flex:1;min-width:0">
+<div style="font:600 12px/1.3 'IBM Plex Sans',system-ui,sans-serif">{{ c.name }}</div>
+<div style="font:400 10px/1.3 'IBM Plex Mono',monospace;color:#6b6255">{{ c.meta }}</div>
+</div>
+</div>
+</sc-for>
+</div>
+<button type="button" onClick="{{ publish }}" style="width:100%;margin-top:16px;padding:14px;border-radius:8px;border:none;background:#2f6b4f;color:#fff;font:600 12.5px/1 'IBM Plex Sans',system-ui,sans-serif;min-height:48px;cursor:pointer;transition:transform calc(.2s * var(--m)),box-shadow calc(.2s * var(--m))" style-hover="transform:translateY(-2px);box-shadow:0 10px 22px rgba(47,107,79,.3)">Publicar y difundir</button>
+<button type="button" onClick="{{ back }}" style="width:100%;margin-top:8px;padding:13px;border-radius:8px;border:1px solid rgba(34,29,21,.18);background:none;color:#6b6255;font:500 12px/1 'IBM Plex Sans',system-ui,sans-serif;min-height:46px;cursor:pointer">Guardar como borrador</button>
+<p style="margin:13px 0 0;font:400 13.5px/1.5 'EB Garamond',Georgia,serif;color:#6b6255">Borrador no difunde y no aparece en la web. Es el único freno de emergencia.</p>
+</div>
+<div style="background:#fffdf7;border:1px dashed rgba(160,47,39,.4);border-radius:11px;padding:20px">
+<div style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:#a02f27;margin-bottom:11px">Zona delicada</div>
+<p style="margin:0 0 14px;font:400 14px/1.5 'EB Garamond',Georgia,serif;color:#5d5548">Borrar un evento ya publicado dispara un aviso de cancelación a los mismos canales que recibieron el original.</p>
+<button type="button" onClick="{{ askDelete }}" style="width:100%;padding:12px;border-radius:7px;border:1px solid rgba(160,47,39,.32);background:none;color:#a02f27;font:600 12px/1 'IBM Plex Sans',system-ui,sans-serif;min-height:44px;cursor:pointer;transition:background calc(.2s * var(--m))" style-hover="background:rgba(160,47,39,.07)">Borrar este evento</button>
+</div>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isDelete }}" hint-placeholder-val="{{ false }}">
+<div style="max-width:560px;animation:cpPop calc(.34s * var(--m)) cubic-bezier(.16,.84,.24,1) both">
+<div style="background:#fffdf7;border:1px solid rgba(160,47,39,.32);border-radius:12px;overflow:hidden;box-shadow:0 16px 40px rgba(34,29,21,.14)">
+<div style="padding:5px 18px;background:#a02f27;font:600 9px/1 'IBM Plex Mono',monospace;letter-spacing:.18em;text-transform:uppercase;color:#fff">Confirmar borrado</div>
+<div style="padding:24px">
+<h2 style="margin:0 0 10px;font:400 25px/1.14 Marcellus,Georgia,serif">{{ delTitle }}</h2>
+<p style="margin:0 0 20px;font:400 15.5px/1.6 'EB Garamond',Georgia,serif;color:#5d5548">Este evento ya se difundió a {{ delCast }} canales. Si lo borras, desaparece del calendario público al instante.</p>
+<button type="button" onClick="{{ toggleNotify }}" style="display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;padding:14px;border-radius:8px;background:#faf5e9;border:1px solid rgba(34,29,21,.14);cursor:pointer;margin-bottom:20px">
+<span style="flex:none;width:20px;height:20px;border-radius:5px;margin-top:1px;display:flex;align-items:center;justify-content:center;font:600 11px/1 'IBM Plex Sans',sans-serif;background:{{ notifyBg }};color:#fff;border:1px solid {{ notifyBd }}">{{ notifyMark }}</span>
+<span style="flex:1">
+<span style="display:block;font:600 12.5px/1.3 'IBM Plex Sans',system-ui,sans-serif;margin-bottom:3px">Avisar la cancelación</span>
+<span style="display:block;font:400 14px/1.5 'EB Garamond',Georgia,serif;color:#5d5548">Manda un mensaje de cancelación a los mismos grupos. El silencio es peor que el aviso.</span>
+</span>
+</button>
+<div style="display:flex;gap:9px;flex-wrap:wrap">
+<button type="button" onClick="{{ confirmDelete }}" style="flex:1 1 180px;padding:14px;border-radius:8px;border:none;background:#a02f27;color:#fff;font:600 12.5px/1 'IBM Plex Sans',system-ui,sans-serif;min-height:48px;cursor:pointer;transition:transform calc(.2s * var(--m))" style-hover="transform:translateY(-2px)">Borrar el evento</button>
+<button type="button" onClick="{{ back }}" style="flex:1 1 140px;padding:14px;border-radius:8px;border:1px solid rgba(34,29,21,.2);background:#fffdf7;color:#4a4337;font:600 12.5px/1 'IBM Plex Sans',system-ui,sans-serif;min-height:48px;cursor:pointer">Conservarlo</button>
+</div>
+</div>
+</div>
+</div>
+</sc-if>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;motion&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:8,&quot;min&quot;:0,&quot;max&quot;:10,&quot;step&quot;:1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Ajustes&quot;}}">
+const ORO = '#8a5a1f', ROJO = '#a02f27', VERDE = '#2f6b4f', GRAF = '#6b6255';
+const DIAC = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
+
+const DATA = [
+  { day: 2, time: '12:00', title: 'XVIII Domingo del Tiempo Ordinario', group: 'Toda la parroquia', rank: 'SOLEMNIDAD', color: VERDE, cast: '4/4', draft: false },
+  { day: 3, time: '18:00', title: 'Inscripciones a catequesis', group: 'Catequesis', rank: 'PARROQUIAL', color: GRAF, cast: '2/2', draft: false },
+  { day: 6, time: '19:00', title: 'Misa de la Transfiguración', group: 'Liturgia', rank: 'FIESTA', color: ORO, cast: '4/4', draft: false },
+  { day: 10, time: '19:00', title: 'Misa de San Lorenzo', group: 'Liturgia', rank: 'FIESTA', color: ROJO, cast: '4/4', draft: false },
+  { day: 12, time: '19:30', title: 'Junta de pastoral', group: 'Formación', rank: 'PARROQUIAL', color: GRAF, cast: '1/1', draft: false },
+  { day: 14, time: '20:00', title: 'Vigilia de la Asunción', group: 'Liturgia', rank: 'PARROQUIAL', color: ORO, cast: '4/4', draft: false },
+  { day: 15, time: '12:00', title: 'Misa solemne de la Asunción', group: 'Liturgia', rank: 'SOLEMNIDAD', color: ORO, cast: '4/4', draft: false },
+  { day: 15, time: '18:00', title: 'Procesión y kermés', group: 'Pastoral juvenil', rank: 'PARROQUIAL', color: GRAF, cast: '3/4', draft: false },
+  { day: 22, time: '09:00', title: 'Retiro juvenil', group: 'Pastoral juvenil', rank: 'PARROQUIAL', color: GRAF, cast: '', draft: true },
+  { day: 24, time: '19:00', title: 'Misa de San Bartolomé', group: 'Liturgia', rank: 'FIESTA', color: ROJO, cast: '4/4', draft: false },
+  { day: 27, time: '18:00', title: 'Novenario patronal', group: 'Liturgia', rank: 'PARROQUIAL', color: ROJO, cast: '4/4', draft: false },
+  { day: 29, time: '12:00', title: 'Misa patronal solemne', group: 'Toda la parroquia', rank: 'SOLEMNIDAD', color: ROJO, cast: '4/4', draft: false },
+  { day: 29, time: '18:00', title: 'Kermés parroquial', group: 'Pastoral juvenil', rank: 'PARROQUIAL', color: GRAF, cast: '', draft: true },
+  { day: 31, time: '19:00', title: 'Junta de catequistas', group: 'Catequesis', rank: 'PARROQUIAL', color: GRAF, cast: '', draft: true }
+];
+
+class Component extends DCLogic {
+  state = {
+    tab: 'todos', mode: 'lista', ix: null, notify: true,
+    form: { title: '', date: '2026-08-22', time: '09:00', dur: '4 h', place: 'Salón parroquial', group: 'Pastoral juvenil', rank: 'Parroquial', desc: '' },
+    w: typeof window !== 'undefined' ? window.innerWidth : 1280
+  };
+
+  setF(k, v) { this.setState((s) => { const f = Object.assign({}, s.form); f[k] = v; return { form: f }; }); }
+  openEdit(r) {
+    this.setState({
+      mode: 'editor', ix: r.day,
+      form: { title: r.title, date: '2026-08-' + String(r.day).padStart(2, '0'), time: r.time, dur: '1 h 30', place: 'Templo parroquial', group: r.group, rank: r.rank.charAt(0) + r.rank.slice(1).toLowerCase(), desc: '' }
+    });
+  }
+
+  componentDidMount() {
+    this.tune();
+    this.onResize = () => {
+      if (this._raf) return;
+      this._raf = requestAnimationFrame(() => {
+        this._raf = null;
+        const w = window.innerWidth;
+        if (w !== this.state.w) this.setState({ w: w });
+      });
+    };
+    window.addEventListener('resize', this.onResize);
+    this.onResize();
+  }
+  componentDidUpdate() { this.tune(); }
+  componentWillUnmount() { window.removeEventListener('resize', this.onResize); }
+  tune() {
+    const m = Number(this.props.motion != null ? this.props.motion : 8);
+    document.documentElement.style.setProperty('--m', String(Math.max(0.02, (11 - m) / 3)));
+  }
+
+  renderVals() {
+    const isPhone = this.state.w < 900;
+    const tab = this.state.tab;
+    const TABS = [
+      { id: 'todos', label: 'Todos · 14' },
+      { id: 'publicados', label: 'Publicados · 11' },
+      { id: 'borradores', label: 'Borradores · 3' },
+      { id: 'fallos', label: 'Con fallo · 1' }
+    ];
+    let rows = DATA;
+    if (tab === 'publicados') rows = DATA.filter((r) => !r.draft);
+    if (tab === 'borradores') rows = DATA.filter((r) => r.draft);
+    if (tab === 'fallos') rows = DATA.filter((r) => r.cast && r.cast !== '4/4' && r.cast !== '2/2' && r.cast !== '1/1');
+    const f = this.state.form;
+    const GOPTS = ['Toda la parroquia', 'Liturgia', 'Catequesis', 'Pastoral juvenil', 'Coro', 'Caridad', 'Formación'];
+    const KOPTS = ['Solemnidad', 'Fiesta', 'Memoria', 'Parroquial'];
+    const chBase = [
+      { name: 'Grupo WA · Avisos generales', meta: '248 integrantes', on: true },
+      { name: 'Grupo WA · ' + f.group, meta: '62 integrantes', on: f.group !== 'Toda la parroquia' },
+      { name: 'Boletín semanal', meta: 'agrupado, sale el viernes', on: false }
+    ];
+    return {
+      isPhone: isPhone, notPhone: !isPhone,
+      shellDir: isPhone ? 'column' : 'row',
+      isLista: this.state.mode === 'lista',
+      isEditor: this.state.mode === 'editor',
+      isDelete: this.state.mode === 'borrar',
+      editorTitle: this.state.ix ? 'Editar evento' : 'Nuevo evento',
+      fTitle: f.title, fDate: f.date, fTime: f.time, fDur: f.dur, fPlace: f.place, fDesc: f.desc,
+      setTitle: (e) => this.setF('title', e.target.value),
+      setDate: (e) => this.setF('date', e.target.value),
+      setTime: (e) => this.setF('time', e.target.value),
+      setDur: (e) => this.setF('dur', e.target.value),
+      setPlace: (e) => this.setF('place', e.target.value),
+      setDesc: (e) => this.setF('desc', e.target.value),
+      groupOpts: GOPTS.map((g) => ({
+        name: g,
+        bg: f.group === g ? '#2f6b4f' : '#fffdf7',
+        fg: f.group === g ? '#fff' : '#6b6255',
+        bd: f.group === g ? '#2f6b4f' : 'rgba(34,29,21,.18)',
+        pick: () => this.setF('group', g)
+      })),
+      rankOpts: KOPTS.map((k) => ({
+        name: k,
+        bg: f.rank === k ? '#2a241a' : '#fffdf7',
+        fg: f.rank === k ? '#fbf7ee' : '#6b6255',
+        pick: () => this.setF('rank', k)
+      })),
+      channels: chBase.map((c) => ({
+        name: c.name, meta: c.meta,
+        dot: c.on ? '#2f6b4f' : '#6b6255',
+        bd: c.on ? 'rgba(34,29,21,.12)' : 'rgba(34,29,21,.2)',
+        dash: c.on ? 'solid' : 'dashed',
+        op: c.on ? '1' : '.6'
+      })),
+      back: () => this.setState({ mode: 'lista' }),
+      openNew: () => this.setState({ mode: 'editor', ix: null, form: { title: '', date: '2026-08-22', time: '09:00', dur: '1 h 30', place: 'Templo parroquial', group: 'Toda la parroquia', rank: 'Parroquial', desc: '' } }),
+      publish: () => this.setState({ mode: 'lista' }),
+      askDelete: () => this.setState({ mode: 'borrar' }),
+      confirmDelete: () => this.setState({ mode: 'lista' }),
+      toggleNotify: () => this.setState((s) => ({ notify: !s.notify })),
+      notifyBg: this.state.notify ? '#a02f27' : 'transparent',
+      notifyBd: this.state.notify ? '#a02f27' : 'rgba(34,29,21,.3)',
+      notifyMark: this.state.notify ? '✓' : '',
+      delTitle: f.title || 'Evento sin título',
+      delCast: '4',
+      pad: isPhone ? '22px 16px 52px' : '32px 34px 60px',
+      tabs: TABS.map((t) => ({
+        label: t.label,
+        bg: tab === t.id ? '#2a241a' : '#fffdf7',
+        fg: tab === t.id ? '#fbf7ee' : '#6b6255',
+        bd: tab === t.id ? '#2a241a' : 'rgba(34,29,21,.18)',
+        pick: () => this.setState({ tab: t.id })
+      })),
+      rows: rows.map((r) => {
+        const bad = r.cast && r.cast.indexOf('3/4') === 0;
+        return {
+          day: String(r.day).padStart(2, '0'),
+          dow: DIAC[new Date(2026, 7, r.day).getDay()],
+          time: r.time,
+          title: r.title,
+          group: r.group,
+          rank: r.rank,
+          rankColor: r.rank === 'PARROQUIAL' ? GRAF : '#8a5a1f',
+          dayColor: r.color,
+          rowBg: r.draft ? '#fdf6e8' : '#fffdf7',
+          isDraft: r.draft,
+          cast: r.draft ? '—' : r.cast,
+          castColor: r.draft ? '#6b6255' : (bad ? ROJO : VERDE),
+          edit: () => this.openEdit(r),
+          del: () => { this.openEdit(r); this.setState({ mode: 'borrar' }); }
+        };
+      }),
+      noRows: rows.length === 0
+    };
+  }
+}
+</script>
+</body>
+</html>

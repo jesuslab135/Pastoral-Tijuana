@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--m:1}
+*{box-sizing:border-box}
+body{margin:0;background:#f6f1e6;color:#221d15;-webkit-font-smoothing:antialiased;text-wrap:pretty}
+a{color:#8a5a1f;text-decoration:none}
+a:hover{color:#221d15}
+::selection{background:#e9d8ad}
+@keyframes cpRise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes cpPulse{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:.95;transform:scale(1.4)}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.001s!important;transition-duration:.001s!important}}
+</style>
+</helmet>
+
+<div style="min-height:100vh;display:flex;flex-direction:{{ shellDir }}">
+
+<sc-if value="{{ notPhone }}" hint-placeholder-val="{{ true }}">
+<aside style="flex:none;width:236px;background:#2a241a;color:#f4efe3;padding:22px 16px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh">
+<div style="display:flex;align-items:center;gap:10px;padding:0 6px 22px;border-bottom:1px solid rgba(201,169,97,.16)">
+<div style="width:28px;height:28px;border-radius:50%;border:2px solid rgba(201,169,97,.6);position:relative;flex:none"><div style="position:absolute;inset:5px;border-radius:50%;background:#2f6b4f"></div></div>
+<div style="min-width:0">
+<div style="font:400 13.5px/1.2 Marcellus,Georgia,serif;color:#fffdf7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Cristo de Los Álamos</div>
+<div style="font:400 8.5px/1.3 'IBM Plex Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#a89f8c">Panel pastoral</div>
+</div>
+</div>
+<nav style="display:flex;flex-direction:column;gap:3px;padding-top:16px">
+<a href="Admin%20Eventos.dc.html" style="padding:11px 12px;border-radius:7px;color:#a89f8c;font:500 12.5px/1 'IBM Plex Sans',system-ui,sans-serif;display:flex;justify-content:space-between;align-items:center;transition:all calc(.2s * var(--m))" style-hover="background:rgba(201,169,97,.09);color:#fffdf7">Eventos<span style="font:500 9.5px/1 'IBM Plex Mono',monospace;color:#a89f8c">36</span></a>
+<a href="Admin%20Difusion.dc.html" style="padding:11px 12px;border-radius:7px;color:#a89f8c;font:500 12.5px/1 'IBM Plex Sans',system-ui,sans-serif;display:flex;justify-content:space-between;align-items:center;transition:all calc(.2s * var(--m))" style-hover="background:rgba(201,169,97,.09);color:#fffdf7">Difusión<span style="width:7px;height:7px;border-radius:50%;background:#a02f27;animation:cpPulse calc(2.2s * var(--m)) ease-in-out infinite"></span></a>
+<a href="Admin%20Equipo.dc.html" style="padding:11px 12px;border-radius:7px;background:rgba(201,169,97,.16);color:#fffdf7;font:600 12.5px/1 'IBM Plex Sans',system-ui,sans-serif">Equipo y permisos</a>
+<a href="Calendario%20Pastoral%20-%20Sitio.dc.html" style="padding:11px 12px;border-radius:7px;color:#a89f8c;font:500 12.5px/1 'IBM Plex Sans',system-ui,sans-serif;transition:all calc(.2s * var(--m))" style-hover="background:rgba(201,169,97,.09);color:#fffdf7">Ver sitio público ↗</a>
+</nav>
+<div style="margin-top:auto;padding:16px 6px 0;border-top:1px solid rgba(201,169,97,.16)">
+<div style="display:flex;align-items:center;gap:10px">
+<div style="width:30px;height:30px;border-radius:50%;background:#5c3b7a;flex:none;display:flex;align-items:center;justify-content:center;font:600 11px/1 'IBM Plex Sans',sans-serif;color:#fff">MR</div>
+<div style="min-width:0;flex:1">
+<div style="font:600 12px/1.3 'IBM Plex Sans',system-ui,sans-serif;color:#fffdf7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">P. Miguel Ramírez</div>
+<div style="font:400 9px/1.3 'IBM Plex Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:#a89f8c">Párroco</div>
+</div>
+</div>
+<a href="Admin%20Login.dc.html" style="display:block;margin-top:12px;font:500 10.5px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#a89f8c">CERRAR SESIÓN</a>
+</div>
+</aside>
+</sc-if>
+
+<sc-if value="{{ isPhone }}" hint-placeholder-val="{{ false }}">
+<div style="background:#2a241a;color:#f4efe3;padding:13px 16px;position:sticky;top:0;z-index:30">
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+<div style="width:26px;height:26px;border-radius:50%;border:2px solid rgba(201,169,97,.6);position:relative;flex:none"><div style="position:absolute;inset:5px;border-radius:50%;background:#2f6b4f"></div></div>
+<div style="font:400 14px/1.2 Marcellus,Georgia,serif;color:#fffdf7;flex:1;min-width:0">Cristo de Los Álamos</div>
+<a href="Admin%20Login.dc.html" style="font:500 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#a89f8c">SALIR</a>
+</div>
+<div style="display:flex;gap:5px;overflow-x:auto">
+<a href="Admin%20Eventos.dc.html" style="flex:none;padding:9px 13px;border-radius:18px;color:#a89f8c;font:500 11.5px/1 'IBM Plex Sans',system-ui,sans-serif;border:1px solid rgba(201,169,97,.2);min-height:36px;line-height:18px">Eventos</a>
+<a href="Admin%20Difusion.dc.html" style="flex:none;padding:9px 13px;border-radius:18px;color:#a89f8c;font:500 11.5px/1 'IBM Plex Sans',system-ui,sans-serif;border:1px solid rgba(201,169,97,.2);min-height:36px;line-height:18px">Difusión</a>
+<a href="Admin%20Equipo.dc.html" style="flex:none;padding:9px 13px;border-radius:18px;background:rgba(201,169,97,.18);color:#fffdf7;font:600 11.5px/1 'IBM Plex Sans',system-ui,sans-serif;min-height:36px;line-height:18px">Equipo</a>
+<a href="Calendario%20Pastoral%20-%20Sitio.dc.html" style="flex:none;padding:9px 13px;border-radius:18px;color:#a89f8c;font:500 11.5px/1 'IBM Plex Sans',system-ui,sans-serif;border:1px solid rgba(201,169,97,.2);min-height:36px;line-height:18px">Sitio ↗</a>
+</div>
+</div>
+</sc-if>
+
+<main style="flex:1;min-width:0;padding:{{ pad }}">
+<div style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.2em;text-transform:uppercase;color:#8a5a1f;margin-bottom:11px">Cuentas del equipo pastoral</div>
+<h1 style="margin:0 0 8px;font:400 clamp(28px,3.6vw,40px)/1.06 Marcellus,Georgia,serif;letter-spacing:-.01em">Equipo y permisos</h1>
+<p style="margin:0 0 24px;max-width:68ch;font:400 16px/1.58 'EB Garamond',Georgia,serif;color:#5d5548">Las únicas cuentas del sistema. La comunidad nunca se registra: el calendario es público y de solo lectura, así que aquí solo hay cuatro o cinco personas, para siempre.</p>
+
+<div style="display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start">
+<div style="flex:1 1 480px;min-width:0">
+
+<div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:16px">
+<button type="button" onClick="{{ openInvite }}" style="padding:13px 17px;border-radius:8px;border:none;background:#2a241a;color:#fbf7ee;font:600 12.5px/1 'IBM Plex Sans',system-ui,sans-serif;min-height:48px;cursor:pointer;transition:transform calc(.2s * var(--m)),box-shadow calc(.2s * var(--m))" style-hover="transform:translateY(-2px);box-shadow:0 10px 22px rgba(34,29,21,.2)">+ Invitar a alguien</button>
+<span style="font:400 13.5px/1.4 'EB Garamond',Georgia,serif;color:#6b6255">{{ countLine }}</span>
+</div>
+
+<sc-if value="{{ inviting }}" hint-placeholder-val="{{ false }}">
+<div style="margin-bottom:16px;background:#fffdf7;border:1px solid rgba(34,29,21,.16);border-radius:11px;padding:20px;animation:cpRise calc(.34s * var(--m)) cubic-bezier(.16,.84,.24,1) both">
+<div style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:#8a5a1f;margin-bottom:15px">Nueva invitación</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-bottom:16px">
+<div>
+<label style="display:block;font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#6b6255;margin-bottom:8px">Nombre</label>
+<input type="text" value="{{ invName }}" onChange="{{ setInvName }}" placeholder="Ej. Rosa Elena Ávila" style="width:100%;padding:13px;border:1px solid rgba(34,29,21,.22);border-radius:8px;background:#fffdf7;font:500 14px/1.3 'IBM Plex Sans',system-ui,sans-serif;color:#221d15;outline:none" style-focus="border-color:#2f6b4f;box-shadow:0 0 0 3px rgba(47,107,79,.16)">
+</div>
+<div>
+<label style="display:block;font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#6b6255;margin-bottom:8px">Correo</label>
+<input type="email" value="{{ invMail }}" onChange="{{ setInvMail }}" placeholder="nombre@cristodelosalamos.mx" style="width:100%;padding:13px;border:1px solid rgba(34,29,21,.22);border-radius:8px;background:#fffdf7;font:500 14px/1.3 'IBM Plex Sans',system-ui,sans-serif;color:#221d15;outline:none" style-focus="border-color:#2f6b4f;box-shadow:0 0 0 3px rgba(47,107,79,.16)">
+</div>
+</div>
+<label style="display:block;font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#6b6255;margin-bottom:9px">Papel</label>
+<div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px">
+<sc-for list="{{ roleOpts }}" as="r" hint-placeholder-count="3">
+<button type="button" onClick="{{ r.pick }}" style="padding:10px 14px;border-radius:20px;cursor:pointer;font:500 12px/1 'IBM Plex Sans',system-ui,sans-serif;min-height:40px;transition:all calc(.2s * var(--m));background:{{ r.bg }};color:{{ r.fg }};border:1px solid {{ r.bd }}">{{ r.name }}</button>
+</sc-for>
+</div>
+<div style="display:flex;gap:9px;flex-wrap:wrap">
+<button type="button" onClick="{{ sendInvite }}" style="flex:1 1 180px;padding:13px;border-radius:8px;border:none;background:#2f6b4f;color:#fff;font:600 12.5px/1 'IBM Plex Sans',system-ui,sans-serif;min-height:48px;cursor:pointer">Enviar invitación</button>
+<button type="button" onClick="{{ closeInvite }}" style="flex:1 1 120px;padding:13px;border-radius:8px;border:1px solid rgba(34,29,21,.2);background:#fffdf7;color:#4a4337;font:600 12.5px/1 'IBM Plex Sans',system-ui,sans-serif;min-height:48px;cursor:pointer">Cancelar</button>
+</div>
+</div>
+</sc-if>
+
+<div style="display:flex;flex-direction:column;gap:12px">
+<sc-for list="{{ people }}" as="p" hint-placeholder-count="4">
+<div style="background:#fffdf7;border:1px solid rgba(34,29,21,.14);border-radius:11px;padding:17px;border-left:3px solid {{ p.accent }}">
+<div style="display:flex;gap:13px;align-items:flex-start;flex-wrap:wrap">
+<div style="flex:none;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:600 13px/1 'IBM Plex Sans',sans-serif;color:#fff;background:{{ p.accent }}">{{ p.initials }}</div>
+<div style="flex:1;min-width:150px">
+<div style="display:flex;gap:9px;align-items:baseline;flex-wrap:wrap;margin-bottom:3px">
+<span style="font:600 14.5px/1.3 'IBM Plex Sans',system-ui,sans-serif">{{ p.name }}</span>
+<sc-if value="{{ p.pending }}" hint-placeholder-val="{{ false }}">
+<span style="font:600 8.5px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;padding:4px 7px;border-radius:4px;background:#8a5a1f;color:#fff">INVITACIÓN PENDIENTE</span>
+</sc-if>
+</div>
+<div style="font:400 11.5px/1.4 'IBM Plex Mono',monospace;color:#6b6255">{{ p.mail }}</div>
+<div style="margin-top:4px;font:400 12.5px/1.45 'EB Garamond',Georgia,serif;color:#6b6255">{{ p.lastSeen }}</div>
+</div>
+<div style="flex:none;display:flex;flex-direction:column;gap:7px;align-items:flex-start">
+<span style="font:600 9px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;padding:6px 10px;border-radius:5px;background:{{ p.roleBg }};color:{{ p.roleFg }};border:1px solid {{ p.roleBd }}">{{ p.role }}</span>
+</div>
+</div>
+<div style="margin-top:14px;padding-top:13px;border-top:1px solid rgba(34,29,21,.09);display:flex;gap:14px;flex-wrap:wrap;align-items:center">
+<sc-for list="{{ p.caps }}" as="c" hint-placeholder-count="3">
+<span style="display:flex;align-items:center;gap:6px;font:400 11.5px/1.4 'IBM Plex Sans',system-ui,sans-serif;color:{{ c.color }}"><span style="width:14px;height:14px;border-radius:4px;flex:none;display:flex;align-items:center;justify-content:center;font:600 9px/1 'IBM Plex Sans',sans-serif;color:#fff;background:{{ c.mk }}">{{ c.icon }}</span>{{ c.label }}</span>
+</sc-for>
+<sc-if value="{{ p.removable }}" hint-placeholder-val="{{ true }}">
+<button type="button" onClick="{{ p.remove }}" style="margin-left:auto;padding:8px 12px;border-radius:6px;border:1px solid rgba(160,47,39,.26);background:#fffdf7;color:#a02f27;font:600 10.5px/1 'IBM Plex Sans',system-ui,sans-serif;min-height:34px;cursor:pointer;transition:background calc(.2s * var(--m))" style-hover="background:rgba(160,47,39,.08)">Quitar acceso</button>
+</sc-if>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div style="flex:1 1 300px;min-width:0;display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start">
+<div style="flex:1 1 288px;background:#fffdf7;border:1px solid rgba(34,29,21,.14);border-radius:12px;padding:20px">
+<div style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.18em;text-transform:uppercase;color:#8a5a1f;margin-bottom:15px">Qué puede hacer cada papel</div>
+<div style="display:flex;flex-direction:column;gap:15px">
+<div>
+<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="width:11px;height:11px;border-radius:3px;background:#5c3b7a"></span><span style="font:600 12.5px/1.3 'IBM Plex Sans',system-ui,sans-serif">Párroco</span></div>
+<p style="margin:0;font:400 14px/1.5 'EB Garamond',Georgia,serif;color:#5d5548">Todo. Publica, borra, cambia canales y administra al equipo. Solo debería haber uno.</p>
+</div>
+<div>
+<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="width:11px;height:11px;border-radius:3px;background:#2f6b4f"></span><span style="font:600 12.5px/1.3 'IBM Plex Sans',system-ui,sans-serif">Secretaría</span></div>
+<p style="margin:0;font:400 14px/1.5 'EB Garamond',Georgia,serif;color:#5d5548">Publica y edita eventos, ve la difusión. No toca canales ni cuentas.</p>
+</div>
+<div>
+<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="width:11px;height:11px;border-radius:3px;background:#b1872f"></span><span style="font:600 12.5px/1.3 'IBM Plex Sans',system-ui,sans-serif">Coordinador de grupo</span></div>
+<p style="margin:0;font:400 14px/1.5 'EB Garamond',Georgia,serif;color:#5d5548">Crea borradores solo de su grupo. Publicar lo autoriza el párroco o la secretaría.</p>
+</div>
+</div>
+</div>
+<div style="flex:1 1 288px;background:#2a241a;border-radius:12px;padding:20px;color:#f4efe3">
+<div style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.18em;text-transform:uppercase;color:#c9a961;margin-bottom:13px">Por qué son tan pocas cuentas</div>
+<p style="margin:0 0 12px;font:400 14.5px/1.58 'EB Garamond',Georgia,serif;color:#cfc7b5">No hay tabla de usuarios públicos, ni inscripciones, ni listas de asistentes. Nadie inicia sesión para ver una misa.</p>
+<p style="margin:0;font:400 14.5px/1.58 'EB Garamond',Georgia,serif;color:#cfc7b5">Eso significa nada de datos personales de la comunidad que cuidar, y una web entera que se puede servir estática. La difusión va a <em>canales</em>, y un canal es una cadena de texto.</p>
+</div>
+<div style="flex:1 1 288px;background:#fdf6e8;border:1px solid rgba(177,135,47,.34);border-radius:12px;padding:20px">
+<div style="font:600 9.5px/1 'IBM Plex Mono',monospace;letter-spacing:.18em;text-transform:uppercase;color:#8a5a1f;margin-bottom:12px">Registro de actividad</div>
+<div style="display:flex;flex-direction:column;gap:11px">
+<div style="display:flex;gap:11px"><span style="flex:none;font:500 10.5px/1.5 'IBM Plex Mono',monospace;color:#6b6255;width:52px">11:04</span><span style="font:400 13.5px/1.5 'EB Garamond',Georgia,serif;color:#5d5548">Rosa Elena publicó <strong style="font-weight:600">Misa patronal solemne</strong></span></div>
+<div style="display:flex;gap:11px"><span style="flex:none;font:500 10.5px/1.5 'IBM Plex Mono',monospace;color:#6b6255;width:52px">10:58</span><span style="font:400 13.5px/1.5 'EB Garamond',Georgia,serif;color:#5d5548">Jorge guardó <strong style="font-weight:600">Kermés parroquial</strong> como borrador</span></div>
+<div style="display:flex;gap:11px"><span style="flex:none;font:500 10.5px/1.5 'IBM Plex Mono',monospace;color:#6b6255;width:52px">ayer</span><span style="font:400 13.5px/1.5 'EB Garamond',Georgia,serif;color:#5d5548">P. Miguel cambió el horario de <strong style="font-weight:600">Novenario patronal</strong></span></div>
+<div style="display:flex;gap:11px"><span style="flex:none;font:500 10.5px/1.5 'IBM Plex Mono',monospace;color:#6b6255;width:52px">14 ago</span><span style="font:400 13.5px/1.5 'EB Garamond',Georgia,serif;color:#5d5548">P. Miguel invitó a <strong style="font-weight:600">Jorge Medina</strong></span></div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;motion&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:8,&quot;min&quot;:0,&quot;max&quot;:10,&quot;step&quot;:1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Ajustes&quot;}}">
+const VIO = '#5c3b7a', VERDE = '#2f6b4f', ORO = '#8a5a1f', ROJO = '#a02f27';
+const ROLES = {
+  'Párroco': { color: VIO, caps: [1, 1, 1, 1] },
+  'Secretaría': { color: VERDE, caps: [1, 1, 1, 0] },
+  'Coordinador de grupo': { color: ORO, caps: [1, 0, 0, 0] }
+};
+const CAP_LABELS = ['Crear y editar', 'Publicar y difundir', 'Ver difusión', 'Administrar equipo'];
+
+const PEOPLE = [
+  { name: 'P. Miguel Ramírez', mail: 'parroco@cristodelosalamos.mx', role: 'Párroco', lastSeen: 'Activo ahora', pending: false, removable: false },
+  { name: 'Rosa Elena Ávila', mail: 'secretaria@cristodelosalamos.mx', role: 'Secretaría', lastSeen: 'Última entrada hoy, 11:04', pending: false, removable: true },
+  { name: 'Jorge Medina', mail: 'juvenil@cristodelosalamos.mx', role: 'Coordinador de grupo', lastSeen: 'Última entrada hoy, 10:58 · Pastoral juvenil', pending: false, removable: true },
+  { name: 'Lucía Terán', mail: 'coro@cristodelosalamos.mx', role: 'Coordinador de grupo', lastSeen: 'Invitada el 14 de agosto · Coro', pending: true, removable: true }
+];
+
+class Component extends DCLogic {
+  state = {
+    inviting: false, invName: '', invMail: '', invRole: 'Coordinador de grupo',
+    removed: [], w: typeof window !== 'undefined' ? window.innerWidth : 1280
+  };
+
+  componentDidMount() {
+    this.tune();
+    this.onResize = () => {
+      if (this._raf) return;
+      this._raf = requestAnimationFrame(() => {
+        this._raf = null;
+        const w = window.innerWidth;
+        if (w !== this.state.w) this.setState({ w: w });
+      });
+    };
+    window.addEventListener('resize', this.onResize);
+    this.onResize();
+  }
+  componentDidUpdate() { this.tune(); }
+  componentWillUnmount() { window.removeEventListener('resize', this.onResize); }
+  tune() {
+    const m = Number(this.props.motion != null ? this.props.motion : 8);
+    document.documentElement.style.setProperty('--m', String(Math.max(0.02, (11 - m) / 3)));
+  }
+
+  renderVals() {
+    const isPhone = this.state.w < 900;
+    const list = PEOPLE.filter((p) => this.state.removed.indexOf(p.mail) < 0);
+    const active = list.filter((p) => !p.pending).length;
+    const pend = list.length - active;
+    return {
+      isPhone: isPhone, notPhone: !isPhone,
+      shellDir: isPhone ? 'column' : 'row',
+      pad: isPhone ? '22px 16px 52px' : '32px 34px 60px',
+      countLine: active + ' cuentas activas' + (pend ? ' · ' + pend + ' invitación pendiente' : ''),
+      inviting: this.state.inviting,
+      invName: this.state.invName,
+      invMail: this.state.invMail,
+      setInvName: (e) => this.setState({ invName: e.target.value }),
+      setInvMail: (e) => this.setState({ invMail: e.target.value }),
+      roleOpts: Object.keys(ROLES).map((r) => ({
+        name: r,
+        bg: this.state.invRole === r ? ROLES[r].color : '#fffdf7',
+        fg: this.state.invRole === r ? '#fff' : '#6b6255',
+        bd: this.state.invRole === r ? ROLES[r].color : 'rgba(34,29,21,.18)',
+        pick: () => this.setState({ invRole: r })
+      })),
+      openInvite: () => this.setState({ inviting: true }),
+      closeInvite: () => this.setState({ inviting: false, invName: '', invMail: '' }),
+      sendInvite: () => this.setState({ inviting: false, invName: '', invMail: '' }),
+      people: list.map((p) => {
+        const R = ROLES[p.role];
+        return {
+          name: p.name, mail: p.mail, role: p.role, lastSeen: p.lastSeen,
+          pending: p.pending, removable: p.removable,
+          initials: p.name.replace('P. ', '').split(' ').map((x) => x.charAt(0)).slice(0, 2).join(''),
+          accent: R.color,
+          roleBg: R.color + '18', roleFg: R.color, roleBd: R.color + '4d',
+          caps: CAP_LABELS.map((l, i) => ({
+            label: l,
+            icon: R.caps[i] ? '✓' : '–',
+            mk: R.caps[i] ? VERDE : '#c4bcae',
+            color: R.caps[i] ? '#4a4337' : '#6b6255'
+          })),
+          remove: () => this.setState((s) => ({ removed: s.removed.concat([p.mail]) }))
+        };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>
