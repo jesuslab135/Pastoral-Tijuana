@@ -20,6 +20,7 @@
 - Public GET endpoints send `Cache-Control: public, max-age=300`
 - Run all Go commands from the `backend/` directory
 - The `project/` directory is the design reference — never modify or serve it
+- Do NOT use chi's `middleware.RealIP` (deprecated; trusts `X-Forwarded-For` unconditionally, and Caddy appends rather than replaces it, so a client can spoof it). Decided 2026-08-11 after review. Plan 2 must resolve the client IP from a header Caddy sets itself, trusted only from Caddy's address, before the login rate limiter ships.
 
 ---
 
@@ -1174,7 +1175,6 @@ import (
 func NewRouter(pool *pgxpool.Pool, cfg config.Config) http.Handler {
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID)
-	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
