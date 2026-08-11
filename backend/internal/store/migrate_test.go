@@ -33,7 +33,9 @@ func TestSeasonOverlapRejected(t *testing.T) {
 		t.Fatalf("first insert: %v", err)
 	}
 	t.Cleanup(func() {
-		pool.Exec(ctx, `DELETE FROM liturgical_seasons WHERE name LIKE 'Prueba %'`)
+		if _, err := pool.Exec(ctx, `DELETE FROM liturgical_seasons WHERE name LIKE 'Prueba %'`); err != nil {
+			t.Logf("cleanup: %v", err)
+		}
 	})
 	_, err = pool.Exec(ctx, `INSERT INTO liturgical_seasons (name,color,date_range)
 		VALUES ('Prueba B','rojo','[3000-01-15,3000-03-01)')`)
