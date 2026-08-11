@@ -9,7 +9,6 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/jesuslab135/pastoral-tijuana/backend/internal/config"
 	"github.com/jesuslab135/pastoral-tijuana/backend/internal/store"
 	"github.com/jesuslab135/pastoral-tijuana/backend/internal/store/testdb"
 )
@@ -28,7 +27,7 @@ func TestICSFeed(t *testing.T) {
 		t.Fatalf("seed: %v", err)
 	}
 
-	r := NewRouter(pool, config.Load())
+	r := newRouter(t, pool)
 	rec := httptest.NewRecorder()
 	r.ServeHTTP(rec, httptest.NewRequest("GET", "/calendario.ics", nil))
 
@@ -57,7 +56,7 @@ func TestICSFeed(t *testing.T) {
 
 func TestICSGroupFeedAndUnknownSlug(t *testing.T) {
 	pool := testdb.New(t)
-	r := NewRouter(pool, config.Load())
+	r := newRouter(t, pool)
 
 	rec := httptest.NewRecorder()
 	r.ServeHTTP(rec, httptest.NewRequest("GET", "/calendario/liturgia.ics", nil))

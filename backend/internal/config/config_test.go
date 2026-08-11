@@ -22,6 +22,26 @@ func TestLoadDefaults(t *testing.T) {
 	}
 }
 
+func TestLoadAuthDefaults(t *testing.T) {
+	for _, k := range []string{"REDIS_ADDR", "TRUSTED_PROXY", "AUTH_SECRET",
+		"SMTP_HOST", "SMTP_PORT", "SMTP_USER", "SMTP_PASS", "SMTP_FROM"} {
+		t.Setenv(k, "")
+	}
+	c := Load()
+	if c.RedisAddr != "localhost:6379" {
+		t.Errorf("RedisAddr default wrong: %q", c.RedisAddr)
+	}
+	if c.TrustedProxy != "" {
+		t.Errorf("TrustedProxy must default empty, got %q", c.TrustedProxy)
+	}
+	if c.AuthSecret != "dev-secret-change-me" {
+		t.Errorf("AuthSecret default wrong: %q", c.AuthSecret)
+	}
+	if c.SMTPHost != "" || c.SMTPPort != "587" {
+		t.Errorf("SMTP defaults wrong: host=%q port=%q", c.SMTPHost, c.SMTPPort)
+	}
+}
+
 func TestLoadFromEnv(t *testing.T) {
 	t.Setenv("PORT", "9999")
 	c := Load()

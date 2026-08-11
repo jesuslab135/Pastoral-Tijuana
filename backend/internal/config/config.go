@@ -12,6 +12,14 @@ type Config struct {
 	Port          string
 	ParishTZ      string
 	PublicBaseURL string
+	RedisAddr     string
+	TrustedProxy  string // CIDR of the reverse proxy; empty = trust nobody
+	AuthSecret    string // HMAC key for magic-link tokens
+	SMTPHost      string // empty = LogMailer (dev)
+	SMTPPort      string
+	SMTPUser      string
+	SMTPPass      string
+	SMTPFrom      string
 }
 
 // PublicHost returns the hostname of PublicBaseURL. iCalendar UIDs are minted
@@ -36,6 +44,14 @@ func Load() Config {
 		Port:          getenv("PORT", "8080"),
 		ParishTZ:      getenv("PARISH_TZ", "America/Mexico_City"),
 		PublicBaseURL: getenv("PUBLIC_BASE_URL", "http://localhost:8080"),
+		RedisAddr:     getenv("REDIS_ADDR", "localhost:6379"),
+		TrustedProxy:  getenv("TRUSTED_PROXY", ""),
+		AuthSecret:    getenv("AUTH_SECRET", "dev-secret-change-me"),
+		SMTPHost:      getenv("SMTP_HOST", ""),
+		SMTPPort:      getenv("SMTP_PORT", "587"),
+		SMTPUser:      getenv("SMTP_USER", ""),
+		SMTPPass:      getenv("SMTP_PASS", ""),
+		SMTPFrom:      getenv("SMTP_FROM", ""),
 	}
 }
 

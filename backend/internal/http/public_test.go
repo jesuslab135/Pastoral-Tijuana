@@ -9,7 +9,6 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/jesuslab135/pastoral-tijuana/backend/internal/config"
 	"github.com/jesuslab135/pastoral-tijuana/backend/internal/store"
 	"github.com/jesuslab135/pastoral-tijuana/backend/internal/store/testdb"
 )
@@ -30,7 +29,7 @@ func TestGetEvents(t *testing.T) {
 		t.Fatalf("seed event: %v", err)
 	}
 
-	r := NewRouter(pool, config.Load())
+	r := newRouter(t, pool)
 	req := httptest.NewRequest("GET", "/api/v1/events?from=2026-08-01&to=2026-09-01", nil)
 	rec := httptest.NewRecorder()
 	r.ServeHTTP(rec, req)
@@ -61,10 +60,10 @@ func TestGetEvents(t *testing.T) {
 
 func TestGetEventsBadRange(t *testing.T) {
 	pool := testdb.New(t)
-	r := NewRouter(pool, config.Load())
+	r := newRouter(t, pool)
 	for _, url := range []string{
-		"/api/v1/events",                              // missing params
-		"/api/v1/events?from=chido&to=2026-09-01",     // invalid date
+		"/api/v1/events", // missing params
+		"/api/v1/events?from=chido&to=2026-09-01",      // invalid date
 		"/api/v1/events?from=2026-01-01&to=2028-01-01", // > 400 days
 	} {
 		rec := httptest.NewRecorder()
@@ -85,7 +84,7 @@ func TestGetEventsBadRange(t *testing.T) {
 
 func TestGetSeasonsBadYear(t *testing.T) {
 	pool := testdb.New(t)
-	r := NewRouter(pool, config.Load())
+	r := newRouter(t, pool)
 	// "0000" parses in Go but has no counterpart in Postgres, so it must be
 	// rejected as client error rather than reaching make_date and 500ing.
 	for _, url := range []string{
@@ -111,7 +110,7 @@ func TestGetSeasonsBadYear(t *testing.T) {
 
 func TestGetSeasonsAndGroups(t *testing.T) {
 	pool := testdb.New(t)
-	r := NewRouter(pool, config.Load())
+	r := newRouter(t, pool)
 
 	rec := httptest.NewRecorder()
 	r.ServeHTTP(rec, httptest.NewRequest("GET", "/api/v1/seasons?year=2026", nil))
