@@ -18,5 +18,12 @@ func NewRouter(pool *pgxpool.Pool, cfg config.Config) http.Handler {
 	r.Use(middleware.Recoverer)
 
 	r.Get("/healthz", healthHandler(pool))
+
+	r.Route("/api/v1", func(api chi.Router) {
+		api.Get("/events", eventsHandler(pool, cfg.ParishTZ))
+		api.Get("/seasons", seasonsHandler(pool))
+		api.Get("/groups", groupsHandler(pool))
+	})
+
 	return r
 }
