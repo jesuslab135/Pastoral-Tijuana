@@ -26,20 +26,28 @@ func TestMigrateCreatesSchema(t *testing.T) {
 func TestSeasonOverlapRejected(t *testing.T) {
 	pool := testdb.New(t)
 	ctx := context.Background()
-	// 3000s: far future, cannot collide with seed data.
-	_, err := pool.Exec(ctx, `INSERT INTO liturgical_seasons (name,color,date_range)
-		VALUES ('Prueba A','verde','[3000-01-01,3000-02-01)')`)
+	// Run inside a transaction that is always rolled back: testdb.New does
+	// not truncate liturgical_seasons, so rows committed here would outlive
+	// the test and permanently break every later run of it. A rollback also
+	// covers an interrupted run, since Postgres discards the transaction
+	// when the connection drops.
+	tx, err := pool.Begin(ctx)
 	if err != nil {
+		t.Fatalf("begin: %v", err)
+	}
+	defer func() {
+		if err := tx.Rollback(ctx); err != nil {
+			t.Logf("rollback: %v", err)
+		}
+	}()
+
+	// 3000s: far future, cannot collide with seed data.
+	if _, err := tx.Exec(ctx, `INSERT INTO liturgical_seasons (name,color,date_range)
+		VALUES ('Prueba A','verde','[3000-01-01,3000-02-01)')`); err != nil {
 		t.Fatalf("first insert: %v", err)
 	}
-	t.Cleanup(func() {
-		if _, err := pool.Exec(ctx, `DELETE FROM liturgical_seasons WHERE name LIKE 'Prueba %'`); err != nil {
-			t.Logf("cleanup: %v", err)
-		}
-	})
-	_, err = pool.Exec(ctx, `INSERT INTO liturgical_seasons (name,color,date_range)
-		VALUES ('Prueba B','rojo','[3000-01-15,3000-03-01)')`)
-	if err == nil {
+	if _, err := tx.Exec(ctx, `INSERT INTO liturgical_seasons (name,color,date_range)
+		VALUES ('Prueba B','rojo','[3000-01-15,3000-03-01)')`); err == nil {
 		t.Fatal("overlapping season should be rejected by EXCLUDE constraint")
 	}
 }
