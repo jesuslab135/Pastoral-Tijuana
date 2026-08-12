@@ -5,9 +5,10 @@
 // for what they do to the parish, not for what they do to the row.
 
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import {
+  useBroadcastsQuery,
   useChannelsQuery,
   useCreateEventMutation,
   useGetEventQuery,
@@ -32,6 +33,8 @@ import {
   SANS,
   TextInput,
 } from '../ui';
+import { castsByEvent } from './casts';
+import DeleteModal from './DeleteModal';
 import { DURATIONS, fromEvent, toInput, validate } from './form';
 import type { EventForm } from './form';
 
@@ -71,9 +74,12 @@ function reaches(c: Channel, groupID: string): boolean {
 export default function EventoEditor() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const groups = useGroupsQuery();
   const channels = useChannelsQuery();
+  // Unfiltered, so this reads the same cache entry the list and Difusión fill.
+  const broadcasts = useBroadcastsQuery({});
   // `skip` keeps the new-event route from requesting an event that has no id.
   const existing = useGetEventQuery(id ?? '', { skip: !id });
 
@@ -84,11 +90,11 @@ export default function EventoEditor() {
 
   const [form, setForm] = useState<EventForm | null>(null);
   const [error, setError] = useState<string | null>(null);
-  // The confirmation modal arrives in the next task; this only opens the door.
-  const [, setAskDelete] = useState(false);
+  const [askDelete, setAskDelete] = useState(false);
 
   const event = existing.data;
   const groupList = useMemo(() => groups.data ?? [], [groups.data]);
+  const casts = useMemo(() => castsByEvent(broadcasts.data ?? []), [broadcasts.data]);
 
   // The form is seeded once, from whichever source this route has: a loaded
   // event, or the first group for a blank one.
@@ -100,6 +106,12 @@ export default function EventoEditor() {
     }
     if (groupList.length > 0) setForm(emptyForm(groupList[0]!.id));
   }, [form, id, event, groupList]);
+
+  // The list's ✕ navigates here with this flag so the secretary lands
+  // straight on the confirmation instead of the editor she didn't ask for.
+  useEffect(() => {
+    if ((location.state as { delete?: boolean } | null)?.delete) setAskDelete(true);
+  }, [location.state]);
 
   const set = <K extends keyof EventForm>(key: K, value: EventForm[K]) =>
     setForm((f) => (f ? { ...f, [key]: value } : f));
@@ -539,6 +551,14 @@ export default function EventoEditor() {
           )}
         </div>
       </div>
+
+      {askDelete && event && (
+        <DeleteModal
+          event={event}
+          cast={casts.get(event.id)}
+          onClose={() => setAskDelete(false)}
+        />
+      )}
     </div>
   );
 }
