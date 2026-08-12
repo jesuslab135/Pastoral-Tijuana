@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/url"
 	"os"
+	"strconv"
 )
 
 type Config struct {
@@ -20,6 +21,15 @@ type Config struct {
 	SMTPUser      string
 	SMTPPass      string
 	SMTPFrom      string
+
+	// QuietStart and QuietEnd bound the hours (parish local time) during
+	// which the difusión engine holds messages instead of ringing phones.
+	// Equal values disable quiet hours entirely.
+	QuietStart int
+	QuietEnd   int
+	// StaggerSeconds spaces consecutive deliveries of one announcement, so a
+	// fanout across many channels does not arrive as a single burst.
+	StaggerSeconds int
 }
 
 // PublicHost returns the hostname of PublicBaseURL. iCalendar UIDs are minted
@@ -52,6 +62,10 @@ func Load() Config {
 		SMTPUser:      getenv("SMTP_USER", ""),
 		SMTPPass:      getenv("SMTP_PASS", ""),
 		SMTPFrom:      getenv("SMTP_FROM", ""),
+
+		QuietStart:     getenvInt("QUIET_START", 22),
+		QuietEnd:       getenvInt("QUIET_END", 7),
+		StaggerSeconds: getenvInt("STAGGER_SECONDS", 8),
 	}
 }
 
@@ -60,4 +74,14 @@ func getenv(key, fallback string) string {
 		return v
 	}
 	return fallback
+}
+
+// getenvInt falls back on anything non-numeric rather than on strconv's zero:
+// a typo in QUIET_START must not read as "quiet hours start at midnight".
+func getenvInt(key string, fallback int) int {
+	n, err := strconv.Atoi(os.Getenv(key))
+	if err != nil {
+		return fallback
+	}
+	return n
 }
