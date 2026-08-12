@@ -28,7 +28,7 @@ func NewRouter(pool *pgxpool.Pool, rdb *redis.Client, mailer mail.Mailer, cfg co
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
-	r.Get("/healthz", healthHandler(pool))
+	r.Get("/healthz", healthHandler(pool, rdb))
 
 	r.Route("/api/v1", func(api chi.Router) {
 		api.Get("/events", eventsHandler(pool, cfg.ParishTZ))
