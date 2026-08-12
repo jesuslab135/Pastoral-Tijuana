@@ -6,6 +6,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "check": "astro check",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "preview": "astro preview"
   },
   "dependencies": {
@@ -18,5 +20,12 @@
     "astro": "^5.1.0",
     "preact": "^10.25.0",
     "typescript": "^5.7.0"
+  },
+  "devDependencies": {
+    "@preact/preset-vite": "^2.10.6",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/preact": "^3.2.4",
+    "jsdom": "^29.1.1",
+    "vitest": "^4.1.10"
   }
 }

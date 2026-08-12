@@ -70,5 +70,7 @@ jobs:
         run: npm ci
       - name: Typecheck
         run: npx astro check
+      - name: Test
+        run: npm test
       - name: Build
         run: npm run build
