@@ -37,6 +37,7 @@ type BroadcastRow struct {
 	Broadcast
 	ChannelName string
 	ChannelKind string
+	EventTitle  string
 }
 
 // DedupeKey identifies one announcement to one channel. The outbox id is part
@@ -94,9 +95,10 @@ func ListBroadcasts(ctx context.Context, pool *pgxpool.Pool, state *string, even
 	rows, err := pool.Query(ctx,
 		`SELECT b.id, b.event_id, b.channel_id, b.kind::text, b.state::text,
 		        b.attempt, b.dedupe_key, b.last_error, b.sent_at, b.created_at,
-		        c.name, c.kind::text
+		        c.name, c.kind::text, e.title
 		 FROM broadcasts b
 		 JOIN channels c ON c.id = b.channel_id
+		 JOIN events e ON e.id = b.event_id
 		 WHERE ($1::text IS NULL OR b.state::text = $1)
 		   AND ($2::uuid IS NULL OR b.event_id = $2)
 		 ORDER BY b.created_at DESC, b.id DESC`, state, eventID)
@@ -110,7 +112,7 @@ func ListBroadcasts(ctx context.Context, pool *pgxpool.Pool, state *string, even
 		var kind string
 		if err := rows.Scan(&r.ID, &r.EventID, &r.ChannelID, &kind, &r.State,
 			&r.Attempt, &r.DedupeKey, &r.LastError, &r.SentAt, &r.CreatedAt,
-			&r.ChannelName, &r.ChannelKind); err != nil {
+			&r.ChannelName, &r.ChannelKind, &r.EventTitle); err != nil {
 			return nil, err
 		}
 		r.Kind = OutboxKind(kind)
