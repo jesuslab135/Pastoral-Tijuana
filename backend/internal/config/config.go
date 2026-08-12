@@ -52,7 +52,10 @@ func Load() Config {
 	return Config{
 		DatabaseURL:   getenv("DATABASE_URL", "postgres://pastoral:pastoral@localhost:5433/pastoral?sslmode=disable"),
 		Port:          getenv("PORT", "8080"),
-		ParishTZ:      getenv("PARISH_TZ", "America/Mexico_City"),
+		// The parish is in Tijuana (UTC−8, −7 in summer), which is an hour
+		// behind Mexico City. Getting this wrong shifts every published hour
+		// and every .ics entry.
+		ParishTZ: getenv("PARISH_TZ", "America/Tijuana"),
 		PublicBaseURL: getenv("PUBLIC_BASE_URL", "http://localhost:8080"),
 		RedisAddr:     getenv("REDIS_ADDR", "localhost:6379"),
 		TrustedProxy:  getenv("TRUSTED_PROXY", ""),

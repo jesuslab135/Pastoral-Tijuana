@@ -25,7 +25,11 @@ cd backend && go run ./cmd/worker
 cd backend && SETUP_EMAIL=parroco@parroquia.mx go run ./cmd/setup
 # prints a generated password once — save it, then change it after logging in
 
-# 5. Tests (uses the pastoral_test database and Redis)
+# 5. Run the public site, in a third terminal
+cd frontend && npm install && npm run dev
+# → http://localhost:4321 (proxies /api and the .ics feeds to :8080)
+
+# 6. Tests (uses the pastoral_test database and Redis)
 cd backend && go test ./...
 ```
 
@@ -75,13 +79,30 @@ curl -s -b cookies.txt -X POST "localhost:8080/api/v1/admin/broadcasts/<id>/retr
 - A cancellation reaches only the channels that actually received the event.
 - Retries: 5 attempts, then the row turns `dead` and waits for a manual retry.
 
+## Public site
+
+Astro static build with one Preact island (`frontend/src/islands/calendar/`). The
+island owns every view — month grid, week time grid, phone agenda, day panel,
+event sheet — and fetches `/api/v1/events` per visible range plus `/seasons` and
+`/groups` once.
+
+- **Everything renders in parish time** (`frontend/src/lib/config.ts`, `PARISH_TZ`),
+  `America/Tijuana` on both sides. If the two ever disagree, the site and the
+  `.ics` feed show different hours for the same event.
+- **Ordinary masses are not events.** The everyday schedule is the static
+  horarios card; the calendar carries only what the parish publishes.
+- Rank drives shape and weight, not just color: solemnidad fills, fiesta tints,
+  memoria is a dot, and a group activity is dashed graphite — deliberately
+  outside the liturgical palette.
+- No test suite yet (MVP); `npx astro check` and `npm run build` gate CI.
+
 ## Environment
 
 | Variable | Default | Notes |
 |---|---|---|
 | `DATABASE_URL` | dev Postgres on 5433 | |
 | `PORT` | `8080` | |
-| `PARISH_TZ` | `America/Mexico_City` | tzdata is embedded in the binary |
+| `PARISH_TZ` | `America/Tijuana` | tzdata is embedded in the binary; must match `frontend/src/lib/config.ts` |
 | `PUBLIC_BASE_URL` | `http://localhost:8080` | must include the scheme; mints `.ics` UIDs |
 | `REDIS_ADDR` | `localhost:6379` | magic-link single use and the asynq queues |
 | `QUIET_START` / `QUIET_END` | `22` / `7` | parish-local hours during which messages are held; equal values disable |
@@ -103,8 +124,10 @@ docker compose -f docker-compose.dev.yml exec postgres \
 
 ## Repository layout
 
-- `backend/` — Go API + worker (cmd/api, internal/…)
-- `frontend/` — Astro site (Plan 4+)
+- `backend/` — Go API + worker (cmd/api, cmd/worker, cmd/setup, internal/…)
+- `frontend/` — Astro site: `src/pages`, `src/components` (static shell),
+  `src/islands/calendar` (Preact island), `src/lib` (API client + date logic),
+  `src/styles/tokens.css` (design tokens)
 - `deploy/` — compose files, Caddy config
 - `project/` — original design handoff bundle (reference only)
 - `docs/superpowers/` — spec and implementation plans

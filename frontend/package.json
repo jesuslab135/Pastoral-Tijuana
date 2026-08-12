@@ -1,0 +1,31 @@
+{
+  "name": "pastoral-frontend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "check": "astro check",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@astrojs/preact": "^4.0.0",
+    "@fontsource/eb-garamond": "^5.1.0",
+    "@fontsource/ibm-plex-mono": "^5.1.0",
+    "@fontsource/ibm-plex-sans": "^5.1.0",
+    "@fontsource/marcellus": "^5.1.0",
+    "astro": "^5.1.0",
+    "preact": "^10.25.0",
+    "typescript": "^5.7.0"
+  },
+  "devDependencies": {
+    "@preact/preset-vite": "^2.10.6",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/preact": "^3.2.4",
+    "jsdom": "^29.1.1",
+    "vitest": "^4.1.10"
+  }
+}

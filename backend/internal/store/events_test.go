@@ -38,7 +38,7 @@ func TestListPublishedEvents(t *testing.T) {
 
 	from := time.Date(2026, 8, 1, 0, 0, 0, 0, time.UTC)
 	to := time.Date(2026, 9, 1, 0, 0, 0, 0, time.UTC)
-	got, err := store.ListPublishedEvents(ctx, pool, from, to, "America/Mexico_City")
+	got, err := store.ListPublishedEvents(ctx, pool, from, to, "America/Tijuana")
 	if err != nil {
 		t.Fatalf("ListPublishedEvents: %v", err)
 	}
@@ -72,7 +72,7 @@ func TestColorOverrideWins(t *testing.T) {
 	}
 	got, err := store.ListPublishedEvents(ctx, pool,
 		time.Date(2026, 8, 1, 0, 0, 0, 0, time.UTC),
-		time.Date(2026, 9, 1, 0, 0, 0, 0, time.UTC), "America/Mexico_City")
+		time.Date(2026, 9, 1, 0, 0, 0, 0, time.UTC), "America/Tijuana")
 	if err != nil {
 		t.Fatalf("ListPublishedEvents: %v", err)
 	}

@@ -1,0 +1,42 @@
+---
+import { PARISH_NAME } from '../lib/config';
+---
+
+<footer>
+  <div class="interior">
+    <span>Parroquia del {PARISH_NAME} · calendario público, solo lectura</span>
+    <span class="enlaces">
+      <a href="/calendario.ics">Suscribir calendario</a>
+      <a href="/admin/login">Acceso del equipo →</a>
+    </span>
+  </div>
+</footer>
+
+<style>
+  footer {
+    border-top: 1px solid var(--line);
+    background: var(--footer);
+  }
+  .interior {
+    max-width: 1360px;
+    margin: 0 auto;
+    padding: 30px 28px;
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    font: 400 12px/1.5 'IBM Plex Mono', monospace;
+    color: var(--graphite);
+  }
+  .enlaces {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  @media (max-width: 719px) {
+    .interior {
+      padding: 24px 16px;
+    }
+  }
+</style>

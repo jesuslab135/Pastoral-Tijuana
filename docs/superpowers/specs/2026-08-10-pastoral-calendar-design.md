@@ -147,14 +147,14 @@ sessions(
 ```sql
 SELECT e.*, s.color AS season_color
 FROM events e
-JOIN liturgical_seasons s ON s.date_range @> (e.starts_at AT TIME ZONE 'America/Mexico_City')::date
+JOIN liturgical_seasons s ON s.date_range @> (e.starts_at AT TIME ZONE 'America/Tijuana')::date
 WHERE e.published_at IS NOT NULL AND e.starts_at >= $1 AND e.starts_at < $2
 ORDER BY e.starts_at;
 ```
 
 **Seeds:** seasons 2026–2027 (Adviento, Gaudete day, Navidad, Cuaresma, Pascua, Ordinario ranges), the 6 parish groups from the design, initial channels (2 WA stubs + 1 email), one `parroco` user (credentials via env/one-time setup command).
 
-**Timezone:** all business rules (quiet hours, "day" of an event, .ics floating times) use `America/Mexico_City`; configurable via env.
+**Timezone:** all business rules (quiet hours, "day" of an event, .ics floating times) use `America/Tijuana`; configurable via env (`PARISH_TZ`). **Corrected 2026-08-12:** the spec originally said `America/Mexico_City`, which is an hour ahead of Tijuana and would have shifted every published hour.
 
 ## 6. Backend API (Go, chi, `/api/v1`)
 
@@ -207,7 +207,7 @@ Errors everywhere: `{"error":{"code":"...","message":"<Spanish, user-facing>"}}`
 **Rules that live in the engine (never checkboxes):**
 
 - **Broadcast-worthy edits only:** an `updated` outbox row is written only if `starts_at`, `ends_at`, `place` changed, or the event was cancelled. Title typos and description tweaks save silently.
-- **Quiet hours:** nothing delivers 22:00–07:00 (America/Mexico_City). Tasks get `ProcessAt = next 07:00 + stagger`. Rescheduled, never dropped.
+- **Quiet hours:** nothing delivers 22:00–07:00 (America/Tijuana). Tasks get `ProcessAt = next 07:00 + stagger`. Rescheduled, never dropped.
 - **Edit debounce:** an `updated` fanout waits 10 minutes; further broadcast-worthy edits inside the window collapse into one message (relay skips outbox rows superseded by a newer row for the same event+kind).
 - **Cancellation targeting:** `cancelled` goes only to channels that previously received `published`/`updated` for that event (from `broadcasts`), not to current channel config.
 

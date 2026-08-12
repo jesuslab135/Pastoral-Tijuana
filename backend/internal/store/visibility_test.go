@@ -33,7 +33,7 @@ func TestEventOutsideSeededSeasonsIsStillListed(t *testing.T) {
 
 	got, err := store.ListPublishedEvents(ctx, pool,
 		time.Date(2035, 6, 1, 0, 0, 0, 0, time.UTC),
-		time.Date(2035, 7, 1, 0, 0, 0, 0, time.UTC), "America/Mexico_City")
+		time.Date(2035, 7, 1, 0, 0, 0, 0, time.UTC), "America/Tijuana")
 	if err != nil {
 		t.Fatalf("ListPublishedEvents: %v", err)
 	}
@@ -70,7 +70,7 @@ func TestNonPublicGroupEventsAreHidden(t *testing.T) {
 
 	got, err := store.ListPublishedEvents(ctx, pool,
 		time.Date(2026, 8, 1, 0, 0, 0, 0, time.UTC),
-		time.Date(2026, 9, 1, 0, 0, 0, 0, time.UTC), "America/Mexico_City")
+		time.Date(2026, 9, 1, 0, 0, 0, 0, time.UTC), "America/Tijuana")
 	if err != nil {
 		t.Fatalf("ListPublishedEvents: %v", err)
 	}

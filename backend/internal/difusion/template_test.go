@@ -15,7 +15,7 @@ import (
 
 const baseURL = "https://pastoral.example.mx"
 
-func mexicoCity(t *testing.T) *time.Location { return parishTZ(t, "America/Mexico_City") }
+func tijuana(t *testing.T) *time.Location { return parishTZ(t, "America/Tijuana") }
 
 func parishTZ(t *testing.T, name string) *time.Location {
 	t.Helper()
@@ -41,7 +41,7 @@ func samplePayload() store.OutboxPayload {
 }
 
 func TestRenderSubjectsPerKind(t *testing.T) {
-	loc := mexicoCity(t)
+	loc := tijuana(t)
 	p := samplePayload()
 
 	for kind, want := range map[store.OutboxKind]string{
@@ -84,7 +84,7 @@ func TestRenderUsesParishLocalTimeInSpanish(t *testing.T) {
 }
 
 func TestRenderIncludesPlaceAndDescriptionOnlyWhenSet(t *testing.T) {
-	loc := mexicoCity(t)
+	loc := tijuana(t)
 	full := renderBody(t, store.OutboxPublished, samplePayload(), loc)
 	if !strings.Contains(full, "📍 Templo parroquial") {
 		t.Errorf("place missing:\n%s", full)
@@ -110,7 +110,7 @@ func TestRenderIncludesPlaceAndDescriptionOnlyWhenSet(t *testing.T) {
 }
 
 func TestRenderCancelledLeadsWithTheRetraction(t *testing.T) {
-	loc := mexicoCity(t)
+	loc := tijuana(t)
 	body := renderBody(t, store.OutboxCancelled, samplePayload(), loc)
 	first, _, _ := strings.Cut(body, "\n")
 	if first != "Este evento se canceló." {
@@ -119,7 +119,7 @@ func TestRenderCancelledLeadsWithTheRetraction(t *testing.T) {
 }
 
 func TestRenderSpanishWeekdaysAndMonths(t *testing.T) {
-	loc := mexicoCity(t)
+	loc := tijuana(t)
 	for _, tc := range []struct {
 		day  time.Time
 		want string
