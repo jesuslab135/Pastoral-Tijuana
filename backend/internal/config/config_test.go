@@ -14,7 +14,7 @@ func TestLoadDefaults(t *testing.T) {
 	if c.Port != "8080" {
 		t.Errorf("Port default wrong: %q", c.Port)
 	}
-	if c.ParishTZ != "America/Mexico_City" {
+	if c.ParishTZ != "America/Tijuana" {
 		t.Errorf("ParishTZ default wrong: %q", c.ParishTZ)
 	}
 	if c.PublicBaseURL != "http://localhost:8080" {

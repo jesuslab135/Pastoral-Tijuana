@@ -86,8 +86,9 @@ island owns every view — month grid, week time grid, phone agenda, day panel,
 event sheet — and fetches `/api/v1/events` per visible range plus `/seasons` and
 `/groups` once.
 
-- **Everything renders in parish time** (`frontend/src/lib/config.ts`, `PARISH_TZ`).
-  It must match the backend's `PARISH_TZ` or the hours disagree with the `.ics` feed.
+- **Everything renders in parish time** (`frontend/src/lib/config.ts`, `PARISH_TZ`),
+  `America/Tijuana` on both sides. If the two ever disagree, the site and the
+  `.ics` feed show different hours for the same event.
 - **Ordinary masses are not events.** The everyday schedule is the static
   horarios card; the calendar carries only what the parish publishes.
 - Rank drives shape and weight, not just color: solemnidad fills, fiesta tints,
@@ -101,7 +102,7 @@ event sheet — and fetches `/api/v1/events` per visible range plus `/seasons` a
 |---|---|---|
 | `DATABASE_URL` | dev Postgres on 5433 | |
 | `PORT` | `8080` | |
-| `PARISH_TZ` | `America/Mexico_City` | tzdata is embedded in the binary |
+| `PARISH_TZ` | `America/Tijuana` | tzdata is embedded in the binary; must match `frontend/src/lib/config.ts` |
 | `PUBLIC_BASE_URL` | `http://localhost:8080` | must include the scheme; mints `.ics` UIDs |
 | `REDIS_ADDR` | `localhost:6379` | magic-link single use and the asynq queues |
 | `QUIET_START` / `QUIET_END` | `22` / `7` | parish-local hours during which messages are held; equal values disable |
