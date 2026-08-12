@@ -75,8 +75,8 @@ func Fanout(ctx context.Context, pool *pgxpool.Pool, enq Enqueuer, cfg config.Co
 		}
 		at := NextAllowed(now.Add(Stagger(n, base)), loc, cfg.QuietStart, cfg.QuietEnd)
 		if _, err := enq.Enqueue(task,
-			asynq.Queue(queueFor(ch.Kind)),
-			asynq.MaxRetry(deliverMaxRetry),
+			asynq.Queue(QueueFor(ch.Kind)),
+			asynq.MaxRetry(DeliverMaxRetry),
 			asynq.ProcessAt(at),
 		); err != nil {
 			// The broadcast row is already there, so the retried fanout will

@@ -58,7 +58,7 @@ func TestDeliverSendsAndSettles(t *testing.T) {
 	b, p, ch := deliverFixture(t, pool, "email")
 
 	sender := &recordingSender{}
-	if err := deliverWith(t, pool, sender, "email", p, 0, deliverMaxRetry); err != nil {
+	if err := deliverWith(t, pool, sender, "email", p, 0, DeliverMaxRetry); err != nil {
 		t.Fatalf("Deliver: %v", err)
 	}
 	if len(sender.sent) != 1 {
@@ -89,7 +89,7 @@ func TestDeliverFailureCountsTheAttempt(t *testing.T) {
 	boom := errors.New("smtp rechazó la conexión")
 	sender := &recordingSender{err: boom}
 	// The error has to travel back to asynq, or the task is retired as done.
-	if err := deliverWith(t, pool, sender, "email", p, 0, deliverMaxRetry); !errors.Is(err, boom) {
+	if err := deliverWith(t, pool, sender, "email", p, 0, DeliverMaxRetry); !errors.Is(err, boom) {
 		t.Fatalf("expected the sender error back, got %v", err)
 	}
 	got, err := store.GetBroadcast(ctx, pool, b.ID)
@@ -110,7 +110,7 @@ func TestDeliverLastAttemptIsDead(t *testing.T) {
 	b, p, _ := deliverFixture(t, pool, "email")
 
 	sender := &recordingSender{err: errors.New("sin ruta al host")}
-	if err := deliverWith(t, pool, sender, "email", p, deliverMaxRetry, deliverMaxRetry); err == nil {
+	if err := deliverWith(t, pool, sender, "email", p, DeliverMaxRetry, DeliverMaxRetry); err == nil {
 		t.Fatal("the final attempt still reports the error so asynq archives the task")
 	}
 	got, err := store.GetBroadcast(ctx, pool, b.ID)
@@ -132,7 +132,7 @@ func TestDeliverSkipsWhatIsAlreadySent(t *testing.T) {
 
 	sender := &recordingSender{}
 	// A duplicated queue entry must not announce the same event twice.
-	if err := deliverWith(t, pool, sender, "email", p, 0, deliverMaxRetry); err != nil {
+	if err := deliverWith(t, pool, sender, "email", p, 0, DeliverMaxRetry); err != nil {
 		t.Fatalf("a delivered broadcast is skipped, not retried: %v", err)
 	}
 	if len(sender.sent) != 0 {
@@ -144,7 +144,7 @@ func TestDeliverMissingBroadcastIsSkipped(t *testing.T) {
 	pool := testdb.New(t)
 	sender := &recordingSender{}
 	p := DeliverPayload{BroadcastID: uuid.New(), OutboxID: 1}
-	if err := deliverWith(t, pool, sender, "email", p, 0, deliverMaxRetry); err != nil {
+	if err := deliverWith(t, pool, sender, "email", p, 0, DeliverMaxRetry); err != nil {
 		t.Errorf("a stale queue entry must be skipped, got %v", err)
 	}
 	if len(sender.sent) != 0 {
@@ -162,7 +162,7 @@ func TestDeliverToDeactivatedChannelStops(t *testing.T) {
 	}
 
 	sender := &recordingSender{}
-	if err := deliverWith(t, pool, sender, "email", p, 0, deliverMaxRetry); err != nil {
+	if err := deliverWith(t, pool, sender, "email", p, 0, DeliverMaxRetry); err != nil {
 		t.Fatalf("a channel switched off mid-flight is not a failure to retry: %v", err)
 	}
 	if len(sender.sent) != 0 {
@@ -185,7 +185,7 @@ func TestDeliverUnknownChannelKindFails(t *testing.T) {
 	_, p, _ := deliverFixture(t, pool, "whatsapp")
 	// Only an email sender is wired: a whatsapp channel has nowhere to go.
 	err := Deliver(context.Background(), pool, map[string]Sender{"email": &recordingSender{}},
-		parishTZ(t, "America/Tijuana"), baseURL, p, 0, deliverMaxRetry)
+		parishTZ(t, "America/Tijuana"), baseURL, p, 0, DeliverMaxRetry)
 	if err == nil {
 		t.Fatal("a channel kind with no sender must not report success")
 	}

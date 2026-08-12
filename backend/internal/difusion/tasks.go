@@ -18,9 +18,9 @@ const (
 	QueueMail   = "mail"
 	QueueFanout = "fanout"
 
-	// deliverMaxRetry is asynq's budget per delivery; the broadcast row turns
+	// DeliverMaxRetry is asynq's budget per delivery; the broadcast row turns
 	// dead when it runs out, and only a manual retry moves it after that.
-	deliverMaxRetry = 5
+	DeliverMaxRetry = 5
 )
 
 // FanoutPayload names the outbox row to resolve. It carries no snapshot: the
@@ -57,8 +57,8 @@ type Enqueuer interface {
 	Enqueue(task *asynq.Task, opts ...asynq.Option) (*asynq.TaskInfo, error)
 }
 
-// queueFor routes a delivery by channel kind.
-func queueFor(channelKind string) string {
+// QueueFor routes a delivery by channel kind.
+func QueueFor(channelKind string) string {
 	if channelKind == "whatsapp" {
 		return QueueWA
 	}
