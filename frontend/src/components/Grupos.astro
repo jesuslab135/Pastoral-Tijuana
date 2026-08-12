@@ -1,0 +1,121 @@
+---
+// The pills are static on purpose: the section explains what a group is, while
+// the live filter chips live in the calendar toolbar.
+const GRUPOS = ['Liturgia', 'Catequesis', 'Pastoral juvenil', 'Coro', 'Caridad', 'Formación'];
+---
+
+<section id="grupos">
+  <div>
+    <h2>Grupos parroquiales</h2>
+    <p class="prosa">
+      Cada actividad del calendario pertenece a un grupo. Usa los filtros de arriba para ver solo
+      lo tuyo.
+    </p>
+  </div>
+
+  <div class="pastillas">
+    {GRUPOS.map((g) => <span class="pastilla">{g}</span>)}
+  </div>
+
+  <div id="suscribirse" class="tarjeta">
+    <div class="kicker">Llévalo contigo</div>
+    <p>
+      Suscribe el calendario a tu teléfono y las nuevas fechas aparecen solas. Sin cuenta, sin
+      contraseña.
+    </p>
+    <div class="acciones">
+      <a class="primaria" href="/calendario.ics">Suscribir calendario</a>
+      <a class="secundaria" href="mailto:avisos@parroquia.mx?subject=Quiero%20recibir%20el%20bolet%C3%ADn">
+        Recibir el boletín
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  #grupos {
+    max-width: 1360px;
+    margin: 0 auto;
+    padding: 0 28px 56px;
+    margin-top: 44px;
+    padding-top: 36px;
+    border-top: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 18px;
+  }
+  h2 {
+    margin: 0 0 10px;
+    font: 400 26px/1.1 Marcellus, Georgia, serif;
+  }
+  .prosa {
+    margin: 0;
+    font: 400 15.5px/1.6 'EB Garamond', Georgia, serif;
+    color: var(--muted);
+  }
+  .pastillas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    align-content: flex-start;
+  }
+  .pastilla {
+    font: 500 12px/1 'IBM Plex Sans', system-ui, sans-serif;
+    padding: 10px 14px;
+    border-radius: 20px;
+    background: var(--card);
+    border: 1px solid rgba(34, 29, 21, 0.16);
+    color: #4a4337;
+  }
+  .tarjeta {
+    background: var(--panel);
+    border-radius: 12px;
+    padding: 24px;
+    color: var(--panel-fg);
+  }
+  .kicker {
+    font: 600 9.5px/1 'IBM Plex Mono', monospace;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .tarjeta p {
+    margin: 0 0 16px;
+    font: 400 15px/1.6 'EB Garamond', Georgia, serif;
+    color: #cfc7b5;
+  }
+  .acciones {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .primaria {
+    font: 600 11.5px/1 'IBM Plex Sans', system-ui, sans-serif;
+    padding: 11px 15px;
+    border-radius: 7px;
+    background: var(--accent);
+    color: var(--panel);
+  }
+  .primaria:hover {
+    color: var(--panel);
+    filter: brightness(1.06);
+  }
+  .secundaria {
+    font: 500 11.5px/1 'IBM Plex Sans', system-ui, sans-serif;
+    padding: 11px 15px;
+    border-radius: 7px;
+    border: 1px solid rgba(201, 169, 97, 0.4);
+    color: var(--accent);
+  }
+  .secundaria:hover {
+    color: var(--panel-bright);
+  }
+  @media (max-width: 719px) {
+    #grupos {
+      padding: 0 16px 44px;
+      margin-top: 32px;
+      padding-top: 28px;
+    }
+  }
+</style>

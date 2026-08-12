@@ -1,0 +1,104 @@
+/* Design tokens extracted from the handoff bundle. Single source of truth for
+   color, and the only place the season palette is written down. */
+:root {
+  /* Motion multiplier: every duration is `calc(<base> * var(--m))`, so the
+     whole site can be slowed or stilled from one place. */
+  --m: 1;
+
+  --paper: #f6f1e6;
+  --card: #fffdf7;
+  --ink: #221d15;
+  --panel: #2a241a;
+  --panel-fg: #f4efe3;
+  --panel-bright: #fbf7ee;
+  --accent: #c9a961;
+  --graphite: #6b6255;
+  --muted: #5d5548;
+  --gold: #8a5a1f;
+  --gold-ring: #b1872f;
+  --wash: #faf5e9;
+  --footer: #f1ebdc;
+  --red: #a02f27;
+  --dim: #a89f8c;
+
+  --line: rgba(34, 29, 21, 0.13);
+  --line-soft: rgba(34, 29, 21, 0.09);
+
+  /* Liturgical seasons, keyed by the season_color enum the API returns. */
+  --sea-violeta-color: #5c3b7a;
+  --sea-violeta-deep: #4a2f63;
+  --sea-violeta-tint: #f0e9f5;
+  --sea-violeta-ink: #5c3b7a;
+
+  --sea-rosa-color: #c06f8d;
+  --sea-rosa-deep: #9d5474;
+  --sea-rosa-tint: #fbeef2;
+  --sea-rosa-ink: #a85170;
+
+  --sea-blanco_oro-color: #b1872f;
+  --sea-blanco_oro-deep: #8a5a1f;
+  --sea-blanco_oro-tint: #fcf5e6;
+  --sea-blanco_oro-ink: #8a5a1f;
+
+  --sea-verde-color: #2f6b4f;
+  --sea-verde-deep: #255440;
+  --sea-verde-tint: #eaf2ed;
+  --sea-verde-ink: #2f6b4f;
+
+  --sea-rojo-color: #a02f27;
+  --sea-rojo-deep: #7e241e;
+  --sea-rojo-tint: #f7e9e8;
+  --sea-rojo-ink: #a02f27;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  text-wrap: pretty;
+}
+
+a {
+  color: var(--gold);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--ink);
+}
+
+::selection {
+  background: #e9d8ad;
+}
+
+@keyframes cpRise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes cpIn {
+  from { opacity: 0; transform: translateX(18px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes cpGrow {
+  from { transform: scaleY(0.4); opacity: 0; }
+  to { transform: scaleY(1); opacity: 1; }
+}
+@keyframes cpSheen {
+  0% { background-position: -150% 0; }
+  100% { background-position: 250% 0; }
+}
+@keyframes cpPulse {
+  0%, 100% { opacity: 0.25; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.5); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001s !important;
+    transition-duration: 0.001s !important;
+  }
+}
