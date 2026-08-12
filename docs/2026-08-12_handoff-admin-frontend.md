@@ -1,7 +1,11 @@
 # Handoff — Plan 5 (Admin Frontend) built, review and tests deferred
 
-State as of 2026-08-12. Branch `feat/admin-frontend` = `67fdc75`, pushed, **CI green on both jobs**.
-`main` = `cb04987` (Plan 4 merged). This branch is **not merged**.
+State as of 2026-08-12. **Merged into `main` as `2e17de9`** (`Merge Plan 5: Admin Frontend`), CI green
+on both jobs before the merge.
+
+**This code was merged without any review and without tests** — a deliberate owner decision to keep
+the MVP moving. Everything in the two sections below is therefore outstanding *on `main`*, not on a
+side branch, and a defect found later is a fix-forward rather than a branch that never landed.
 
 ## What exists now
 
@@ -12,7 +16,7 @@ management, and párroco-only team management. 14 commits, ~3,900 lines.
 | Plan | Status |
 |---|---|
 | 1 Backend Foundation · 2 Auth & Admin API · 3 Difusión Engine · 4 Public Frontend | Done, merged |
-| **5 Admin Frontend** | **Built, on `feat/admin-frontend`, unmerged — this document** |
+| **5 Admin Frontend** | **Done, merged (`2e17de9`) — review and tests still owed, see below** |
 | 6 Deploy | Next; plan not written yet |
 
 ## THE TWO THINGS THAT ARE PENDING
