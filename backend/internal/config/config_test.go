@@ -42,6 +42,30 @@ func TestLoadAuthDefaults(t *testing.T) {
 	}
 }
 
+func TestLoadDifusionDefaults(t *testing.T) {
+	for _, k := range []string{"QUIET_START", "QUIET_END", "STAGGER_SECONDS"} {
+		t.Setenv(k, "")
+	}
+	c := Load()
+	if c.QuietStart != 22 || c.QuietEnd != 7 {
+		t.Errorf("quiet hours default wrong: %d-%d", c.QuietStart, c.QuietEnd)
+	}
+	if c.StaggerSeconds != 8 {
+		t.Errorf("StaggerSeconds default wrong: %d", c.StaggerSeconds)
+	}
+
+	t.Setenv("QUIET_START", "9")
+	if c := Load(); c.QuietStart != 9 {
+		t.Errorf("QUIET_START should come from env, got %d", c.QuietStart)
+	}
+
+	// A typo must not silently disable quiet hours by parsing as zero.
+	t.Setenv("QUIET_START", "chido")
+	if c := Load(); c.QuietStart != 22 {
+		t.Errorf("non-numeric QUIET_START should fall back to 22, got %d", c.QuietStart)
+	}
+}
+
 func TestLoadFromEnv(t *testing.T) {
 	t.Setenv("PORT", "9999")
 	c := Load()

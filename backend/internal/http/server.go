@@ -7,6 +7,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/google/uuid"
+	"github.com/hibiken/asynq"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/redis/go-redis/v9"
 
@@ -28,7 +29,7 @@ func NewRouter(pool *pgxpool.Pool, rdb *redis.Client, mailer mail.Mailer, cfg co
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
-	r.Get("/healthz", healthHandler(pool))
+	r.Get("/healthz", healthHandler(pool, rdb))
 
 	r.Route("/api/v1", func(api chi.Router) {
 		api.Get("/events", eventsHandler(pool, cfg.ParishTZ))
@@ -73,6 +74,14 @@ func NewRouter(pool *pgxpool.Pool, rdb *redis.Client, mailer mail.Mailer, cfg co
 				func(r *http.Request, id uuid.UUID) error {
 					return store.UnpublishEvent(r.Context(), pool, id)
 				}))
+		})
+
+		// The enqueuer rides the Redis client the router already has, so the
+		// retry endpoint needs no second connection pool.
+		enq := asynq.NewClientFromRedisClient(rdb)
+		admin.Route("/broadcasts", func(b chi.Router) {
+			b.Get("/", listBroadcastsHandler(pool))
+			b.Post("/{id}/retry", retryBroadcastHandler(pool, enq))
 		})
 
 		admin.Route("/channels", func(ch chi.Router) {
