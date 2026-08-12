@@ -167,10 +167,13 @@ function phoneChipStyle(active: boolean): CSSProperties {
     padding: '9px 13px',
     borderRadius: 18,
     minHeight: 36,
-    lineHeight: '18px',
     font: `${active ? 600 : 500} 11.5px/1 ${SANS}`,
+    // After `font`, which would otherwise reset it: 9 + 18 + 9 fills the chip.
+    lineHeight: '18px',
     color: active ? BRIGHT : 'var(--dim)',
     background: active ? 'rgba(201,169,97,.18)' : 'none',
+    // The mock leaves the active chip unbordered; a transparent one keeps the
+    // row from shifting 2px as the selection moves.
     border: active ? '1px solid transparent' : '1px solid rgba(201,169,97,.2)',
   };
 }
