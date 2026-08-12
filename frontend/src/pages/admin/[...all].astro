@@ -1,0 +1,21 @@
+---
+import Base from '../../layouts/Base.astro';
+import App from '../../admin/App';
+
+// One static shell per admin route. The island owns the routing once it
+// hydrates; these entries only exist so a hard refresh on a deep link is
+// served a page instead of a 404.
+export function getStaticPaths() {
+  return [
+    { params: { all: undefined } },
+    { params: { all: 'login' } },
+    { params: { all: 'eventos' } },
+    { params: { all: 'difusion' } },
+    { params: { all: 'equipo' } },
+  ];
+}
+---
+
+<Base title="Panel pastoral — Cristo de Los Álamos">
+  <App client:only="react" />
+</Base>

@@ -26,6 +26,7 @@ type broadcastJSON struct {
 	ChannelID   uuid.UUID  `json:"channel_id"`
 	ChannelName string     `json:"channel_name"`
 	ChannelKind string     `json:"channel_kind"`
+	EventTitle  string     `json:"event_title"`
 	Kind        string     `json:"kind"`
 	State       string     `json:"state"`
 	Attempt     int        `json:"attempt"`
@@ -40,7 +41,7 @@ type broadcastJSON struct {
 func toBroadcastJSON(r store.BroadcastRow) broadcastJSON {
 	return broadcastJSON{
 		ID: r.ID, EventID: r.EventID, ChannelID: r.ChannelID,
-		ChannelName: r.ChannelName, ChannelKind: r.ChannelKind,
+		ChannelName: r.ChannelName, ChannelKind: r.ChannelKind, EventTitle: r.EventTitle,
 		Kind: string(r.Kind), State: r.State, Attempt: r.Attempt,
 		LastError: r.LastError, SentAt: r.SentAt, CreatedAt: r.CreatedAt,
 		Simulated: r.ChannelKind == "whatsapp",
@@ -135,15 +136,27 @@ func retryBroadcastHandler(pool *pgxpool.Pool, enq difusion.Enqueuer) http.Handl
 			return
 		}
 
-		updated, err := store.GetBroadcast(r.Context(), pool, id)
+		// Re-read via ListBroadcasts rather than hand-building the row: it is
+		// the one place that already joins channel and event, so the retry
+		// response cannot drift from what the list endpoint shows.
+		rows, err := store.ListBroadcasts(r.Context(), pool, nil, &b.EventID)
 		if err != nil {
 			writeError(w, http.StatusInternalServerError, "internal", "No se pudo cargar el envío.")
 			return
 		}
+		var updated *store.BroadcastRow
+		for i := range rows {
+			if rows[i].ID == id {
+				updated = &rows[i]
+				break
+			}
+		}
+		if updated == nil {
+			writeError(w, http.StatusInternalServerError, "internal", "No se pudo cargar el envío.")
+			return
+		}
 		writeJSON(w, http.StatusOK, map[string]any{
-			"broadcast": toBroadcastJSON(store.BroadcastRow{
-				Broadcast: updated, ChannelName: ch.Name, ChannelKind: ch.Kind,
-			}),
+			"broadcast": toBroadcastJSON(*updated),
 		})
 	}
 }

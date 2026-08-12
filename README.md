@@ -28,6 +28,8 @@ cd backend && SETUP_EMAIL=parroco@parroquia.mx go run ./cmd/setup
 # 5. Run the public site, in a third terminal
 cd frontend && npm install && npm run dev
 # → http://localhost:4321 (proxies /api and the .ics feeds to :8080)
+# → http://localhost:4321/admin (the admin panel — same two dev processes as
+#   the public site; step 3's worker is what actually delivers what it queues)
 
 # 6. Tests (uses the pastoral_test database and Redis)
 cd backend && go test ./...
@@ -38,6 +40,9 @@ sending. The worker refuses to start against an unmigrated database rather than
 failing one query at a time.
 
 ## Admin API
+
+Everything below also has a screen — see [Admin panel](#admin-panel) — but the
+raw endpoints are here for scripting or debugging.
 
 ```bash
 # Log in and keep the session cookie
@@ -79,6 +84,48 @@ curl -s -b cookies.txt -X POST "localhost:8080/api/v1/admin/broadcasts/<id>/retr
 - A cancellation reaches only the channels that actually received the event.
 - Retries: 5 attempts, then the row turns `dead` and waits for a manual retry.
 
+## Admin panel
+
+`frontend/src/admin/`, served at `/admin`. Four screens over the admin API above:
+
+- **Login** — password or magic link.
+- **Eventos** — month list with per-event difusión counts and tabs; an editor
+  with publish/draft/unpublish; a delete modal with a cancellation-notice
+  checkbox (send an aviso to whoever already got the event, or don't).
+- **Difusión** — the broadcasts log with retry, polling every 5s only while
+  something is still queued, plus channel management (this is where the
+  seeded placeholder WhatsApp targets get corrected).
+- **Equipo** — párroco-only account management (create secretaría accounts,
+  deactivate).
+
+**Two frameworks, one project, on purpose.** The public calendar is a Preact
+island (`frontend/src/islands/calendar/`); the admin panel is a separate React
+island (`frontend/src/pages/admin/[...all].astro`, React Router inside with
+`basename="/admin"`). They were built in different plans against different
+mockups, and rewriting the calendar into React (or the panel into Preact)
+bought nothing, so `astro.config.mjs` scopes each renderer to its own folder
+(`include: ['**/islands/**']` vs. `include: ['**/admin/**']`) and every `.tsx`
+under `src/admin/` carries `/** @jsxImportSource react */` because the
+project's tsconfig defaults to Preact's JSX. State is a Redux Toolkit store
+whose only slice is RTK Query over an axios baseQuery, with a 401 interceptor
+that redirects to `/admin/login`.
+
+The panel follows the mockups with a few deliberate departures, all forced by
+what the backend actually has:
+
+- The mockups show a third role, "Coordinador de grupo"; the backend enum has
+  only `parroco` and `secretaria`, so only those two exist here (v2 backlog).
+- The mockups' "Reglas activas" toggles are static text — the difusión
+  engine's rules are compile-time constants, not per-parish settings.
+- "Salud del proveedor" became a SIMULADO notice: v1 has no WhatsApp
+  provider, so those broadcasts are simulated and only email is real.
+- "Canales conectados" health bars became the real channel management
+  mentioned above.
+- "Invitar a alguien" creates the account directly — there is no invitation
+  email, the person signs in with a magic link.
+- "Registro de actividad" was dropped: no audit-log API exists to back it.
+- The editor's free-text duration became a fixed `<select>`.
+
 ## Public site
 
 Astro static build with one Preact island (`frontend/src/islands/calendar/`). The
@@ -94,7 +141,11 @@ event sheet — and fetches `/api/v1/events` per visible range plus `/seasons` a
 - Rank drives shape and weight, not just color: solemnidad fills, fiesta tints,
   memoria is a dot, and a group activity is dashed graphite — deliberately
   outside the liturgical palette.
-- No test suite yet (MVP); `npx astro check` and `npm run build` gate CI.
+- Vitest covers the calendar's date/rank logic and grid rendering (45 tests),
+  but not every island rule yet, and the Playwright E2E smoke from spec §11
+  is still outstanding. **The admin panel has no tests at all and no code
+  review has run on `feat/admin-frontend`** — deferred by the project owner;
+  see the roadmap. `npx astro check` and `npm run build` gate CI regardless.
 
 ## Environment
 
@@ -126,8 +177,8 @@ docker compose -f docker-compose.dev.yml exec postgres \
 
 - `backend/` — Go API + worker (cmd/api, cmd/worker, cmd/setup, internal/…)
 - `frontend/` — Astro site: `src/pages`, `src/components` (static shell),
-  `src/islands/calendar` (Preact island), `src/lib` (API client + date logic),
-  `src/styles/tokens.css` (design tokens)
+  `src/islands/calendar` (Preact island), `src/admin` (React admin panel),
+  `src/lib` (API client + date logic), `src/styles/tokens.css` (design tokens)
 - `deploy/` — compose files, Caddy config
 - `project/` — original design handoff bundle (reference only)
 - `docs/superpowers/` — spec and implementation plans
