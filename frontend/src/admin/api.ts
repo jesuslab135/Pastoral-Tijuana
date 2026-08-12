@@ -49,7 +49,7 @@ const axiosBaseQuery =
 
 // Publishing an event writes outbox rows that surface as broadcasts, so every
 // event mutation refreshes the difusión log alongside the calendar.
-const EVENT_TAGS = ['Events', 'Broadcasts'] as const;
+const EVENT_TAGS: Array<'Events' | 'Broadcasts'> = ['Events', 'Broadcasts'];
 
 export const adminApi = createApi({
   reducerPath: 'adminApi',
@@ -97,22 +97,22 @@ export const adminApi = createApi({
     createEvent: build.mutation<AdminEvent, EventInput>({
       query: (data) => ({ url: '/admin/events', method: 'POST', data }),
       transformResponse: (r: { event: AdminEvent }) => r.event,
-      invalidatesTags: [...EVENT_TAGS],
+      invalidatesTags: EVENT_TAGS,
     }),
     updateEvent: build.mutation<AdminEvent, { id: string; body: EventInput }>({
       query: ({ id, body }) => ({ url: `/admin/events/${id}`, method: 'PUT', data: body }),
       transformResponse: (r: { event: AdminEvent }) => r.event,
-      invalidatesTags: [...EVENT_TAGS],
+      invalidatesTags: EVENT_TAGS,
     }),
     publishEvent: build.mutation<AdminEvent, string>({
       query: (id) => ({ url: `/admin/events/${id}/publish`, method: 'POST' }),
       transformResponse: (r: { event: AdminEvent }) => r.event,
-      invalidatesTags: [...EVENT_TAGS],
+      invalidatesTags: EVENT_TAGS,
     }),
     unpublishEvent: build.mutation<AdminEvent, string>({
       query: (id) => ({ url: `/admin/events/${id}/unpublish`, method: 'POST' }),
       transformResponse: (r: { event: AdminEvent }) => r.event,
-      invalidatesTags: [...EVENT_TAGS],
+      invalidatesTags: EVENT_TAGS,
     }),
     deleteEvent: build.mutation<void, { id: string; notify: boolean }>({
       // The API only reads `notify=false`; sending the flag either way keeps
@@ -122,7 +122,7 @@ export const adminApi = createApi({
         method: 'DELETE',
         params: { notify: String(notify) },
       }),
-      invalidatesTags: [...EVENT_TAGS],
+      invalidatesTags: EVENT_TAGS,
     }),
 
     broadcasts: build.query<Broadcast[], { state?: BroadcastState; eventId?: string }>({
