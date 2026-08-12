@@ -304,6 +304,9 @@ function Row({ event, group, cast, isPhone, onEdit, onDelete }: RowProps) {
           <span
             style={{
               ...titleStyle,
+              // Without it the flex item refuses to shrink and a long title
+              // pushes the BORRADOR tag out of the column instead of ellipsing.
+              minWidth: 0,
               whiteSpace: 'nowrap',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
