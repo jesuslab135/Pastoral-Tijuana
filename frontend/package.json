@@ -13,18 +13,27 @@
   "dependencies": {
     "@astrojs/check": "^0.9.4",
     "@astrojs/preact": "^4.0.0",
+    "@astrojs/react": "^6.0.2",
     "@fontsource/eb-garamond": "^5.1.0",
     "@fontsource/ibm-plex-mono": "^5.1.0",
     "@fontsource/ibm-plex-sans": "^5.1.0",
     "@fontsource/marcellus": "^5.1.0",
+    "@reduxjs/toolkit": "^2.12.0",
     "astro": "^5.1.0",
+    "axios": "^1.19.0",
     "preact": "^10.25.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-redux": "^9.3.0",
+    "react-router-dom": "^7.18.2",
     "typescript": "^5.7.0"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.10.6",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/preact": "^3.2.4",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
     "jsdom": "^29.1.1",
     "vitest": "^4.1.10"
   }
