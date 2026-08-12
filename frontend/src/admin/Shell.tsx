@@ -63,6 +63,11 @@ function useViewportWidth(): number {
   return width;
 }
 
+/** The panel's one phone breakpoint, so a screen's layout flips with the frame's. */
+export function useIsPhone(): boolean {
+  return useViewportWidth() < PHONE;
+}
+
 function LogoDisc({ size }: { size: number }) {
   return (
     <div
@@ -188,7 +193,7 @@ function PhoneChip({ to, children }: { to: string; children: ReactNode }) {
 
 export default function Shell() {
   const me = useSession();
-  const isPhone = useViewportWidth() < PHONE;
+  const isPhone = useIsPhone();
   const [logout] = useLogoutMutation();
 
   const month = useMemo(() => monthWindow(new Date()), []);
