@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"log"
 	"os/signal"
 	"sync"
@@ -62,26 +61,7 @@ func main() {
 	client := asynq.NewClient(redisOpt)
 	defer client.Close()
 
-	senders := difusion.SendersFromConfig(cfg)
-	mux := asynq.NewServeMux()
-	mux.HandleFunc(difusion.TypeFanout, func(ctx context.Context, t *asynq.Task) error {
-		var p difusion.FanoutPayload
-		if err := json.Unmarshal(t.Payload(), &p); err != nil {
-			// Undecodable payloads never become decodable; SkipRetry retires
-			// the task instead of burning the retry budget on it.
-			return asynq.SkipRetry
-		}
-		return difusion.Fanout(ctx, pool, client, cfg, p.OutboxID)
-	})
-	mux.HandleFunc(difusion.TypeDeliver, func(ctx context.Context, t *asynq.Task) error {
-		var p difusion.DeliverPayload
-		if err := json.Unmarshal(t.Payload(), &p); err != nil {
-			return asynq.SkipRetry
-		}
-		retried, _ := asynq.GetRetryCount(ctx)
-		maxRetry, _ := asynq.GetMaxRetry(ctx)
-		return difusion.Deliver(ctx, pool, senders, loc, cfg.PublicBaseURL, p, retried, maxRetry)
-	})
+	mux := difusion.NewMux(pool, client, difusion.SendersFromConfig(cfg), loc, cfg)
 
 	// Two servers because the queues have opposite needs: WhatsApp must stay
 	// serialized while mail and fanout run wide.
