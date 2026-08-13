@@ -10,6 +10,12 @@ import (
 	"github.com/pressly/goose/v3"
 )
 
+// Number 00005 is retired: it seeded placeholder channels, and its active
+// email channel pointed at a domain the parish does not own — real SMTP would
+// have mailed it. Long-lived dev databases still record version 5 in
+// goose_db_version, so the NEXT migration must be 00006 or later; reusing
+// 00005 would silently never run there.
+//
 //go:embed migrations/*.sql
 var migrationsFS embed.FS
 
