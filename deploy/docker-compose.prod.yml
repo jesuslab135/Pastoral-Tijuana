@@ -1,0 +1,86 @@
+# Copied to /opt/pastoral/docker-compose.yml on the VPS. Everything it needs
+# sits beside it: Caddyfile and .env (see deploy/.env.example).
+x-logging: &logging
+  logging:
+    driver: json-file
+    options:
+      max-size: "10m"
+      max-file: "3"
+
+services:
+  web:
+    image: ghcr.io/jesuslab135/pastoral-web:${TAG:-latest}
+    restart: unless-stopped
+    ports:
+      - "${HTTP_PORT:-80}:80"
+      - "${HTTPS_PORT:-443}:443"
+    environment:
+      SITE_ADDRESS: ${SITE_ADDRESS:-pastoral.jesuslab135.com}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddydata:/data
+    depends_on:
+      - api
+    <<: *logging
+
+  api:
+    image: ghcr.io/jesuslab135/pastoral-backend:${TAG:-latest}
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    <<: *logging
+
+  # Same image as api; only the entrypoint differs. On a cold start it may
+  # restart once or twice until the api has finished migrating — expected.
+  worker:
+    image: ghcr.io/jesuslab135/pastoral-backend:${TAG:-latest}
+    entrypoint: ["/app/worker"]
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    <<: *logging
+
+  postgres:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: pastoral
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: pastoral
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pastoral"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    <<: *logging
+
+  redis:
+    image: redis:7
+    command: ["redis-server", "--appendonly", "yes"]
+    restart: unless-stopped
+    volumes:
+      - redisdata:/data
+    <<: *logging
+
+networks:
+  # Fixed subnet so TRUSTED_PROXY in .env can be a stable CIDR: the api only
+  # honors X-Forwarded-For when the socket peer (Caddy) is inside it.
+  default:
+    ipam:
+      config:
+        - subnet: 172.28.0.0/24
+
+volumes:
+  pgdata:
+  redisdata:
+  caddydata:
