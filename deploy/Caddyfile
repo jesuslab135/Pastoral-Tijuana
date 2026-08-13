@@ -1,0 +1,31 @@
+{
+	email lidering.esteban@gmail.com
+}
+
+# SITE_ADDRESS lets the local smoke test run the same file as production
+# (":80" locally, the real domain on the VPS).
+{$SITE_ADDRESS:pastoral.jesuslab135.com} {
+	encode zstd gzip
+
+	@backend path /api/* /healthz /calendario.ics /calendario/*
+	handle @backend {
+		reverse_proxy api:8080
+	}
+
+	# The admin shell pre-renders /admin, /login, /eventos, /difusion and
+	# /equipo; try_files makes any deeper client-side route land on the shell
+	# instead of a 404 on hard refresh. The panel must never be indexed.
+	handle /admin* {
+		header X-Robots-Tag "noindex, nofollow"
+		root * /srv
+		try_files {path} {path}/ /admin/index.html
+		file_server
+	}
+
+	handle {
+		root * /srv
+		@assets path /_astro/*
+		header @assets Cache-Control "public, max-age=31536000, immutable"
+		file_server
+	}
+}
