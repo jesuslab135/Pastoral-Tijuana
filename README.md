@@ -166,11 +166,44 @@ Tests share one live `pastoral_test` database across packages, so every test
 that touches Postgres must obtain its pool from `internal/store/testdb.New`,
 which serializes test binaries with a session advisory lock.
 
+## Despliegue
+
+Producción: `https://pastoral.jesuslab135.com` — un VPS de IONOS con Docker
+Compose en `/opt/pastoral`, detrás de Caddy (HTTPS automático). Solo existe
+producción: se despliega `main` y nada más.
+
+- **Automático:** cada push a `main` con CI verde construye las imágenes
+  (`ghcr.io/jesuslab135/pastoral-backend`, `ghcr.io/jesuslab135/pastoral-web`),
+  las publica en GHCR y despliega por SSH (`.github/workflows/deploy.yml`).
+  Si `/healthz` no responde tras el despliegue, se revierte sola a la
+  etiqueta anterior (`/opt/pastoral/.tag.prev`).
+- **Manual:** `gh workflow run Deploy` (despliega el HEAD de `main`).
+- **Migraciones:** las corre `cmd/api` al arrancar (goose embebido con
+  advisory lock). No existe paso de migración separado.
+- **Base de datos limpia:** una base recién migrada trae solo el esquema,
+  las temporadas litúrgicas y los 6 grupos. Sin eventos y **sin canales** —
+  el párroco crea los canales reales en la pantalla de Difusión, y la cuenta
+  inicial se crea una sola vez con `/app/setup`.
+- **Config de runtime:** solo en `/opt/pastoral/.env` (plantilla:
+  `deploy/.env.example`). Los únicos secretos en GitHub son `VPS_HOST`,
+  `VPS_USER` y `VPS_SSH_KEY`.
+- **Primer arranque:** el runbook completo (DNS, hardening, primer deploy,
+  cuenta inicial del párroco) está en
+  `docs/superpowers/plans/2026-08-12-deploy.md`, tareas 9–14.
+
 ## Manual database snapshot (no automated backups by design)
+
+Development:
 
 ```bash
 docker compose -f docker-compose.dev.yml exec postgres \
   pg_dump -U pastoral pastoral > snapshot-$(date +%Y%m%d).sql
+```
+
+Production (from any machine with the deploy key):
+
+```bash
+ssh deploy@198.71.54.171 "cd /opt/pastoral && docker compose exec -T postgres pg_dump -U pastoral pastoral" > pastoral-$(date +%F).sql
 ```
 
 ## Repository layout

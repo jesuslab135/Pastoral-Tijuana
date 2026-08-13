@@ -45,13 +45,6 @@ func TestGaudeteIsRosa(t *testing.T) {
 	}
 }
 
-// seedChannelIDs are the fixed UUIDs migration 00005 inserts.
-var seedChannelIDs = []string{
-	"b1000000-0000-4000-8000-000000000001",
-	"b1000000-0000-4000-8000-000000000002",
-	"b1000000-0000-4000-8000-000000000003",
-}
-
 // dbURLWith returns TEST_DATABASE_URL pointed at another database on the same
 // server, so the seed can be observed in a scratch database of its own.
 func dbURLWith(t *testing.T, name string) string {
@@ -68,13 +61,16 @@ func dbURLWith(t *testing.T, name string) string {
 	return u.String()
 }
 
-// TestChannelsSeedApplied checks the seed where it can actually be observed.
-// testdb.New truncates channels on every call, so counting rows in the shared
-// test database is always vacuous; instead this migrates a scratch database
+// TestFreshDatabaseHasNoChannels checks what production's first boot gets:
+// migrations must leave channels EMPTY — the párroco creates the real ones in
+// the admin panel. (A channels seed once lived here as migration 00005; its
+// active email channel pointed at a placeholder domain that real SMTP would
+// have mailed.) testdb.New truncates channels on every call, so the shared
+// test database is vacuous for this; instead this migrates a scratch database
 // of its own and counts there. Calling testdb.New first is what makes that
 // safe: it takes the process-wide advisory lock, so no other test binary is
 // creating or dropping databases on this server at the same time.
-func TestChannelsSeedApplied(t *testing.T) {
+func TestFreshDatabaseHasNoChannels(t *testing.T) {
 	testdb.New(t)
 
 	admin, err := sql.Open("pgx", dbURLWith(t, "postgres"))
@@ -113,12 +109,11 @@ func TestChannelsSeedApplied(t *testing.T) {
 	}
 
 	var n int
-	if err := db.QueryRow(
-		`SELECT count(*) FROM channels WHERE id::text = ANY($1)`, seedChannelIDs).Scan(&n); err != nil {
-		t.Fatalf("count seeded channels: %v", err)
+	if err := db.QueryRow(`SELECT count(*) FROM channels`).Scan(&n); err != nil {
+		t.Fatalf("count channels: %v", err)
 	}
-	if n != 3 {
-		t.Errorf("expected the 3 seeded channels, got %d", n)
+	if n != 0 {
+		t.Errorf("a fresh database must have no channels, got %d", n)
 	}
 }
 
