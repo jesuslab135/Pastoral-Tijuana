@@ -5,7 +5,7 @@
 
 import { useMemo, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import type { SeasonColor } from '../../lib/api';
 import { SEASON_PALETTE } from '../../lib/calendar';
@@ -62,6 +62,18 @@ const isDraft = (e: AdminEvent) => e.published_at === null;
 function daysUntil(iso: string): number {
   const at = (x: string) => Date.parse(`${isoToParishParts(x).date}T00:00:00Z`);
   return Math.round((at(iso) - at(new Date().toISOString())) / DAY_MS);
+}
+
+/**
+ * The month the list should open on: the one carried back from the editor as
+ * a `YYYY-MM-DD`, or the current month. The parts are read off the string
+ * rather than parsed as an instant, so the anchor lands in the month the
+ * secretary typed whatever zone the browser is in.
+ */
+function monthAnchor(state: unknown): Date {
+  const saved = (state as { month?: string } | null)?.month;
+  const [year, month] = (saved ?? '').split('-').map(Number);
+  return year && month ? new Date(year, month - 1, 1) : new Date();
 }
 
 function untilLabel(iso: string): string {
@@ -345,7 +357,11 @@ function Row({ event, group, cast, isPhone, onEdit, onDelete }: RowProps) {
 export default function EventosList() {
   const navigate = useNavigate();
   const isPhone = useIsPhone();
-  const [anchor, setAnchor] = useState(() => new Date());
+  const location = useLocation();
+  // The editor hands back the date it just saved so the list opens on that
+  // month instead of on today's; without it an event created for a later
+  // month landed off-screen and read as a save that never happened.
+  const [anchor, setAnchor] = useState(() => monthAnchor(location.state));
   const [tab, setTab] = useState<TabKey>('todos');
 
   const month = useMemo(() => monthWindow(anchor), [anchor]);

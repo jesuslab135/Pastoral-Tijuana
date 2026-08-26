@@ -17,7 +17,7 @@ import {
   useUnpublishEventMutation,
   useUpdateEventMutation,
 } from '../api';
-import { parishToISO } from '../dates';
+import { isoToParishParts } from '../dates';
 import { apiError } from '../types';
 import type { Channel, Rank } from '../types';
 import {
@@ -47,9 +47,14 @@ const RANKS: Array<{ value: Rank; label: string }> = [
 
 const INPUT_BORDER = '1px solid rgba(34,29,21,.22)';
 
-/** Today on the parish clock, as the date input wants it. */
+/**
+ * Today on the parish clock, as the date input wants it. Read from the instant
+ * rather than from `toISOString().slice(0, 10)`: that is the UTC date, which
+ * in Tijuana is already tomorrow from 17:00 on, so an evening's new event
+ * opened dated a day late.
+ */
 function todayParish(): string {
-  return parishToISO(new Date().toISOString().slice(0, 10), '12:00').slice(0, 10);
+  return isoToParishParts(new Date().toISOString()).date;
 }
 
 function emptyForm(groupID: string): EventForm {
@@ -148,8 +153,18 @@ export default function EventoEditor() {
     }
   }
 
+  /**
+   * Back to the list, anchored on the month this event lands in. The list
+   * opens on the current month, so returning to it blind after saving an
+   * event for a later month showed a list the event was not in — the save had
+   * worked, but from the desk it looked like nothing had been created.
+   */
+  function backToList() {
+    navigate('/eventos', { state: { month: form!.date } });
+  }
+
   async function onSave() {
-    if ((await save()) !== null) navigate('/eventos');
+    if ((await save()) !== null) backToList();
   }
 
   async function onPublish() {
@@ -157,7 +172,7 @@ export default function EventoEditor() {
     if (savedID === null) return;
     try {
       await publishEvent(savedID).unwrap();
-      navigate('/eventos');
+      backToList();
     } catch (e) {
       setError(apiError(e));
     }
@@ -168,7 +183,7 @@ export default function EventoEditor() {
     setError(null);
     try {
       await unpublishEvent(id).unwrap();
-      navigate('/eventos');
+      backToList();
     } catch (e) {
       setError(apiError(e));
     }

@@ -41,9 +41,23 @@ function offsetAt(instant: Date): number {
   return wall - instant.getTime();
 }
 
+/**
+ * Normalises an `<input type="time">` value to `HH:MM:SS`. The control is
+ * specified to yield `HH:MM`, but it yields `HH:MM:SS` whenever the value
+ * carries seconds — some platform pickers do — and pasting the seconds
+ * straight into the template below built `...T19:00:30:00Z`, an Invalid Date
+ * whose `toISOString()` threw. The editor caught that as "Algo salió mal." and
+ * never sent the request, so the event simply could not be saved.
+ */
+function clock(time: string): string {
+  const [h = '0', m = '0', s = '0'] = time.split(':');
+  const pad = (n: string) => n.padStart(2, '0');
+  return `${pad(h)}:${pad(m)}:${pad(s)}`;
+}
+
 /** Interprets a date+time the user typed as parish wall time and returns the instant. */
 export function parishToISO(date: string, time: string): string {
-  const naive = new Date(`${date}T${time}:00Z`); // pretend it's UTC
+  const naive = new Date(`${date}T${clock(time)}Z`); // pretend it's UTC
   const once = new Date(naive.getTime() - offsetAt(naive)); // correct by the offset there
   return new Date(naive.getTime() - offsetAt(once)).toISOString(); // second pass rides out DST edges
 }
