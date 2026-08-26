@@ -16,10 +16,6 @@ const (
 	maxYear      = 9999
 )
 
-func cachePublic(w http.ResponseWriter) {
-	w.Header().Set("Cache-Control", "public, max-age=300")
-}
-
 type groupJSON struct {
 	ID   uuid.UUID `json:"id"`
 	Name string    `json:"name"`
@@ -76,8 +72,7 @@ func eventsHandler(pool *pgxpool.Pool, tz string) http.HandlerFunc {
 				Rank:  e.Rank, Color: e.Color,
 			})
 		}
-		cachePublic(w)
-		writeJSON(w, http.StatusOK, map[string]any{"events": out})
+		writePublicJSON(w, r, map[string]any{"events": out})
 	}
 }
 
@@ -116,8 +111,7 @@ func seasonsHandler(pool *pgxpool.Pool) http.HandlerFunc {
 				End:   s.End.Format("2006-01-02"),
 			})
 		}
-		cachePublic(w)
-		writeJSON(w, http.StatusOK, map[string]any{"seasons": out})
+		writePublicJSON(w, r, map[string]any{"seasons": out})
 	}
 }
 
@@ -133,7 +127,6 @@ func groupsHandler(pool *pgxpool.Pool) http.HandlerFunc {
 		for _, g := range groups {
 			out = append(out, groupJSON{ID: g.ID, Name: g.Name, Slug: g.Slug})
 		}
-		cachePublic(w)
-		writeJSON(w, http.StatusOK, map[string]any{"groups": out})
+		writePublicJSON(w, r, map[string]any{"groups": out})
 	}
 }
